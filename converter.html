@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Time Converter | Clock 101</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1><a href="index.html">Clock 101</a></h1>
+        <nav>
+            <ul>
+                <li><a href="converter.html" class="active">Time Converter</a></li>
+                <li><a href="calculator.html">Date Calculator</a></li>
+                <li><a href="alarm.html">Alarm</a></li>
+                <li><a href="account/login.html">Login</a></li>
+                <li><a href="account/signup.html">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="converter-section">
+            <h2>World Time Converter</h2>
+            
+            <div class="converter-container">
+                <div class="base-time">
+                    <h3>Base Time</h3>
+                    <select id="base-city">
+                        <option value="UTC">UTC</option>
+                        <option value="America/New_York">New York</option>
+                        <option value="Europe/London">London</option>
+                        <option value="Asia/Tokyo">Tokyo</option>
+                        <option value="Australia/Sydney">Sydney</option>
+                    </select>
+                    <div class="time-display">
+                        <span id="base-time">00:00:00</span>
+                        <span id="base-date">January 1, 2023</span>
+                    </div>
+                </div>
+                
+                <div class="conversion-results">
+                    <div class="target-selection">
+                        <h3>Convert To</h3>
+                        <select id="target-city">
+                            <option value="America/Los_Angeles">Los Angeles</option>
+                            <option value="Europe/Paris">Paris</option>
+                            <option value="Asia/Dubai">Dubai</option>
+                            <option value="Asia/Shanghai">Shanghai</option>
+                        </select>
+                        <button id="add-city-btn">+ Add City</button>
+                    </div>
+                    
+                    <div id="converted-times-container">
+                        <!-- Converted times will appear here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="assets/js/converter.js"></script>
+</body>
+</html>
