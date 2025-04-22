@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock 101 - Your Time Management Tool</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Day.js -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/advancedFormat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
+    
+    <script src="assets/js/timezones.js" type="module"></script>
+    <script src="assets/js/timezone-utils.js" type="module"></script>
+    <script src="assets/js/converter.js" type="module"></script>
+  
+</head>
+<body>
+    <header>
+        <h1>Clock 101</h1>
+        <nav>
+            <ul>
+                <li><a href="converter.html">Time Converter</a></li>
+                <li><a href="calculator.html">Date Calculator</a></li>
+                <li><a href="alarm.html">Alarm</a></li>
+                <li><a href="account/login.html">Login</a></li>
+                <li><a href="account/signup.html">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Your Complete Time Management Solution</h2>
+            <p>Convert timezones, calculate dates, set alarms, and more</p>
+        </section>
+        
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-globe"></i>
+                <h3>World Time Converter</h3>
+                <p>Convert between multiple timezones in real-time</p>
+                <a href="converter.html" class="feature-link"></a>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-calculator"></i>
+                <h3>Date Calculator</h3>
+                <p>Add or subtract time intervals across timezones</p>
+                <a href="calculator.html" class="feature-link"></a>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-alarm-clock"></i>
+                <h3>Alarm System</h3>
+                <p>Set and manage multiple alarms with different sounds</p>
+                <a href="alarm.html" class="feature-link"></a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Clock 101. All rights reserved.:P </p>
+    </footer>
+
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>
