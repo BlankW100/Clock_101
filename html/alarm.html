@@ -1,69 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Alarm clock in JavaScript</title>
+
+    <link rel="stylesheet" href="assets/css/alarm.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alarm System | Clock 101</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1><a href="index.html">Clock 101</a></h1>
+        <h1>Clock 101</h1>
         <nav>
             <ul>
                 <li><a href="converter.html">Time Converter</a></li>
                 <li><a href="calculator.html">Date Calculator</a></li>
-                <li><a href="alarm.html" class="active">Alarm</a></li>
+                <li><a href="alarm.html">Alarm</a></li>
                 <li><a href="account/login.html">Login</a></li>
                 <li><a href="account/signup.html">Sign Up</a></li>
             </ul>
         </nav>
     </header>
-
-    <main>
-        <section class="alarm-section">
-            <h2>Alarm System</h2>
-            
-            <div class="alarm-container">
-                <div class="current-time">
-                    <h3>Current Time</h3>
-                    <div id="live-clock">00:00:00</div>
-                    <div id="live-date">January 1, 2023</div>
-                </div>
-                
-                <div class="alarm-controls">
-                    <h3>Set New Alarm</h3>
-                    <input type="time" id="alarm-time">
-                    <input type="text" id="alarm-name" placeholder="Alarm name (optional)">
-                    
-                    <div class="alarm-options">
-                        <label>
-                            <input type="checkbox" id="repeat-daily">
-                            Repeat Daily
-                        </label>
-                        
-                        <select id="alarm-sound">
-                            <option value="default">Default Sound</option>
-                            <option value="beep">Beep</option>
-                            <option value="chime">Chime</option>
-                        </select>
-                    </div>
-                    
-                    <button id="set-alarm-btn">Set Alarm</button>
-                </div>
-                
-                <div class="alarm-list">
-                    <h3>Your Alarms</h3>
-                    <ul id="active-alarms-list">
-                        <!-- Alarms will be added here dynamically -->
-                    </ul>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <audio id="alarm-sound" src="assets/sounds/alarm.mp3" preload="auto"></audio>
+    <div class="wrapper">
+      <img src="assets/Alarm files/clock.svg" alt="clock">
+      <h1>00:00:00 PM</h1>
+      <div class="content">
+        <div class="column">
+          <select>
+            <option value="Hour" selected disabled hidden>Hour</option>
+          </select>
+        </div>
+        <div class="column">
+          <select>
+            <option value="Minute" selected disabled hidden>Minute</option>
+          </select>
+        </div>
+        <div class="column">
+          <select>
+            <option value="AM/PM" selected disabled hidden>AM/PM</option>
+          </select>
+        </div>
+      </div>
+      <button>Set Alarm</button>
+    </div>
     <script src="assets/js/alarm.js"></script>
-</body>
+  </body>
 </html>
