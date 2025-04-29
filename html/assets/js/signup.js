@@ -18,25 +18,24 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app); // Initialize auth
 
-// Submit button
-const submit = document.getElementById('submit');
-submit.addEventListener("click", function (event) { // Fixed syntax
-  event.preventDefault();
+// Form submission
+const form = document.querySelector(".auth-form"); // Select the form
+form.addEventListener("submit", function (event) {
+  event.preventDefault(); // Prevent form from reloading the page
 
   // Inputs
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed up
       const user = userCredential.user;
-      alert("Creating Account...");
-      window.location.href = "login.html";
+      alert("Account created successfully!");
+      window.location.href = "login.html"; // Redirect to login page
     })
     .catch((error) => {
-      const errorCode = error.code;
       const errorMessage = error.message;
-      alert(errorMessage); // Display actual error message
+      alert(`Error: ${errorMessage}`); // Display the actual error message
     });
 });
