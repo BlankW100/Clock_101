@@ -1,31 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Zone Converter</title>
-   
-    <script src="assets/js/moment.js"></script>
-    <script src="assets/js/moment-timezone-with-data.js"></script>
-    <link rel="stylesheet" href="assets/css/calculator.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Time Converter with Moment.js</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-    <h1>Time Zone Converter</h1>
-    <label for="starting-area">Choose the starting timezone:</label>
-    <select id="starting-area" name="starting-area"></select>
-
-    <label for="dateInput">Date:</label>
-    <input type="date" id="dateInput" name="dateInput">
-
-    <label for="timeInput">Time:</label>
-    <input type="time" id="timeInput" name="timeInput">
-
-    <label for="timezone">Choose the timezone you want to convert to:</label>
-    <select id="timezone" name="timezone"></select>
-
-    <button id="convertButton">Convert</button>
-    <div id="result"></div>
-
-    <script src="assets/js/calculator.js"></script>
-</body>
-</html>
+<body class="bg-gray-50 font-sans text-gray-800">
+    <header class="bg-white shadow-md">
+        <div class="max-w-4xl mx-auto flex items-center justify-between p-4">
+            <h1 class="text-2xl font-bold cursor-pointer text-blue-600 hover:text-blue-800" onclick="location.href='index.html'">Clock 101</h1>
+            <nav>
+                <ul class="flex space-x-6 text-gray-700 font-medium">
+                    <li><a href="converter.html" class="hover:text-blue-600 transition">Time Converter</a></li>
+                    <li><a href="calculator.html" class="hover:text-blue-600 transition">Date Calculator</a></li>
+                    <li><a href="alarm.html" class="hover:text-blue-600 transition">Alarm</a></li>
+                    <li><a href="login.html" class="hover:text-blue-600 transition">Login</a></li>
+                    <li><a href="signup.html" class="hover:text-blue-600 transition">Sign Up</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="max-w-md mx-auto p-6 mt-12 bg-white rounded-lg shadow-md">
+        <h1 class="text-3xl font-semibold mb-6 text-center">Time Converter</h1>
+        <form id="converter-form" class="space-y-6">
+            <div>
+                <label for="input-datetime" class="block mb-2 font-medium">Enter Date and Time (UTC):</label>
+                <input type="datetime-local" id="input-datetime" class="w-full border border-gray-300 rounded px-3 py-2" />
+            </div>
+            <div>
+                <label for="timezone-select" class="block mb-2 font-medium">Select Timezone:</label>

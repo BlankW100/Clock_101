@@ -1,64 +1,44 @@
-var time = "10:00";
-var date = "2023-10-01";
-var timeZone = "America/New_York";
+// Time Converter Script using Moment.js and Moment Timezone
 
-var c = moment.tz(date + " " + time, timeZone);
-console.log(c.format());
+const timezones = moment.tz.names();
 
-const DateTime = luxon.DateTime;
-var dt = DateTime.fromISO(c.format());
-
-dt = dt.setZone("Japan/Tokyo");
-console.log(dt.toISO({ suppressMilliseconds: true })); 
-console.log(dt.toLocaleString(DateTime.DATETIME_FULL));
-
-// Populate dropdown menus with all available time zones
-function populateTimeZones() {
-    const timeZones = moment.tz.names(); // Get all available time zones
-    const startingAreaSelect = document.getElementById("starting-area");
-    const targetTimeZoneSelect = document.getElementById("timezone");
-
-    // Populate both dropdowns with time zones
-    timeZones.forEach((zone) => {
-        const option1 = document.createElement("option");
-        option1.value = zone;
-        option1.textContent = zone;
-        startingAreaSelect.appendChild(option1);
-
-        const option2 = document.createElement("option");
-        option2.value = zone;
-        option2.textContent = zone;
-        targetTimeZoneSelect.appendChild(option2);
+// Populate timezone select dropdown
+function populateTimezoneSelect() {
+    const select = document.getElementById('timezone-select');
+    timezones.forEach(tz => {
+        const option = document.createElement('option');
+        option.value = tz;
+        option.textContent = tz;
+        select.appendChild(option);
     });
 }
 
-// Convert time from one timezone to another
-function convertTime() {
-    const startingArea = document.getElementById("starting-area").value;
-    const dateInput = document.getElementById("dateInput").value;
-    const timeInput = document.getElementById("timeInput").value;
-    const targetTimeZone = document.getElementById("timezone").value;
+// Handle form submission for time conversion
+function handleConversion(event) {
+    event.preventDefault();
+    const inputDateTime = document.getElementById('input-datetime').value;
+    const timezone = document.getElementById('timezone-select').value;
+    const resultDiv = document.getElementById('conversion-result');
 
-    if (!startingArea || !dateInput || !timeInput || !targetTimeZone) {
-        document.getElementById("result").textContent = "Please fill in all fields.";
+    if (!inputDateTime) {
+        resultDiv.textContent = 'Please enter a valid date and time.';
+        return;
+    }
+    if (!timezone) {
+        resultDiv.textContent = 'Please select a timezone.';
         return;
     }
 
-    // Combine date and time into a single string
-    const dateTimeString = `${dateInput} ${timeInput}`;
-
-    // Parse the input date and time in the starting timezone
-    const startingMoment = moment.tz(dateTimeString, startingArea);
-
-    // Convert to the target timezone
-    const targetMoment = startingMoment.clone().tz(targetTimeZone);
-
-    // Display the result
-    document.getElementById("result").textContent = `Converted Time: ${targetMoment.format("YYYY-MM-DD HH:mm:ss")} (${targetTimeZone})`;
+    // Parse input as UTC and convert to selected timezone
+    const utcMoment = moment.utc(inputDateTime);
+    const converted = utcMoment.tz(timezone);
+    resultDiv.textContent = `Converted time in ${timezone}: ${converted.format('YYYY-MM-DD HH:mm:ss z')}`;
 }
 
-// Event listener for the convert button
-document.getElementById("convertButton").addEventListener("click", convertTime);
+// Initialize the converter
+function init() {
+    populateTimezoneSelect();
+    document.getElementById('converter-form').addEventListener('submit', handleConversion);
+}
 
-// Populate the dropdown menus on page load
-populateTimeZones();
+document.addEventListener('DOMContentLoaded', init);
