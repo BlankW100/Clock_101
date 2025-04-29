@@ -3,9 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Clock 101  Sign Up</title>
-  <link rel="stylesheet" href="assets/css/login.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="assets/css/signup.css">
   <link rel="stylesheet" href="assets/css/auth.css">
   <script type="module" src="assets/js/signup.js" defer></script>
 </head>
@@ -13,33 +13,21 @@
 <body>
   <div class="auth-container">
     <form class="auth-form">
-      <h2 class="auth-title">Sign Up</h2>
+      <h2>Sign Up</h2>
 
       <div class="input-group">
-        <label for="signup-name">Full Name</label>
-        <input id="signup-name" type="text" placeholder="Your name" required>
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="abc@example.com" required>
       </div>
 
       <div class="input-group">
-        <label for="signup-email">Email</label>
-        <input id="signup-email" type="email" placeholder="you@example.com" required>
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••" required>
       </div>
 
-      <div class="input-group">
-        <label for="signup-password">Password</label>
-        <input id="signup-password" type="password" placeholder="••••••••" required>
-      </div>
+      <button type="submit" id="submit">Sign Up</button>
 
-      <div class="input-group">
-        <label for="signup-confirm">Confirm Password</label>
-        <input id="signup-confirm" type="password" placeholder="••••••••" required>
-      </div>
-
-      <button type="submit" class="btn btn-primary auth-btn">Create Account</button>
-
-      <p class="auth-footer">
-        Already have an account? <a href="login.html">Login</a>
-      </p>
+      <p>Already have an account? <a href="login.html">Log In</a></p>
     </form>
   </div>
 </body>
