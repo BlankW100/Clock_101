@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,14 +18,14 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app); // Initialize auth
 
-// Submit button
-const submit = document.getElementById('submit');
-submit.addEventListener("click", function (event) { // Fixed syntax
+// Login form submission
+const form = document.querySelector(".auth-form");
+form.addEventListener("submit", function (event) {
   event.preventDefault();
 
   // Inputs
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -37,6 +37,42 @@ submit.addEventListener("click", function (event) { // Fixed syntax
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert(`Error: ${errorMessage}`); // Display the actual error message
+
+      // Friendly error messages
+      if (errorCode === "auth/user-not-found") {
+        alert("No user found with this email. Please sign up first.");
+      } else if (errorCode === "auth/wrong-password") {
+        alert("Incorrect password. Please try again.");
+      } else if (errorCode === "auth/invalid-email") {
+        alert("Invalid email format. Please enter a valid email.");
+      } else {
+        alert(`Error: ${errorMessage}`);
+      }
     });
+});
+
+// Forgot Password feature
+const forgotPasswordLink = document.getElementById("forgot-password");
+forgotPasswordLink.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  const email = prompt("Please enter your email to reset your password:");
+  if (email) {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        alert("Password reset email sent! Please check your inbox.");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        if (errorCode === "auth/user-not-found") {
+          alert("No user found with this email.");
+        } else if (errorCode === "auth/invalid-email") {
+          alert("Invalid email format. Please enter a valid email.");
+        } else {
+          alert(`Error: ${errorMessage}`);
+        }
+      });
+  }
 });
