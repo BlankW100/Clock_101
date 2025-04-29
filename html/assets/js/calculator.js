@@ -7,3 +7,6 @@ console.log(c.format()) ;
 
 const DateTime = luxon.DateTime;
 var dt = DateTime.fromISO(c.format());
+
+dt = dt.setZone("Japan/Tokyo");
+console.log(dt.toIso()) ;
