@@ -4,13 +4,27 @@ const timezones = moment.tz.names();
 
 // Populate timezone select dropdown
 function populateTimezoneSelect() {
+    console.log("populateTimezoneSelect called");
+    if (!timezones || timezones.length === 0) {
+        console.error("Timezone list is empty or undefined");
+        const resultDiv = document.getElementById('conversion-result');
+        if (resultDiv) {
+            resultDiv.textContent = 'Error: Timezone data not loaded properly.';
+        }
+        return;
+    }
     const select = document.getElementById('timezone-select');
+    if (!select) {
+        console.error("Timezone select element not found");
+        return;
+    }
     timezones.forEach(tz => {
         const option = document.createElement('option');
         option.value = tz;
         option.textContent = tz;
         select.appendChild(option);
     });
+    console.log("Timezone select populated with options");
 }
 
 // Handle form submission for time conversion
@@ -37,8 +51,15 @@ function handleConversion(event) {
 
 // Initialize the converter
 function init() {
+    console.log("init called");
     populateTimezoneSelect();
-    document.getElementById('converter-form').addEventListener('submit', handleConversion);
+    const form = document.getElementById('converter-form');
+    if (form) {
+        form.addEventListener('submit', handleConversion);
+        console.log("Form submit event listener added");
+    } else {
+        console.error("Converter form not found");
+    }
 }
 
 document.addEventListener('DOMContentLoaded', init);
