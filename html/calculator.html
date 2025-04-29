@@ -1,40 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter</title>
+   
     <script src="assets/js/moment.js"></script>
-    <script src="assets/js/moment-timezone.js"></script>
     <script src="assets/js/moment-timezone-with-data.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/luxon@1.16.0/build/global/luxon.js"></script>
-</head> 
-
-
+    <link rel="stylesheet" href="assets/css/calculator.css">
+</head>
 <body>
-    <label for="strting-area">Choose the continent/area that your stating timezone</label>
-    <select id="strting-area" name="strting-area">
-        <option value="America/New_York">America/New_York</option>
-        <option value="America/Los_Angeles">America/Los_Angeles</option>
-        <option value="Europe/London">Europe/London</option>
-        <option value="Asia/Tokyo">Asia/Tokyo</option>
-        <option value="Australia/Sydney">Australia/Sydney</option>
-    
-    </select>
+    <h1>Time Zone Converter</h1>
+    <label for="starting-area">Choose the starting timezone:</label>
+    <select id="starting-area" name="starting-area"></select>
 
-    <input type="date" id="dateInput" name="dateInput" >
+    <label for="dateInput">Date:</label>
+    <input type="date" id="dateInput" name="dateInput">
 
-    <input type="time" id="timeInput" name="timeInput" >
+    <label for="timeInput">Time:</label>
+    <input type="time" id="timeInput" name="timeInput">
 
-    <select id="ending-area" name="ending-area">
-        <option value="America/New_York">America/New_York</option>
-        <option value="America/Los_Angeles">America/Los_Angeles</option>
-        <option value="Europe/London">Europe/London</option>
-        <option value="Asia/Tokyo">Asia/Tokyo</option>
-        <option value="Australia/Sydney">Australia/Sydney</option>
-    </select>
+    <label for="timezone">Choose the timezone you want to convert to:</label>
+    <select id="timezone" name="timezone"></select>
 
-    
-    
+    <button id="convertButton">Convert</button>
+    <div id="result"></div>
 
-    <script src="assets/js/calculator.js"></script>"
+    <script src="assets/js/calculator.js"></script>
 </body>
 </html>
