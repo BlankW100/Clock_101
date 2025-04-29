@@ -5,10 +5,22 @@
   font-weight: bold;
 }
 
+h1 {
+  animation: rgbColor 5s infinite linear;
+}
+
+@keyframes rgbColor {
+  0%   { color: red; }
+  33%  { color: lime; }
+  66%  { color: blue; }
+  100% { color: red; }
+}
+
+
 #country {
   font-family: 'Times New Roman', Times, serif;
   font-size: 25px;
-  font-weight: bold;
+    font-weight: bold;
   width: 100px;
   height: 30px;
   border: 10px solid #a6a5c4;
@@ -50,7 +62,7 @@ body {
   
   /* === Button Hover Effect === */
   .button:hover {
-    background-color: #8d8cb3;           /* Darker when mouse touch it */
+    background-color: #8d8cb3;           /* Darker purple-gray when mouse is over */
   }
   
   /* === Alert / Notification Box === */
@@ -63,3 +75,4 @@ body {
     border-radius: 8px;                  /* Rounded corners for a soft look */
     font-weight: bold;                   /* Bold text for attention */
   }
+  
