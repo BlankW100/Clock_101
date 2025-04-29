@@ -1,78 +1,66 @@
 #topic {
-  text-align: center;
-  font-family: Arial, sans-serif;
-  font-size: 80px;
-  font-weight: bold;
-}
-
-h1 {
-  animation: rgbColor 5s infinite linear;
-}
-
-@keyframes rgbColor {
-  0%   { color: red; }
-  33%  { color: lime; }
-  66%  { color: blue; }
-  100% { color: red; }
-}
-
-
-#country {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 25px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 80px;
     font-weight: bold;
-  width: 100px;
-  height: 30px;
-  border: 10px solid #a6a5c4;
-  margin: 10px auto;
-  text-align: center;
-}
-
-/* === Whole Page Styling === */
-body {
-    font-family: Arial, sans-serif;       /* Sets the font to Arial (clean and simple) */
-    background-color: #e7e6e1;            /* Light beige background (soft on the eyes) */
-    color: #4a4a4a;                       /* Dark gray text (not too harsh like black) */
-    margin: 0;                            /* Removes default page margin */
-    padding: 20px;                        /* Adds space inside the page */
   }
   
-  /* === Time Display Styling === */
-  .time-display {
-    font-size: 48px;                      /* Makes the time text large */
-    font-weight: bold;                   /* Makes the text bold */
-    text-align: center;                  /* Centers the time horizontally */
-    color: #5c5470;                      /* Purple-gray color (elegant) */
-    margin-bottom: 20px;                 /* Adds space below the time */
+  #country {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 25px;
+    font-weight: bold;
+    width: 100px;
+    height: 30px;
+    border: 10px solid #a6a5c4;
+    margin: 10px auto;
+    text-align: center;
   }
   
-  /* === Button Styling === */
-  .button {
-    display: block;                      /* Makes the button a block element */
-    margin: 0 auto;                      /* Centers the button horizontally */
-    padding: 10px 20px;                  /* Adds space inside the button */
-    background-color: #a6a5c4;           /* Soft purple-gray background */
-    color: white;                        /* White text on the button */
-    border: none;                        /* Removes border */
-    border-radius: 8px;                  /* Rounded corners for a soft look */
-    font-size: 18px;                     /* Slightly large text size */
-    cursor: pointer;                     /* Shows pointer cursor on hover */
-    transition: background-color 0.3s;   /* Smooth background color transition */
-  }
-  
-  /* === Button Hover Effect === */
-  .button:hover {
-    background-color: #8d8cb3;           /* Darker purple-gray when mouse is over */
-  }
-  
-  /* === Alert / Notification Box === */
-  .alert {
-    margin-top: 30px;                    /* Adds space above the alert box */
-    padding: 15px;                       /* Adds space inside the alert box */
-    background-color: #c9e4ca;           /* Soft green background (calm and natural) */
-    color: #2e3d30;                      /* Deep green-gray text */
-    text-align: center;                  /* Center the text in the alert */
-    border-radius: 8px;                  /* Rounded corners for a soft look */
-    font-weight: bold;                   /* Bold text for attention */
-  }
-  
+  /* === Whole Page Styling === */
+  body {
+      font-family: Arial, sans-serif;       /* Sets the font to Arial (clean and simple) */
+      background-color: #e7e6e1;            /* Light beige background (soft on the eyes) */
+      color: #4a4a4a;                       /* Dark gray text (not too harsh like black) */
+      margin: 0;                            /* Removes default page margin */
+      padding: 20px;                        /* Adds space inside the page */
+    }
+    
+    /* === Time Display Styling === */
+    .time-display {
+      font-size: 48px;                      /* Makes the time text large */
+      font-weight: bold;                   /* Makes the text bold */
+      text-align: center;                  /* Centers the time horizontally */
+      color: #5c5470;                      /* Purple-gray color (elegant) */
+      margin-bottom: 20px;                 /* Adds space below the time */
+    }
+    
+    /* === Button Styling === */
+    .button {
+      display: block;                      /* Makes the button a block element */
+      margin: 0 auto;                      /* Centers the button horizontally */
+      padding: 10px 20px;                  /* Adds space inside the button */
+      background-color: #a6a5c4;           /* Soft purple-gray background */
+      color: white;                        /* White text on the button */
+      border: none;                        /* Removes border */
+      border-radius: 8px;                  /* Rounded corners for a soft look */
+      font-size: 18px;                     /* Slightly large text size */
+      cursor: pointer;                     /* Shows pointer cursor on hover */
+      transition: background-color 0.3s;   /* Smooth background color transition */
+    }
+    
+    /* === Button Hover Effect === */
+    .button:hover {
+      background-color: #8d8cb3;           /* Darker when mouse touch it */
+    }
+    
+    /* === Alert / Notification Box === */
+    .alert {
+      margin-top: 30px;                    /* Adds space above the alert box */
+      padding: 15px;                       /* Adds space inside the alert box */
+      background-color: #c9e4ca;           /* Soft green background (calm and natural) */
+      color: #2e3d30;                      /* Deep green-gray text */
+      text-align: center;                  /* Center the text in the alert */
+      border-radius: 8px;                  /* Rounded corners for a soft look */
+      font-weight: bold;                   /* Bold text for attention */
+    }
+    
