@@ -4,3 +4,6 @@ var timeZone = "America/New_York";
 
 var c = moment.tz(date + " " + time, timeZone);
 console.log(c.format()) ;
+
+const DateTime = luxon.DateTime;
+var dt = DateTime.fromISO(c.format());
