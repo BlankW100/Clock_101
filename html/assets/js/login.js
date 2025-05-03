@@ -32,7 +32,7 @@ form.addEventListener("submit", function (event) {
       // Signed in
       const user = userCredential.user;
       alert("Login successful!");
-      window.location.href = "index.html"; // Redirect to index.html on successful login
+      window.location.href = "index2.html"; // Redirect to index.html on successful login
     })
     .catch((error) => {
       const errorCode = error.code;
