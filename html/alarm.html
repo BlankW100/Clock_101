@@ -9,6 +9,24 @@
   </head>
   <body>
     
+    <header>
+        <nav class="nav-bar">
+            <!-- Left-aligned buttons -->
+            <ul class="nav-menu">
+                <li><button class="nav-button" onclick="window.location.href='converter.html'">Time Converter</button></li>
+                <li><button class="nav-button" onclick="window.location.href='calculator.html'">Date Calculator</button></li>
+                <li><button class="nav-button" onclick="window.location.href='alarm.html'">Alarm</button></li>
+                <li><button id="signout-link" class="nav-button">Logout</button></li>
+            </ul>
+
+            <!-- Centered title -->
+            <h1 class="header-title" onclick="window.location.href='index.html'">Clock 101</h1>
+
+            <!-- Right-aligned welcome message -->
+            <div class="welcome-message" id="welcome-message">Welcome, <span id="username">Loading...</span></div>
+        </nav>
+    </header>
+
     <div class="wrapper">
       <img src="assets/Alarm files/clock.svg" alt="clock">
       <h1>00:00:00 PM</h1>
