@@ -78,23 +78,18 @@
             appId: "1:654434052980:web:d270879ef90c796a059a21",
             measurementId: "G-VHP3DZEB3G"
         };
+
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const db = getFirestore(app);
 
         // Fetch username from Firestore
-        async function fetchUsername() {
+        const fetchUsername = async () => {
             const userId = sessionStorage.getItem('userId');
-            if (!userId) {
-                console.error("No userId found in sessionStorage!");
-                document.getElementById('username').textContent = "Guest";
-                return;
-            }
-
-            try {
-                const userDoc = doc(db, "users", userId);
+            if (userId) {
+                const userDoc = doc(db, "users", JSON.parse(userId));
                 const userSnapshot = await getDoc(userDoc);
-
                 if (userSnapshot.exists()) {
                     const username = userSnapshot.data().username || "Guest";
                     document.getElementById('username').textContent = username;
@@ -102,14 +97,36 @@
                     console.error("No such user document!");
                     document.getElementById('username').textContent = "Guest";
                 }
-            } catch (error) {
-                console.error("Error fetching username:", error);
+            } else {
+                console.error("No userId found in sessionStorage!");
                 document.getElementById('username').textContent = "Guest";
             }
-        }
+        };
 
-        // Run fetchUsername on page load
-        window.addEventListener('load', fetchUsername);
+        window.addEventListener('load', () => {
+            checkcredentials();
+            fetchUsername();
+        });
+
+        // Check if user is logged in
+        let checkcredentials = () => {
+            const userId = sessionStorage.getItem('userId');
+            if (!userId) {
+                console.error("No userId found in sessionStorage. Redirecting to login.html...");
+                window.location.href = "login.html";
+            }
+        };
+
+        // Sign out function
+        let signout = () => {
+            sessionStorage.removeItem('userId');
+            sessionStorage.removeItem('user');
+            window.location.href = "login.html";
+        };
+
+        // Add event listeners
+        const signoutLink = document.getElementById('signout-link');
+        signoutLink.addEventListener('click', signout);
     </script>
   </body>
 </html>
