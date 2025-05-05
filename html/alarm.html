@@ -2,13 +2,13 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Alarm clock in JavaScript</title>
+    <title>Alarm clock</title>
 
     <link rel="stylesheet" href="assets/css/alarm.css">
+    <link rel="stylesheet" href="assets/css/navbar.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    
     <header>
         <nav class="nav-bar">
             <!-- Left-aligned buttons -->
@@ -20,7 +20,7 @@
             </ul>
 
             <!-- Centered title -->
-            <h1 class="header-title" onclick="window.location.href='index.html'">Clock 101</h1>
+            <h2 class="header-title" onclick="window.location.href='index.html'">Clock 101</h2>
 
             <!-- Right-aligned welcome message -->
             <div class="welcome-message" id="welcome-message">Welcome, <span id="username">Loading...</span></div>
@@ -29,7 +29,7 @@
 
     <div class="wrapper">
       <img src="assets/Alarm files/clock.svg" alt="clock">
-      <h1>00:00:00 PM</h1>
+      <h1 id="live-time" class="text-2xl font-semibold">00:00:00</h1> <!-- Live-time display -->
       <div class="content">
         <div class="column">
           <select>
@@ -50,5 +50,16 @@
       <button>Set Alarm</button>
     </div>
     <script src="assets/js/alarm.js"></script>
+    <script>
+      // Update live-time in the <h1> element
+      const liveTimeElement = document.getElementById("live-time");
+      setInterval(() => {
+          const now = new Date();
+          const hours = String(now.getHours()).padStart(2, "0");
+          const minutes = String(now.getMinutes()).padStart(2, "0");
+          const seconds = String(now.getSeconds()).padStart(2, "0");
+          liveTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+      }, 1000);
+    </script>
   </body>
 </html>
