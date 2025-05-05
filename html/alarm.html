@@ -61,5 +61,56 @@
           liveTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
       }, 1000);
     </script>
+
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            measurementId: "YOUR_MEASUREMENT_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Fetch username from Firestore
+        async function fetchUsername() {
+            const userId = sessionStorage.getItem('userId');
+            if (!userId) {
+                console.error("No userId found in sessionStorage!");
+                document.getElementById('username').textContent = "Guest";
+                return;
+            }
+
+            try {
+                const userDoc = doc(db, "users", userId);
+                const userSnapshot = await getDoc(userDoc);
+
+                if (userSnapshot.exists()) {
+                    const username = userSnapshot.data().username || "Guest";
+                    document.getElementById('username').textContent = username;
+                } else {
+                    console.error("No such user document!");
+                    document.getElementById('username').textContent = "Guest";
+                }
+            } catch (error) {
+                console.error("Error fetching username:", error);
+                document.getElementById('username').textContent = "Guest";
+            }
+        }
+
+        // Run fetchUsername on page load
+        window.addEventListener('load', fetchUsername);
+    </script>
   </body>
 </html>
