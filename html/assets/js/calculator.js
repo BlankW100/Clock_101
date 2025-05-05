@@ -27,6 +27,41 @@ function populateTimezoneSelect() {
     console.log("Timezone select populated with options");
 }
 
+// Populate timezone list dynamically based on search input
+function populateTimezoneList(searchTerm = "") {
+    const timezoneList = document.getElementById("timezone-list");
+    timezoneList.innerHTML = ""; // Clear the list
+
+    const filteredTimezones = timezones.filter((tz) =>
+        tz.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (filteredTimezones.length === 0) {
+        const noResultItem = document.createElement("li");
+        noResultItem.textContent = "No results found";
+        noResultItem.className = "p-2 text-gray-500";
+        timezoneList.appendChild(noResultItem);
+        return;
+    }
+
+    filteredTimezones.forEach((tz) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = tz;
+        listItem.className = "p-2 cursor-pointer hover:bg-gray-200";
+        listItem.addEventListener("click", () => {
+            document.getElementById("timezone-search").value = tz;
+            timezoneList.innerHTML = ""; // Clear the list after selection
+        });
+        timezoneList.appendChild(listItem);
+    });
+}
+
+// Handle search input for timezones
+function handleTimezoneSearch(event) {
+    const searchTerm = event.target.value;
+    populateTimezoneList(searchTerm);
+}
+
 // Handle form submission for time conversion
 function handleConversion(event) {
     event.preventDefault();
@@ -49,17 +84,26 @@ function handleConversion(event) {
     resultDiv.textContent = `Converted time in ${timezone}: ${converted.format('YYYY-MM-DD HH:mm:ss z')}`;
 }
 
-// Initialize the converter
+// Initialize the converter with search functionality
 function init() {
     console.log("init called");
-    populateTimezoneSelect();
-    const form = document.getElementById('converter-form');
+    populateTimezoneList(); // Populate the full list initially
+
+    const searchInput = document.getElementById("timezone-search");
+    if (searchInput) {
+        searchInput.addEventListener("input", handleTimezoneSearch);
+        console.log("Search input event listener added");
+    } else {
+        console.error("Timezone search input not found");
+    }
+
+    const form = document.getElementById("converter-form");
     if (form) {
-        form.addEventListener('submit', handleConversion);
+        form.addEventListener("submit", handleConversion);
         console.log("Form submit event listener added");
     } else {
         console.error("Converter form not found");
     }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener("DOMContentLoaded", init);
