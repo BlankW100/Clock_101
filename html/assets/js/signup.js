@@ -27,12 +27,15 @@ form.addEventListener("submit", function (event) {
 
   // Inputs
   const email = document.getElementById("email").value;
-  const username = document.getElementById("username").value; // Get the username
+  const username = document.getElementById("username").value; 
   const password = document.getElementById("password").value;
 
   createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
-      const ref = doc(db, "users", userCredential.user.uid); // Reference to Firestore document
+      const userId = userCredential.user.uid;
+      console.log("Creating Firestore document for userId:", userId); // Debugging log
+
+      const ref = doc(db, "users", userId); // Reference to Firestore document
       await setDoc(ref, {
         email: email,
         username: username, // Save the username in Firestore
