@@ -20,9 +20,6 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app); // Initialize auth
 const db = getFirestore(app); // Initialize Firestore
 
-let email = document.getElementById("email");
-let password = document.getElementById("password");
-
 // Form submission
 const form = document.querySelector(".auth-form"); // Select the form
 form.addEventListener("submit", function (event) {
@@ -30,6 +27,7 @@ form.addEventListener("submit", function (event) {
 
   // Inputs
   const email = document.getElementById("email").value;
+  const username = document.getElementById("username").value; // Get the username
   const password = document.getElementById("password").value;
 
   createUserWithEmailAndPassword(auth, email, password)
@@ -37,6 +35,7 @@ form.addEventListener("submit", function (event) {
       const ref = doc(db, "users", userCredential.user.uid); // Reference to Firestore document
       await setDoc(ref, {
         email: email,
+        username: username, // Save the username in Firestore
         password: password,
       });
 
