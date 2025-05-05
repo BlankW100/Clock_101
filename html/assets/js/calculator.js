@@ -66,15 +66,15 @@ function handleTimezoneSearch(event) {
 function handleConversion(event) {
     event.preventDefault();
     const inputDateTime = document.getElementById('input-datetime').value;
-    const timezone = document.getElementById('timezone-select').value;
+    const timezone = document.getElementById('timezone-search').value;
     const resultDiv = document.getElementById('conversion-result');
 
     if (!inputDateTime) {
         resultDiv.textContent = 'Please enter a valid date and time.';
         return;
     }
-    if (!timezone) {
-        resultDiv.textContent = 'Please select a timezone.';
+    if (!timezone || !timezones.includes(timezone)) {
+        resultDiv.textContent = 'Please select a valid timezone.';
         return;
     }
 
@@ -86,7 +86,7 @@ function handleConversion(event) {
 
 // Initialize the converter with search functionality
 function init() {
-    console.log("init called");
+    console.log("Initializing Timezone Converter...");
     populateTimezoneList(); // Populate the full list initially
 
     const searchInput = document.getElementById("timezone-search");
