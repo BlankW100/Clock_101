@@ -20,32 +20,18 @@ const db = getFirestore(app);
 
 const timezones = moment.tz.names();
 
-// Populate timezone select dropdown
-function populateTimezoneSelect() {
-    console.log("populateTimezoneSelect called");
-    if (!timezones || timezones.length === 0) {
-        console.error("Timezone list is empty or undefined");
-        const resultDiv = document.getElementById('conversion-result');
-        if (resultDiv) {
-            resultDiv.textContent = 'Error: Timezone data not loaded properly.';
-        }
-        return;
+// Add a timezone to the user's favorites on right-click
+async function handleRightClickToAddFavorite(event) {
+    event.preventDefault(); // Prevent the default context menu
+    const timezone = event.target.textContent;
+    if (timezone && timezones.includes(timezone)) {
+        await addFavoriteTimezone(timezone);
+    } else {
+        console.error("Invalid timezone selected.");
     }
-    const select = document.getElementById('timezone-select');
-    if (!select) {
-        console.error("Timezone select element not found");
-        return;
-    }
-    timezones.forEach(tz => {
-        const option = document.createElement('option');
-        option.value = tz;
-        option.textContent = tz;
-        select.appendChild(option);
-    });
-    console.log("Timezone select populated with options");
 }
 
-// Populate timezone list dynamically based on search input
+// Populate timezone list dynamically for output timezone with right-click functionality
 function populateTimezoneList(searchTerm = "") {
     const timezoneList = document.getElementById("timezone-list");
     timezoneList.innerHTML = ""; // Clear the list
@@ -70,11 +56,12 @@ function populateTimezoneList(searchTerm = "") {
             document.getElementById("timezone-search").value = tz;
             timezoneList.innerHTML = ""; // Clear the list after selection
         });
+        listItem.addEventListener("contextmenu", handleRightClickToAddFavorite); // Add right-click functionality
         timezoneList.appendChild(listItem);
     });
 }
 
-// Populate timezone list dynamically for input timezone
+// Populate timezone list dynamically for input timezone with right-click functionality
 function populateInputTimezoneList(searchTerm = "") {
     const inputTimezoneList = document.getElementById("input-timezone-list");
     inputTimezoneList.innerHTML = ""; // Clear the list
@@ -99,6 +86,7 @@ function populateInputTimezoneList(searchTerm = "") {
             document.getElementById("input-timezone-search").value = tz;
             inputTimezoneList.innerHTML = ""; // Clear the list after selection
         });
+        listItem.addEventListener("contextmenu", handleRightClickToAddFavorite); // Add right-click functionality
         inputTimezoneList.appendChild(listItem);
     });
 }
