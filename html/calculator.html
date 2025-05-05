@@ -39,8 +39,13 @@
                 <input type="datetime-local" id="input-datetime" class="w-full border border-gray-300 rounded px-3 py-2" />
             </div>
             <div>
-                <label for="timezone-search" class="block mb-2 font-medium">Select Timezone:</label>
-                <input type="search" id="timezone-search" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Search for a timezone..." />
+                <label for="input-timezone-search" class="block mb-2 font-medium">Input Timezone:</label>
+                <input type="search" id="input-timezone-search" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Search for an input timezone..." />
+                <ul id="input-timezone-list" class="border border-gray-300 rounded mt-2 max-h-40 overflow-y-auto"></ul>
+            </div>
+            <div>
+                <label for="timezone-search" class="block mb-2 font-medium">Output Timezone:</label>
+                <input type="search" id="timezone-search" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Search for an output timezone..." />
                 <ul id="timezone-list" class="border border-gray-300 rounded mt-2 max-h-40 overflow-y-auto"></ul>
             </div>
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
@@ -101,4 +106,3 @@
     </script>
 </body>
 </html>
-``` 
