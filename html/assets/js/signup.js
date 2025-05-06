@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; // Correct import for Firestore
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,6 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app); // Initialize auth
+const db = getFirestore(app); // Initialize Firestore
 
 // Form submission
 const form = document.querySelector(".auth-form"); // Select the form
@@ -25,12 +27,22 @@ form.addEventListener("submit", function (event) {
 
   // Inputs
   const email = document.getElementById("email").value;
+  const username = document.getElementById("username").value; 
   const password = document.getElementById("password").value;
 
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
+      const userId = userCredential.user.uid;
+      console.log("Creating Firestore document for userId:", userId); // Debugging log
+
+      const ref = doc(db, "users", userId); // Reference to Firestore document
+      await setDoc(ref, {
+        email: email,
+        username: username, // Save the username in Firestore
+        password: password,
+      });
+
       // Signed up
-      const user = userCredential.user;
       alert("Account created successfully!");
       window.location.href = "login.html"; // Redirect to login page
     })

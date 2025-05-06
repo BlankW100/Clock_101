@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; // Correct import
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,6 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app); // Initialize auth
+const db = getFirestore(app); // Initialize Firestore
 
 // Login form submission
 const form = document.querySelector(".auth-form");
@@ -27,16 +29,46 @@ form.addEventListener("submit", function (event) {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
+  console.log("Login attempt with email:", email); // Debugging log
+
   signInWithEmailAndPassword(auth, email, password)
+<<<<<<< HEAD
     .then((userCredential) => {
       // Signed in
       const user = userCredential.user;
       alert("Login successful!");
       window.location.href = "index2.html"; // Redirect to index.html on successful login
+=======
+    .then(async (userCredential) => {
+      console.log("Login successful:", userCredential); // Debugging log
+
+      const ref = doc(db, "users", userCredential.user.uid);
+      const docSnap = await getDoc(ref);
+
+      if (docSnap.exists()) {
+        console.log("User document found:", docSnap.data()); // Debugging log
+
+        sessionStorage.setItem(
+          "user",
+          JSON.stringify({
+            email: docSnap.data().email,
+            password: docSnap.data().password,
+          })
+        );
+        sessionStorage.setItem("userId", JSON.stringify(userCredential.user.uid));
+        alert("Login successful!");
+        window.location.href = "index.html"; // Redirect to index.html on successful login
+      } else {
+        console.error("No user document found in Firestore."); // Debugging log
+        alert("No user document found in Firestore.");
+      }
+>>>>>>> origin/main
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
+
+      console.error("Login error:", errorCode, errorMessage); // Debugging log
 
       // Friendly error messages
       if (errorCode === "auth/user-not-found") {
@@ -57,14 +89,19 @@ forgotPasswordLink.addEventListener("click", function (event) {
   event.preventDefault();
 
   const email = prompt("Please enter your email to reset your password:");
+  console.log("Password reset requested for email:", email); // Debugging log
+
   if (email) {
     sendPasswordResetEmail(auth, email)
       .then(() => {
+        console.log("Password reset email sent."); // Debugging log
         alert("Password reset email sent! Please check your inbox.");
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+
+        console.error("Password reset error:", errorCode, errorMessage); // Debugging log
 
         if (errorCode === "auth/user-not-found") {
           alert("No user found with this email.");
