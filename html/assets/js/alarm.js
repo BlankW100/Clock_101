@@ -22,9 +22,11 @@ const currentTime = document.querySelector("h1"),
     ampmSelect = document.getElementById("ampm-select"),
     soundSelect = document.getElementById("sound-select"),
     setAlarmBtn = document.getElementById("set-alarm-btn"),
+    stopAlarmBtn = document.getElementById("stop-alarm-btn"),
     alarmList = document.getElementById("alarm-list");
 
 let alarms = []; // Local array to store alarms
+let ringtone = null; // Global ringtone instance
 
 // Populate hour, minute, and AM/PM dropdowns
 for (let i = 12; i > 0; i--) {
@@ -63,10 +65,13 @@ setInterval(() => {
     // Check if any alarm matches the current time
     alarms.forEach(alarm => {
         if (alarm.time === `${h}:${m} ${ampm}`) {
-            const ringtone = new Audio(`assets/Alarm files/${alarm.sound}`);
-            ringtone.play();
-            ringtone.loop = true;
-            alert(`Alarm ringing: ${alarm.time}`);
+            if (!ringtone) {
+                ringtone = new Audio(`assets/Alarm files/${alarm.sound}`);
+                ringtone.loop = true;
+                ringtone.play();
+                stopAlarmBtn.classList.remove("hidden"); // Show the stop button
+                alert(`Alarm ringing: ${alarm.time}`);
+            }
         }
     });
 }, 1000);
@@ -103,6 +108,16 @@ async function setAlarm() {
         alert("Alarm set successfully!");
     } catch (error) {
         console.error("Error setting alarm:", error);
+    }
+}
+
+// Stop the alarm
+function stopAlarm() {
+    if (ringtone) {
+        ringtone.pause();
+        ringtone.currentTime = 0;
+        ringtone = null;
+        stopAlarmBtn.classList.add("hidden"); // Hide the stop button
     }
 }
 
@@ -170,8 +185,9 @@ async function deleteAlarm(alarmId) {
     }
 }
 
-// Event listener for setting an alarm
+// Event listeners
 setAlarmBtn.addEventListener("click", setAlarm);
+stopAlarmBtn.addEventListener("click", stopAlarm);
 
 // Fetch alarms on page load
 window.addEventListener("load", fetchAlarms);

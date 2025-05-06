@@ -50,13 +50,19 @@
         <div class="column">
             <label for="sound-select" class="block mb-2 font-medium">Choose Alarm Sound:</label>
             <select id="sound-select" class="w-full border border-gray-300 rounded px-3 py-2">
-                <option value="default.mp3" selected>Default</option>
-                <option value="morning_birds.mp3">Morning Birds</option>
-                <option value="classic_alarm.mp3">Classic Alarm</option>
-                <option value="soft_chime.mp3">Soft Chime</option>
+                <option value="bells.mp3">Bells</option>
+                <option value="classic.mp3">Classic</option>
+                <option value="cuckoo.mp3">Cuckoo</option>
+                <option value="glow.mp3">Glow</option>
+                <option value="ringtone.mp3" selected>Default</option>
+                <option value="rooster.mp3">Morning Birds</option>
+                <option value="school.mp3">School</option>
+                <option value="twinkle.mp3">Twinkle</option>
+                <option value="windchimes.mp3">Wind Chimes</option>
             </select>
         </div>
         <button id="set-alarm-btn">Set Alarm</button>
+        <button id="stop-alarm-btn" class="hidden bg-red-600 text-white py-2 rounded hover:bg-red-700 transition mt-4">Stop Alarm</button>
 
         <!-- Alarm List -->
         <ul id="alarm-list" class="mt-4"></ul>
@@ -142,3 +148,4 @@
     </script>
   </body>
 </html>
+``` 
