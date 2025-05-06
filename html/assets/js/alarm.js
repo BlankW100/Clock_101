@@ -101,9 +101,9 @@ async function setAlarm() {
     try {
         const userDocRef = doc(db, "users", userId);
         const alarmCollectionRef = collection(userDocRef, "alarm");
-        await addDoc(alarmCollectionRef, alarmDoc);
+        const docRef = await addDoc(alarmCollectionRef, alarmDoc);
 
-        alarms.push(alarmDoc); // Add to local array
+        alarms.push({ id: docRef.id, ...alarmDoc }); // Add to local array with ID
         displayAlarms(); // Update UI
         alert("Alarm set successfully!");
     } catch (error) {
@@ -157,7 +157,7 @@ function displayAlarms() {
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
         deleteBtn.className = "delete-btn";
-        deleteBtn.addEventListener("click", () => deleteAlarm(alarm.id));
+        deleteBtn.addEventListener("click", () => deleteAlarm(alarm.id)); // Pass the correct alarm ID
 
         listItem.appendChild(deleteBtn);
         alarmList.appendChild(listItem);
