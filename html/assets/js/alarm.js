@@ -70,7 +70,6 @@ setInterval(() => {
                 ringtone.loop = true;
                 ringtone.play();
                 stopAlarmBtn.classList.remove("hidden"); // Show the stop button
-                alert(`Alarm ringing: ${alarm.time}`);
             }
         }
     });
