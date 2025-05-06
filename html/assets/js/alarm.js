@@ -17,29 +17,30 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const currentTime = document.querySelector("h1"),
-    selectMenu = document.querySelectorAll("select"),
+    hourSelect = document.getElementById("hour-select"),
+    minuteSelect = document.getElementById("minute-select"),
+    ampmSelect = document.getElementById("ampm-select"),
+    soundSelect = document.getElementById("sound-select"),
     setAlarmBtn = document.getElementById("set-alarm-btn"),
     alarmList = document.getElementById("alarm-list");
 
 let alarms = []; // Local array to store alarms
-let ringtone = new Audio("assets/Alarm files/ringtone.mp3");
 
 // Populate hour, minute, and AM/PM dropdowns
 for (let i = 12; i > 0; i--) {
     i = i < 10 ? `0${i}` : i;
     let option = `<option value="${i}">${i}</option>`;
-    selectMenu[0].firstElementChild.insertAdjacentHTML("afterend", option);
+    hourSelect.insertAdjacentHTML("beforeend", option);
 }
 for (let i = 59; i >= 0; i--) {
     i = i < 10 ? `0${i}` : i;
     let option = `<option value="${i}">${i}</option>`;
-    selectMenu[1].firstElementChild.insertAdjacentHTML("afterend", option);
+    minuteSelect.insertAdjacentHTML("beforeend", option);
 }
-for (let i = 2; i > 0; i--) {
-    let ampm = i == 1 ? "AM" : "PM";
+["AM", "PM"].forEach(ampm => {
     let option = `<option value="${ampm}">${ampm}</option>`;
-    selectMenu[2].firstElementChild.insertAdjacentHTML("afterend", option);
-}
+    ampmSelect.insertAdjacentHTML("beforeend", option);
+});
 
 // Update live time
 setInterval(() => {
@@ -57,11 +58,12 @@ setInterval(() => {
     h = h < 10 ? "0" + h : h;
     m = m < 10 ? "0" + m : m;
     s = s < 10 ? "0" + s : s;
-    currentTime.innerText = `${h}:${m}:${s} ${ampm}`;
+    currentTime.textContent = `${h}:${m}:${s} ${ampm}`;
 
     // Check if any alarm matches the current time
     alarms.forEach(alarm => {
         if (alarm.time === `${h}:${m} ${ampm}`) {
+            const ringtone = new Audio(`assets/Alarm files/${alarm.sound}`);
             ringtone.play();
             ringtone.loop = true;
             alert(`Alarm ringing: ${alarm.time}`);
@@ -71,7 +73,9 @@ setInterval(() => {
 
 // Set a new alarm
 async function setAlarm() {
-    let time = `${selectMenu[0].value}:${selectMenu[1].value} ${selectMenu[2].value}`;
+    let time = `${hourSelect.value}:${minuteSelect.value} ${ampmSelect.value}`;
+    let sound = soundSelect.value;
+
     if (time.includes("Hour") || time.includes("Minute") || time.includes("AM/PM")) {
         return alert("Please select a valid time to set Alarm!");
     }
@@ -85,6 +89,7 @@ async function setAlarm() {
 
     const alarmDoc = {
         time: time,
+        sound: sound,
         createdAt: new Date().toISOString()
     };
 
@@ -130,7 +135,7 @@ function displayAlarms() {
     alarmList.innerHTML = ""; // Clear the list
     alarms.forEach(alarm => {
         const listItem = document.createElement("li");
-        listItem.textContent = alarm.time;
+        listItem.textContent = `${alarm.time} - ${alarm.sound}`;
         listItem.className = "alarm-item";
 
         // Add delete button
