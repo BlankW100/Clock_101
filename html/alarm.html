@@ -32,20 +32,29 @@
         <h1 id="live-time" class="text-2xl font-semibold">00:00:00</h1> <!-- Live-time display -->
         <div class="content">
             <div class="column">
-                <select>
+                <select id="hour-select">
                     <option value="Hour" selected disabled hidden>Hour</option>
                 </select>
             </div>
             <div class="column">
-                <select>
+                <select id="minute-select">
                     <option value="Minute" selected disabled hidden>Minute</option>
                 </select>
             </div>
             <div class="column">
-                <select>
+                <select id="ampm-select">
                     <option value="AM/PM" selected disabled hidden>AM/PM</option>
                 </select>
             </div>
+        </div>
+        <div class="column">
+            <label for="sound-select" class="block mb-2 font-medium">Choose Alarm Sound:</label>
+            <select id="sound-select" class="w-full border border-gray-300 rounded px-3 py-2">
+                <option value="default.mp3" selected>Default</option>
+                <option value="morning_birds.mp3">Morning Birds</option>
+                <option value="classic_alarm.mp3">Classic Alarm</option>
+                <option value="soft_chime.mp3">Soft Chime</option>
+            </select>
         </div>
         <button id="set-alarm-btn">Set Alarm</button>
 
