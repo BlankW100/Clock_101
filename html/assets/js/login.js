@@ -31,39 +31,31 @@ form.addEventListener("submit", function (event) {
 
   console.log("Login attempt with email:", email); // Debugging log
 
-  signInWithEmailAndPassword(auth, email, password)
-<<<<<<< HEAD
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
+signInWithEmailAndPassword(auth, email, password)
+  .then(async (userCredential) => {
+    console.log("Login successful:", userCredential); // Debugging log
+
+    const ref = doc(db, "users", userCredential.user.uid);
+    const docSnap = await getDoc(ref);
+
+    if (docSnap.exists()) {
+      console.log("User document found:", docSnap.data()); // Debugging log
+
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: docSnap.data().email,
+          password: docSnap.data().password,
+        })
+      );
+      sessionStorage.setItem("userId", JSON.stringify(userCredential.user.uid));
       alert("Login successful!");
-      window.location.href = "index2.html"; // Redirect to index.html on successful login
-=======
-    .then(async (userCredential) => {
-      console.log("Login successful:", userCredential); // Debugging log
-
-      const ref = doc(db, "users", userCredential.user.uid);
-      const docSnap = await getDoc(ref);
-
-      if (docSnap.exists()) {
-        console.log("User document found:", docSnap.data()); // Debugging log
-
-        sessionStorage.setItem(
-          "user",
-          JSON.stringify({
-            email: docSnap.data().email,
-            password: docSnap.data().password,
-          })
-        );
-        sessionStorage.setItem("userId", JSON.stringify(userCredential.user.uid));
-        alert("Login successful!");
-        window.location.href = "index.html"; // Redirect to index.html on successful login
-      } else {
-        console.error("No user document found in Firestore."); // Debugging log
-        alert("No user document found in Firestore.");
-      }
->>>>>>> origin/main
-    })
+      window.location.href = "index.html"; // Redirect to index.html on successful login
+    } else {
+      console.error("No user document found in Firestore."); // Debugging log
+      alert("No user document found in Firestore.");
+    }
+  })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
