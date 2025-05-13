@@ -57,12 +57,14 @@ const checkCredentials = () => {
 };
 
 // Sign out function
-const signoutLink = document.getElementById("signout-link");
-signoutLink.addEventListener("click", () => {
+const signout = () => {
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("user");
     window.location.href = "login.html";
-});
+};
+
+// Add event listeners
+document.getElementById("signout-link").addEventListener("click", signout);
 
 // Call functions on page load
 window.addEventListener("load", () => {
@@ -101,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateConversion();
 });
 
-// Elements
+// Elements for time conversion
 const baseCitySelect = document.getElementById("base-city");
 const targetCitySelect = document.getElementById("target-city");
 const baseTimeElement = document.getElementById("base-time");
