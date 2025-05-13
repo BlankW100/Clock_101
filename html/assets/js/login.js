@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; // Correct import
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,7 +22,7 @@ const db = getFirestore(app); // Initialize Firestore
 
 // Login form submission
 const form = document.querySelector(".auth-form");
-form.addEventListener("submit", function (event) {
+form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
   // Inputs
@@ -31,48 +31,42 @@ form.addEventListener("submit", function (event) {
 
   console.log("Login attempt with email:", email); // Debugging log
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(async (userCredential) => {
-      console.log("Login successful:", userCredential); // Debugging log
+  try {
+    // Sign in the user with Firebase Authentication
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userId = userCredential.user.uid;
 
-      const ref = doc(db, "users", userCredential.user.uid);
-      const docSnap = await getDoc(ref);
+    // Store the user ID in sessionStorage for the session
+    sessionStorage.setItem("userId", userId);
 
-      if (docSnap.exists()) {
-        console.log("User document found:", docSnap.data()); // Debugging log
+    // Retrieve the user's document from Firestore
+    const ref = doc(db, "users", userId);
+    const docSnap = await getDoc(ref);
 
-        sessionStorage.setItem(
-          "user",
-          JSON.stringify({
-            email: docSnap.data().email,
-            password: docSnap.data().password,
-          })
-        );
-        sessionStorage.setItem("userId", JSON.stringify(userCredential.user.uid));
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      const hashedPassword = userData.password; // Retrieve the hashed password from Firestore
+
+      // Compare the plain text password with the hashed password
+      const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+
+      if (isPasswordValid) {
+        // Store additional user data in sessionStorage if needed
+        sessionStorage.setItem("username", userData.username);
+        sessionStorage.setItem("email", userData.email);
+
         alert("Login successful!");
-        window.location.href = "index.html"; // Redirect to index.html on successful login
+        window.location.href = "index.html"; // Redirect to the homepage
       } else {
-        console.error("No user document found in Firestore."); // Debugging log
-        alert("No user document found in Firestore.");
+        alert("Invalid password. Please try again.");
       }
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-
-      console.error("Login error:", errorCode, errorMessage); // Debugging log
-
-      // Friendly error messages
-      if (errorCode === "auth/user-not-found") {
-        alert("No user found with this email. Please sign up first.");
-      } else if (errorCode === "auth/wrong-password") {
-        alert("Incorrect password. Please try again.");
-      } else if (errorCode === "auth/invalid-email") {
-        alert("Invalid email format. Please enter a valid email.");
-      } else {
-        alert(`Error: ${errorMessage}`);
-      }
-    });
+    } else {
+      alert("No user document found in Firestore.");
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    alert(`Error: ${error.message}`);
+  }
 });
 
 // Forgot Password feature
