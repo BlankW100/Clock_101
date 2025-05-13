@@ -238,3 +238,8 @@ footer {
   color: white;
   margin-top: 2rem;
 }
+
+/* Dark mode styles for <h3> elements */
+.darkmode h3 {
+  color: var(--text-color); /* Use the text color defined for dark mode */
+}
