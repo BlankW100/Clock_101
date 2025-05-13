@@ -8,8 +8,6 @@
   --secondary-text: #232738;
   --primary-color: #3a435d;
   --accent-color: #0071ff;
-  --card-bg: #f9f9f9;
-  --card-text: #555;
 }
 
 .darkmode {
@@ -19,8 +17,6 @@
   --secondary-text: #a4a5b8;
   --primary-color: #3a435d;
   --accent-color: #0071ff;
-  --card-bg: #1f2937;
-  --card-text: #d1d5db;
 }
 
 /* Global Styles */
@@ -37,7 +33,7 @@ body {
   min-height: 100vh;
   background-color: var(--base-color);
   color: var(--text-color);
-  padding-top: 60px;
+  padding-top: 60px; /* Prevent content from being hidden behind fixed header */
   margin: 0;
 }
 
@@ -108,7 +104,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #1a202c;
+  background-color: #1a202c; /* Dark background */
   color: white;
   padding: 0.75rem 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -118,13 +114,6 @@ button {
   width: 100%;
   z-index: 1000;
   box-sizing: border-box;
-  position: relative;
-}
-
-.nav-left, .welcome-message {
-  flex: 1;
-  display: flex;
-  align-items: center;
 }
 
 .header-title {
@@ -132,10 +121,8 @@ button {
   margin: 0;
   cursor: pointer;
   user-select: none;
-  color: white;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  text-align: center;
+  flex: 1; /* Center the title */
 }
 
 /* Navigation Menu */
@@ -144,6 +131,7 @@ button {
   display: flex;
   margin: 0;
   padding: 0;
+  flex: 1; /* Align buttons to the left */
 }
 
 .nav-menu li {
@@ -162,7 +150,7 @@ button {
 
 .nav-button:hover,
 .nav-button:focus {
-  color: #63b3ed;
+  color: #63b3ed; /* Light blue */
   outline: none;
 }
 
@@ -171,7 +159,8 @@ button {
   font-size: 16px;
   color: white;
   font-weight: 500;
-  justify-content: flex-end;
+  text-align: right;
+  flex: 1; /* Align to the right */
 }
 
 /* Main Content */
@@ -192,7 +181,7 @@ main {
 
 .hero p {
   font-size: 1.2rem;
-  color: var(--card-text);
+  color: #555;
 }
 
 /* Features Section */
@@ -204,7 +193,7 @@ main {
 }
 
 .feature-card {
-  background: var(--card-bg);
+  background: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 1rem;
@@ -226,7 +215,7 @@ main {
 
 .feature-card p {
   font-size: 1rem;
-  color: var(--card-text);
+  color: #555;
 }
 
 .feature-link {
