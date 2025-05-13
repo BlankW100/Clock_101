@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="assets/css/alarm.css">
     <link rel="stylesheet" href="assets/css/navbar.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="assets/js/fetch-username.js" defer></script>
     <style>
       /* Navigation Bar Styling */
       nav {
@@ -62,7 +63,7 @@
 
     <div class="wrapper">
       <img src="assets/Alarm files/clock.svg" alt="clock">
-      <h1>00:00:00 PM</h1>
+      <h1 id="live-time">00:00:00 PM</h1>
       <div class="content">
         <div class="column">
           <select>
@@ -96,8 +97,6 @@
       }, 1000);
     </script>
 
-
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -121,7 +120,7 @@
         const fetchUsername = async () => {
             const userId = sessionStorage.getItem('userId');
             if (userId) {
-                const userDoc = doc(db, "users", JSON.parse(userId));
+                const userDoc = doc(db, "users", userId);
                 const userSnapshot = await getDoc(userDoc);
                 if (userSnapshot.exists()) {
                     const username = userSnapshot.data().username || "Guest";
