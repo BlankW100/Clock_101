@@ -113,11 +113,11 @@ const convertedDateElement = document.getElementById("converted-date");
 
 // Update live base time
 setInterval(() => {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-    const date = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    const now = moment();
+    const hours = now.format("HH");
+    const minutes = now.format("mm");
+    const seconds = now.format("ss");
+    const date = now.format("MMMM D, YYYY");
 
     baseTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
     baseDateElement.textContent = date;
@@ -130,20 +130,11 @@ function updateConvertedTime() {
     const baseCity = baseCitySelect.value;
     const targetCity = targetCitySelect.value;
 
-    const now = new Date();
-    const baseOffset = new Date().toLocaleString("en-US", { timeZone: baseCity });
-    const targetOffset = new Date().toLocaleString("en-US", { timeZone: targetCity });
+    const now = moment.tz(baseCity);
+    const converted = now.clone().tz(targetCity);
 
-    const baseTime = new Date(baseOffset);
-    const targetTime = new Date(targetOffset);
-
-    const hours = String(targetTime.getHours()).padStart(2, "0");
-    const minutes = String(targetTime.getMinutes()).padStart(2, "0");
-    const seconds = String(targetTime.getSeconds()).padStart(2, "0");
-    const date = targetTime.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-
-    convertedTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
-    convertedDateElement.textContent = date;
+    convertedTimeElement.textContent = converted.format("HH:mm:ss");
+    convertedDateElement.textContent = converted.format("MMMM D, YYYY");
 }
 
 // Event listeners for dropdown changes
