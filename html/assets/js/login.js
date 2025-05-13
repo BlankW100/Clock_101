@@ -79,29 +79,5 @@ form.addEventListener("submit", function (event) {
 const forgotPasswordLink = document.getElementById("forgot-password");
 forgotPasswordLink.addEventListener("click", function (event) {
   event.preventDefault();
-
-  const email = prompt("Please enter your email to reset your password:");
-  console.log("Password reset requested for email:", email); // Debugging log
-
-  if (email) {
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        console.log("Password reset email sent."); // Debugging log
-        alert("Password reset email sent! Please check your inbox.");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-
-        console.error("Password reset error:", errorCode, errorMessage); // Debugging log
-
-        if (errorCode === "auth/user-not-found") {
-          alert("No user found with this email.");
-        } else if (errorCode === "auth/invalid-email") {
-          alert("Invalid email format. Please enter a valid email.");
-        } else {
-          alert(`Error: ${errorMessage}`);
-        }
-      });
-  }
+  window.location.href = "forgot-password.html"; // Redirect to forgot-password.html
 });
