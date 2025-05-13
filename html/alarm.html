@@ -2,71 +2,86 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Alarm clock</title>
+    <title>Alarm clock in JavaScript</title>
 
     <link rel="stylesheet" href="assets/css/alarm.css">
     <link rel="stylesheet" href="assets/css/navbar.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="assets/js/fetch-username.js" defer></script>
+    <style>
+      /* Navigation Bar Styling */
+      nav {
+        background-color: #333;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        padding: 10px 0;
+      }
+      nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+      }
+      nav ul li {
+        margin: 0 15px;
+      }
+      nav ul li a {
+        text-decoration: none;
+        color: white;
+        font-size: 16px;
+        padding: 8px 16px;
+        transition: background-color 0.3s;
+      }
+      nav ul li a:hover {
+        background-color: #575757;
+        border-radius: 4px;
+      }
+
+      /* Live Time Styling */
+      .live-time {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        margin: 20px 0;
+      }
+    </style>
   </head>
   <body>
     <header>
-        <nav class="nav-bar">
-            <!-- Left-aligned buttons -->
-            <ul class="nav-menu">
-                <li><button class="nav-button" onclick="window.location.href='converter.html'">Time Converter</button></li>
-                <li><button class="nav-button" onclick="window.location.href='calculator.html'">Date Calculator</button></li>
-                <li><button class="nav-button" onclick="window.location.href='alarm.html'">Alarm</button></li>
-                <li><button id="signout-link" class="nav-button">Logout</button></li>
+        <h1>Clock 101</h1>
+        <nav>
+            <ul>
+                <li><a href="converter.html">Time Converter</a></li>
+                <li><a href="calculator.html">Date Calculator</a></li>
+                <li><a href="alarm.html">Alarm</a></li>
+                <li><a href="account/login.html">Login</a></li>
+                <li><a href="account/signup.html">Sign Up</a></li>
             </ul>
-
-            <!-- Centered title -->
-            <h2 class="header-title" onclick="window.location.href='index.html'">Clock 101</h2>
-
-            <!-- Right-aligned welcome message -->
-            <div class="welcome-message" id="welcome-message">Welcome, <span id="username">Loading...</span></div>
         </nav>
     </header>
 
     <div class="wrapper">
-        <img src="assets/Alarm files/clock.svg" alt="clock">
-        <h1 id="live-time" class="text-2xl font-semibold">00:00:00</h1> <!-- Live-time display -->
-        <div class="content">
-            <div class="column">
-                <select id="hour-select">
-                    <option value="Hour" selected disabled hidden>Hour</option>
-                </select>
-            </div>
-            <div class="column">
-                <select id="minute-select">
-                    <option value="Minute" selected disabled hidden>Minute</option>
-                </select>
-            </div>
-            <div class="column">
-                <select id="ampm-select">
-                    <option value="AM/PM" selected disabled hidden>AM/PM</option>
-                </select>
-            </div>
+      <img src="assets/Alarm files/clock.svg" alt="clock">
+      <h1 id="live-time">00:00:00 PM</h1>
+      <div class="content">
+        <div class="column">
+          <select>
+            <option value="Hour" selected disabled hidden>Hour</option>
+          </select>
         </div>
         <div class="column">
-            <label for="sound-select" class="block mb-2 font-medium">Choose Alarm Sound:</label>
-            <select id="sound-select" class="w-full border border-gray-300 rounded px-3 py-2">
-                <option value="bells.mp3">Bells</option>
-                <option value="classic.mp3">Classic</option>
-                <option value="cuckoo.mp3">Cuckoo</option>
-                <option value="glow.mp3">Glow</option>
-                <option value="ringtone.mp3" selected>Default</option>
-                <option value="rooster.mp3">Morning Birds</option>
-                <option value="school.mp3">School</option>
-                <option value="twinkle.mp3">Twinkle</option>
-                <option value="windchimes.mp3">Wind Chimes</option>
-            </select>
+          <select>
+            <option value="Minute" selected disabled hidden>Minute</option>
+          </select>
         </div>
-        <button id="set-alarm-btn">Set Alarm</button>
-        <button id="stop-alarm-btn" class="hidden bg-red-600 text-white py-2 rounded hover:bg-red-700 transition mt-4">Stop Alarm</button>
-
-        <!-- Alarm List -->
-        <ul id="alarm-list" class="mt-4"></ul>
+        <div class="column">
+          <select>
+            <option value="AM/PM" selected disabled hidden>AM/PM</option>
+          </select>
+        </div>
+      </div>
+      <button>Set Alarm</button>
     </div>
     <script src="assets/js/alarm.js" type="module"></script>
     <script>
@@ -81,8 +96,6 @@
           liveTimeElement.textContent = `${hours}:${minutes}:${seconds} ${ampm}`; // Use textContent for smoother updates
       }, 1000);
     </script>
-
-
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -107,7 +120,7 @@
         const fetchUsername = async () => {
             const userId = sessionStorage.getItem('userId');
             if (userId) {
-                const userDoc = doc(db, "users", JSON.parse(userId));
+                const userDoc = doc(db, "users", userId);
                 const userSnapshot = await getDoc(userDoc);
                 if (userSnapshot.exists()) {
                     const username = userSnapshot.data().username || "Guest";
