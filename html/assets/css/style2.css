@@ -239,7 +239,9 @@ footer {
   margin-top: 2rem;
 }
 
-/* Dark mode styles for <h3> elements */
-.darkmode h3 {
-  color: #ffffff; /* Use the text color defined for dark mode */
+/* Dark mode styles for headings and paragraphs */
+.darkmode h2,
+.darkmode h3,
+.darkmode p {
+  color: var(--text-color); /* Use the text color defined for dark mode */
 }
