@@ -51,6 +51,13 @@ p {
   color: var(--secondary-text);
 }
 
+h1, h2, h3, h4, h5, h6 {
+  margin: 10px 0 20px 0;
+  color: var(--secondary-text);
+}
+  
+}
+
 /* Buttons */
 button {
   border: none;
@@ -239,9 +246,3 @@ footer {
   margin-top: 2rem;
 }
 
-/* Dark mode styles for headings and paragraphs */
-.darkmode h2,
-.darkmode h3,
-.darkmode p {
-  color: var(--text-color); /* Use the text color defined for dark mode */
-}
