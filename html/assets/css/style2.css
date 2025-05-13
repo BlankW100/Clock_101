@@ -241,5 +241,5 @@ footer {
 
 /* Dark mode styles for <h3> elements */
 .darkmode h3 {
-  color: var(--text-color); /* Use the text color defined for dark mode */
+  color: #ffffff; /* Use the text color defined for dark mode */
 }
