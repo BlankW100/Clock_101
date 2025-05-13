@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import bcrypt from "bcryptjs"; // Import bcryptjs
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -48,7 +49,7 @@ form.addEventListener("submit", async function (event) {
       const hashedPassword = userData.password; // Retrieve the hashed password from Firestore
 
       // Compare the plain text password with the hashed password
-      const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+      const isPasswordValid = bcrypt.compareSync(password, hashedPassword);
 
       if (isPasswordValid) {
         // Store additional user data in sessionStorage if needed

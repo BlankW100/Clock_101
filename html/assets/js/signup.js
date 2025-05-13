@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import bcrypt from "bcryptjs"; // Import bcryptjs
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -31,8 +32,8 @@ form.addEventListener("submit", async function (event) {
   const password = document.getElementById("password").value;
 
   try {
-    // Hash the password using bcrypt.js
-    const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+    // Hash the password using bcryptjs
+    const hashedPassword = bcrypt.hashSync(password, 10); // 10 is the salt rounds
 
     // Create user in Firebase Authentication
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
