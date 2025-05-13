@@ -72,37 +72,6 @@ window.addEventListener("load", () => {
     fetchUsername();
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const baseSelect = document.getElementById('base-timezone');
-    const targetSelect = document.getElementById('target-timezone');
-    const resultDiv = document.getElementById('conversion-result');
-    
-    // Initialize dropdowns
-    populateTimezoneSelect(baseSelect, dayjs.tz.guess());
-    populateTimezoneSelect(targetSelect, 'Europe/London');
-    
-    // Set up event listeners
-    baseSelect.addEventListener('change', updateConversion);
-    targetSelect.addEventListener('change', updateConversion);
-    
-    function updateConversion() {
-      const fromTz = baseSelect.value;
-      const toTz = targetSelect.value;
-      const now = new Date();
-      
-      const convertedTime = convertTimeBetweenTimezones(now, fromTz, toTz);
-      
-      resultDiv.innerHTML = `
-        <h3>${formatDateForTimezone(convertedTime, toTz)}</h3>
-        <p class="time">${formatTimeForTimezone(convertedTime, toTz)}</p>
-        <p class="timezone">${targetSelect.options[targetSelect.selectedIndex].text}</p>
-      `;
-    }
-    
-    // Initial conversion
-    updateConversion();
-});
-
 // Elements for time conversion
 const baseCitySelect = document.getElementById("base-city");
 const targetCitySelect = document.getElementById("target-city");
@@ -110,6 +79,29 @@ const baseTimeElement = document.getElementById("base-time");
 const baseDateElement = document.getElementById("base-date");
 const convertedTimeElement = document.getElementById("converted-time");
 const convertedDateElement = document.getElementById("converted-date");
+
+// Populate dropdowns with timezones
+const populateTimezoneSelect = (selectElement, defaultTimezone) => {
+    const timezones = moment.tz.names();
+    timezones.forEach((tz) => {
+        const option = document.createElement("option");
+        option.value = tz;
+        option.textContent = tz;
+        if (tz === defaultTimezone) {
+            option.selected = true;
+        }
+        selectElement.appendChild(option);
+    });
+};
+
+// Initialize dropdowns
+document.addEventListener("DOMContentLoaded", () => {
+    populateTimezoneSelect(baseCitySelect, moment.tz.guess());
+    populateTimezoneSelect(targetCitySelect, "UTC");
+
+    // Update the converted time initially
+    updateConvertedTime();
+});
 
 // Update live base time
 setInterval(() => {
@@ -126,7 +118,7 @@ setInterval(() => {
 }, 1000);
 
 // Update converted time
-function updateConvertedTime() {
+const updateConvertedTime = () => {
     const baseCity = baseCitySelect.value;
     const targetCity = targetCitySelect.value;
 
@@ -135,7 +127,7 @@ function updateConvertedTime() {
 
     convertedTimeElement.textContent = converted.format("HH:mm:ss");
     convertedDateElement.textContent = converted.format("MMMM D, YYYY");
-}
+};
 
 // Event listeners for dropdown changes
 baseCitySelect.addEventListener("change", updateConvertedTime);
