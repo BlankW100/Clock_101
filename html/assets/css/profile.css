@@ -3,6 +3,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f4f4f9;
+  padding-top: 60px; /* Adjust this value based on the height of the navbar */
 }
 
 header {
@@ -10,6 +11,14 @@ header {
   color: white;
   padding: 10px 0;
   text-align: center;
+}
+
+header nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 header nav ul {
