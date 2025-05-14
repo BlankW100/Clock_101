@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="assets/css/navbar.css">
   <link rel="stylesheet" href="assets/css/profile.css">
   <script type="module" src="assets/js/profile.js" defer></script>
-  
 </head>
 
 <body>
@@ -20,7 +19,6 @@
         <li><a href="converter.html">Time Converter</a></li>
         <li><a href="calculator.html">Date Calculator</a></li>
         <li><a href="alarm.html">Alarm</a></li>
-        <li><button id="signout-link">Logout</button></li>
       </ul>
     </nav>
   </header>
@@ -50,6 +48,11 @@
       <div class="input-group">
         <button id="change-password-button" class="change-password-button">Change Password</button>
       </div>
+
+      <!-- Logout Button -->
+      <div class="input-group">
+        <button id="logout-button" class="logout-button">Logout</button>
+      </div>
     </section>
   </main>
 
@@ -62,6 +65,16 @@
     document.getElementById("change-password-button").addEventListener("click", (event) => {
       event.preventDefault();
       window.location.href = "forgot-password.html";
+    });
+
+    // Logout confirmation popup
+    document.getElementById("logout-button").addEventListener("click", (event) => {
+      event.preventDefault();
+      const confirmLogout = confirm("Are you sure you want to log out?");
+      if (confirmLogout) {
+        sessionStorage.removeItem("userId");
+        window.location.href = "login.html";
+      }
     });
   </script>
 </body>
