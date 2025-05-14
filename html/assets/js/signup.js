@@ -31,6 +31,11 @@ form.addEventListener("submit", async function (event) {
   const password = document.getElementById("password").value;
 
   try {
+    // Check if bcrypt.js is loaded
+    if (typeof window.bcrypt === "undefined") {
+      throw new Error("bcrypt.js is not loaded. Ensure the script is included in your HTML.");
+    }
+
     // Hash the password using bcrypt.js
     const hashedPassword = window.bcrypt.hashSync(password, 10); // 10 is the salt rounds
 
