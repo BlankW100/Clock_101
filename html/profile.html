@@ -43,12 +43,25 @@
 
         <button type="submit">Save Changes</button>
       </form>
+
+      <!-- Change Password Button -->
+      <div class="input-group">
+        <button id="change-password-button" class="change-password-button">Change Password</button>
+      </div>
     </section>
   </main>
 
   <footer>
     <p>&copy; Clock 101. All rights reserved.</p>
   </footer>
+
+  <script>
+    // Redirect to forgot-password.html when "Change Password" is clicked
+    document.getElementById("change-password-button").addEventListener("click", (event) => {
+      event.preventDefault();
+      window.location.href = "forgot-password.html";
+    });
+  </script>
 </body>
 
 </html>
