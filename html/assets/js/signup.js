@@ -31,17 +31,21 @@ form.addEventListener("submit", async function (event) {
   const password = document.getElementById("password").value;
 
   try {
+    // Hash the password using bcrypt.js
+    const hashedPassword = window.bcrypt.hashSync(password, 10); // 10 is the salt rounds
+
     // Create user in Firebase Authentication
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const userId = userCredential.user.uid;
 
     console.log("Creating Firestore document for userId:", userId); // Debugging log
 
-    // Save user data in Firestore
+    // Save user data (with hashed password) in Firestore
     const ref = doc(db, "users", userId); // Reference to Firestore document
     await setDoc(ref, {
       email: email,
       username: username, // Save the username in Firestore
+      password: hashedPassword, // Save the hashed password
     });
 
     // Signed up
