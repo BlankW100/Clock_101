@@ -33,13 +33,11 @@ const fetchUserPreferences = async () => {
 
     if (userSnapshot.exists()) {
       const userData = userSnapshot.data();
-      document.getElementById("username").value = userData.username || "";
       document.getElementById("timezone-search").value = userData.timezone || "";
-      // Placeholder for light/dark mode (future feature)
       document.getElementById("theme-mode").value = userData.themeMode || "light";
     } else {
       console.error("No such user document! Creating a new one...");
-      await setDoc(userDoc, { username: "", timezone: "", themeMode: "light" }); // Default values
+      await setDoc(userDoc, { timezone: "", themeMode: "light" }); // Default values
     }
   } catch (error) {
     console.error("Error fetching user preferences:", error);
@@ -51,9 +49,8 @@ const updateUserPreferences = async (event) => {
   event.preventDefault();
 
   const userId = sessionStorage.getItem("userId");
-  const username = document.getElementById("username").value;
   const timezone = document.getElementById("timezone-search").value;
-  const themeMode = document.getElementById("theme-mode").value; // Placeholder for light/dark mode
+  const themeMode = document.getElementById("theme-mode").value;
 
   if (!userId) {
     console.error("No userId found in sessionStorage!");
@@ -64,9 +61,8 @@ const updateUserPreferences = async (event) => {
   try {
     const userDoc = doc(db, "users", userId);
     await updateDoc(userDoc, {
-      username: username,
       timezone: timezone,
-      themeMode: themeMode, // Save light/dark mode preference
+      themeMode: themeMode,
     });
 
     alert("Preferences updated successfully!");
