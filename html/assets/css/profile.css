@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f4f4f9;
-  padding-top: 60px; /* Adjust this value if needed */
+  padding-top: 0; /* Adjust this value if needed */
 }
 
 header {
@@ -14,7 +14,7 @@ header {
 }
 
 header nav {
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
