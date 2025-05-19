@@ -11,8 +11,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: 'no-reply@yourdomain.com',  // your outlook no-reply email
-    pass: 'your_app_password',        // use App Password or actual password if allowed
+    user: 'weier0816@gmail.com',  // your outlook no-reply email
+    pass: 'iofnrhyqxebkwgex',        // use App Password or actual password if allowed
   },
 });
 
@@ -22,7 +22,7 @@ exports.sendAlarmEmail = functions.https.onCall(async (data, context) => {
   const message = data.message;
 
   const mailOptions = {
-    from: '"Clock 101" <no-reply@yourdomain.com>',
+    from: '"Clock 101" <weier0816@gmail.com>',
     to: email,
     subject: subject,
     text: message,
