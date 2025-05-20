@@ -24,3 +24,16 @@ input, button {
     font-size: 1.2em;
     color: #333;
 }
+
+.event-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 10px 0;
+    padding: 10px;
+    background: #fafafa;
+}
+
+.event-countdown {
+    font-size: 1.1em;
+    color: #007bff;
+}

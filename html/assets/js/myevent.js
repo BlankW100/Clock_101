@@ -1,5 +1,5 @@
 import { db } from "./firebase-init.js";
-import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+import { ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
 function saveEvent() {
     const eventName = document.getElementById("eventName").value;
@@ -7,45 +7,70 @@ function saveEvent() {
 
     if (!eventName || !eventDate) return alert("Please enter both fields!");
 
-    set(ref(db, "events/" + eventName), {
+    // Use push to generate a unique key for each event
+    push(ref(db, "events"), {
         name: eventName,
         date: eventDate
     });
 
     alert("Event Saved!");
-    startCountdown(eventDate);
+    document.getElementById("eventName").value = "";
+    document.getElementById("eventDate").value = "";
 }
 
-function startCountdown(eventDate) {
-    const countdownDiv = document.getElementById("countdown");
+// Helper to format countdown
+function getCountdownString(eventDate) {
+    const now = new Date().getTime();
+    const eventTime = new Date(eventDate).getTime();
+    const timeLeft = eventTime - now;
 
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const eventTime = new Date(eventDate).getTime();
-        const timeLeft = eventTime - now;
-
-        if (timeLeft <= 0) {
-            countdownDiv.innerHTML = `<h2>Event has started!</h2>`;
-            return;
-        }
-
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % 1000) / 1000);
-
-        countdownDiv.innerHTML = `<h2>${days}d ${hours}h ${minutes}m ${seconds}s</h2>`;
+    if (timeLeft <= 0) {
+        return "Event has started!";
     }
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeLeft % (1000 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeLeft % 1000) / 1000);
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
-onValue(ref(db, "events"), (snapshot) => {
-    snapshot.forEach((childSnapshot) => {
-        const eventData = childSnapshot.val();
-        startCountdown(eventData.date);
+// Render all events and their countdowns
+function renderEvents(events) {
+    const eventsList = document.getElementById("events-list");
+    eventsList.innerHTML = "";
+
+    events.forEach(event => {
+        const eventDiv = document.createElement("div");
+        eventDiv.className = "event-item";
+        eventDiv.innerHTML = `
+            <h3>${event.name}</h3>
+            <div class="event-countdown" data-date="${event.date}"></div>
+        `;
+        eventsList.appendChild(eventDiv);
     });
+
+    // Start countdowns for all events
+    updateAllCountdowns();
+    setInterval(updateAllCountdowns, 1000);
+}
+
+function updateAllCountdowns() {
+    const countdownDivs = document.querySelectorAll(".event-countdown");
+    countdownDivs.forEach(div => {
+        const date = div.getAttribute("data-date");
+        div.textContent = getCountdownString(date);
+    });
+}
+
+// Listen for changes in the events list
+onValue(ref(db, "events"), (snapshot) => {
+    const events = [];
+    snapshot.forEach(childSnapshot => {
+        events.push(childSnapshot.val());
+    });
+    renderEvents(events);
 });
 
 window.saveEvent = saveEvent;
