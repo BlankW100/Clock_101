@@ -10,56 +10,38 @@ showUserTimezone();
 
 // SVG map setup
 const svg = document.getElementById('timezone-map');
-const width = 1000; // SVG viewBox width
-const height = 500; // SVG viewBox height
+const width = 1000;
+const height = 500;
 svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-// ==== CALIBRATION SECTION ====
-// These values may need to be tweaked for your SVG background.
-// They define the actual map area (not the whitespace).
-const mapLeft = 60;    // px from left edge to where the map drawing starts
-const mapTop = 40;     // px from top edge to where the map drawing starts
-const mapWidth = 880;  // width of the actual map drawing
-const mapHeight = 420; // height of the actual map drawing
-
-function lon2x(lon) {
-    return mapLeft + ((lon + 180) / 360) * mapWidth;
-}
-function lat2y(lat) {
-    // Clamp latitude to avoid infinity at the poles
-    const maxLat = 85.05112878;
-    lat = Math.max(Math.min(lat, maxLat), -maxLat);
-    const latRad = lat * Math.PI / 180;
-    return mapTop + (0.5 - Math.log(Math.tan(Math.PI / 4 + latRad / 2)) / (2 * Math.PI)) * mapHeight;
-}
-
-// City data (from moment-timezone map)
+// Manually calibrated city positions (x, y in SVG pixels)
 const cities = [
-    { name: "New York", tz: "America/New_York", lat: 40.71427, lon: -74.00597, x: lon2x(-74.00597), y: lat2y(40.71427) },
-    { name: "London", tz: "Europe/London", lat: 51.50853, lon: -0.12574, x: lon2x(-0.12574), y: lat2y(51.50853) },
-    { name: "Tokyo", tz: "Asia/Tokyo", lat: 35.6895, lon: 139.69171, x: lon2x(139.69171), y: lat2y(35.6895) },
-    { name: "Sydney", tz: "Australia/Sydney", lat: -33.86785, lon: 151.20732, x: lon2x(151.20732), y: lat2y(-33.86785) },
-    { name: "Los Angeles", tz: "America/Los_Angeles", lat: 34.05223, lon: -118.24368, x: lon2x(-118.24368), y: lat2y(34.05223) },
-    { name: "Paris", tz: "Europe/Paris", lat: 48.85341, lon: 2.3488, x: lon2x(2.3488), y: lat2y(48.85341) },
-    { name: "Dubai", tz: "Asia/Dubai", lat: 25.25817, lon: 55.30472, x: lon2x(55.30472), y: lat2y(25.25817) },
-    { name: "Shanghai", tz: "Asia/Shanghai", lat: 31.22222, lon: 121.45806, x: lon2x(121.45806), y: lat2y(31.22222) },
-    { name: "Moscow", tz: "Europe/Moscow", lat: 55.75222, lon: 37.61556, x: lon2x(37.61556), y: lat2y(55.75222) },
-    { name: "Rio", tz: "America/Sao_Paulo", lat: -22.90278, lon: -43.2075, x: lon2x(-43.2075), y: lat2y(-22.90278) },
-    { name: "Cape Town", tz: "Africa/Johannesburg", lat: -33.92584, lon: 18.42322, x: lon2x(18.42322), y: lat2y(-33.92584) },
-    { name: "Delhi", tz: "Asia/Kolkata", lat: 28.65195, lon: 77.23149, x: lon2x(77.23149), y: lat2y(28.65195) },
-    { name: "Auckland", tz: "Pacific/Auckland", lat: -36.86667, lon: 174.76667, x: lon2x(174.76667), y: lat2y(-36.86667) },
-    { name: "Anchorage", tz: "America/Anchorage", lat: 61.21806, lon: -149.90028, x: lon2x(-149.90028), y: lat2y(61.21806) },
-    { name: "Honolulu", tz: "Pacific/Honolulu", lat: 21.30694, lon: -157.85833, x: lon2x(-157.85833), y: lat2y(21.30694) },
-    { name: "Cairo", tz: "Africa/Cairo", lat: 30.06263, lon: 31.24967, x: lon2x(31.24967), y: lat2y(30.06263) },
-    { name: "Beijing", tz: "Asia/Shanghai", lat: 39.9075, lon: 116.39723, x: lon2x(116.39723), y: lat2y(39.9075) },
-    { name: "Singapore", tz: "Asia/Singapore", lat: 1.28967, lon: 103.85007, x: lon2x(103.85007), y: lat2y(1.28967) },
-    { name: "Berlin", tz: "Europe/Berlin", lat: 52.52437, lon: 13.41053, x: lon2x(13.41053), y: lat2y(52.52437) },
-    { name: "Mexico City", tz: "America/Mexico_City", lat: 19.42847, lon: -99.12766, x: lon2x(-99.12766), y: lat2y(19.42847) }
+    // x, y values are visually estimated for your SVG map
+    { name: "New York",      tz: "America/New_York",      x: 355, y: 170 },
+    { name: "London",        tz: "Europe/London",         x: 495, y: 120 },
+    { name: "Tokyo",         tz: "Asia/Tokyo",            x: 845, y: 185 },
+    { name: "Sydney",        tz: "Australia/Sydney",      x: 930, y: 340 },
+    { name: "Los Angeles",   tz: "America/Los_Angeles",   x: 185, y: 190 },
+    { name: "Paris",         tz: "Europe/Paris",          x: 515, y: 135 },
+    { name: "Dubai",         tz: "Asia/Dubai",            x: 630, y: 185 },
+    { name: "Shanghai",      tz: "Asia/Shanghai",         x: 800, y: 185 },
+    { name: "Moscow",        tz: "Europe/Moscow",         x: 620, y: 110 },
+    { name: "Rio",           tz: "America/Sao_Paulo",     x: 410, y: 340 },
+    { name: "Cape Town",     tz: "Africa/Johannesburg",   x: 570, y: 390 },
+    { name: "Delhi",         tz: "Asia/Kolkata",          x: 720, y: 180 },
+    { name: "Auckland",      tz: "Pacific/Auckland",      x: 990, y: 410 },
+    { name: "Anchorage",     tz: "America/Anchorage",     x: 90,  y: 80  },
+    { name: "Honolulu",      tz: "Pacific/Honolulu",      x: 120, y: 260 },
+    { name: "Cairo",         tz: "Africa/Cairo",          x: 570, y: 190 },
+    { name: "Beijing",       tz: "Asia/Shanghai",         x: 780, y: 160 },
+    { name: "Singapore",     tz: "Asia/Singapore",        x: 800, y: 270 },
+    { name: "Berlin",        tz: "Europe/Berlin",         x: 540, y: 120 },
+    { name: "Mexico City",   tz: "America/Mexico_City",   x: 250, y: 230 }
 ];
 
-// Draw dots and labels for each city using recalculated x/y
+// Draw dots and labels for each city using manual x/y
 const labelPositions = [];
 cities.forEach(city => {
     let dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
