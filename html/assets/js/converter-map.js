@@ -10,8 +10,8 @@ showUserTimezone();
 
 // SVG map setup
 const svg = document.getElementById('timezone-map');
-const width = 1000; // Match your SVG viewBox width
-const height = 500; // Match your SVG viewBox height
+const width = 564.444; // Match your SVG viewBox width
+const height = 241.653 ; // Match your SVG viewBox height
 svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 
