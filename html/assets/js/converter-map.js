@@ -16,38 +16,40 @@ svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 svg.setAttribute('viewBox', `0 0 ${width} ${height}`); // Ensure viewBox matches dimensions
 
-// Equirectangular projection for simple world map
+// Mercator projection for world map (like moment-timezone)
 function lon2x(lon) {
     return ((lon + 180) / 360) * width;
 }
-
 function lat2y(lat) {
-    // Invert Y axis: latitude 90 (top) -> y=0, latitude -90 (bottom) -> y=height
-    return ((90 - lat) / 180) * height;
+    // Clamp latitude to avoid infinity at the poles
+    const maxLat = 85.05112878;
+    lat = Math.max(Math.min(lat, maxLat), -maxLat);
+    const latRad = lat * Math.PI / 180;
+    return (0.5 - Math.log(Math.tan(Math.PI / 4 + latRad / 2)) / (2 * Math.PI)) * height;
 }
 
-// City data with recalculated x/y
+// City data (from moment-timezone map)
 const cities = [
-    { name: "New York", tz: "America/New_York", lat: 40.7128, lon: -74.0060, x: lon2x(-74.0060), y: lat2y(40.7128) },
-    { name: "London", tz: "Europe/London", lat: 51.5074, lon: -0.1278, x: lon2x(-0.1278), y: lat2y(51.5074) },
-    { name: "Tokyo", tz: "Asia/Tokyo", lat: 35.6895, lon: 139.6917, x: lon2x(139.6917), y: lat2y(35.6895) },
-    { name: "Sydney", tz: "Australia/Sydney", lat: -33.8688, lon: 151.2093, x: lon2x(151.2093), y: lat2y(-33.8688) },
-    { name: "Los Angeles", tz: "America/Los_Angeles", lat: 34.0522, lon: -118.2437, x: lon2x(-118.2437), y: lat2y(34.0522) },
-    { name: "Paris", tz: "Europe/Paris", lat: 48.8566, lon: 2.3522, x: lon2x(2.3522), y: lat2y(48.8566) },
-    { name: "Dubai", tz: "Asia/Dubai", lat: 25.2048, lon: 55.2708, x: lon2x(55.2708), y: lat2y(25.2048) },
-    { name: "Shanghai", tz: "Asia/Shanghai", lat: 31.2304, lon: 121.4737, x: lon2x(121.4737), y: lat2y(31.2304) },
-    { name: "Moscow", tz: "Europe/Moscow", lat: 55.7558, lon: 37.6173, x: lon2x(37.6173), y: lat2y(55.7558) },
-    { name: "Rio", tz: "America/Sao_Paulo", lat: -22.9068, lon: -43.1729, x: lon2x(-43.1729), y: lat2y(-22.9068) },
-    { name: "Cape Town", tz: "Africa/Johannesburg", lat: -33.9249, lon: 18.4241, x: lon2x(18.4241), y: lat2y(-33.9249) },
-    { name: "Delhi", tz: "Asia/Kolkata", lat: 28.6139, lon: 77.2090, x: lon2x(77.2090), y: lat2y(28.6139) },
-    { name: "Auckland", tz: "Pacific/Auckland", lat: -36.8485, lon: 174.7633, x: lon2x(174.7633), y: lat2y(-36.8485) },
-    { name: "Anchorage", tz: "America/Anchorage", lat: 61.2181, lon: -149.9003, x: lon2x(-149.9003), y: lat2y(61.2181) },
-    { name: "Honolulu", tz: "Pacific/Honolulu", lat: 21.3069, lon: -157.8583, x: lon2x(-157.8583), y: lat2y(21.3069) },
-    { name: "Cairo", tz: "Africa/Cairo", lat: 30.0444, lon: 31.2357, x: lon2x(31.2357), y: lat2y(30.0444) },
-    { name: "Beijing", tz: "Asia/Shanghai", lat: 39.9042, lon: 116.4074, x: lon2x(116.4074), y: lat2y(39.9042) },
-    { name: "Singapore", tz: "Asia/Singapore", lat: 1.3521, lon: 103.8198, x: lon2x(103.8198), y: lat2y(1.3521) },
-    { name: "Berlin", tz: "Europe/Berlin", lat: 52.5200, lon: 13.4050, x: lon2x(13.4050), y: lat2y(52.5200) },
-    { name: "Mexico City", tz: "America/Mexico_City", lat: 19.4326, lon: -99.1332, x: lon2x(-99.1332), y: lat2y(19.4326) }
+    { name: "New York", tz: "America/New_York", lat: 40.71427, lon: -74.00597, x: lon2x(-74.00597), y: lat2y(40.71427) },
+    { name: "London", tz: "Europe/London", lat: 51.50853, lon: -0.12574, x: lon2x(-0.12574), y: lat2y(51.50853) },
+    { name: "Tokyo", tz: "Asia/Tokyo", lat: 35.6895, lon: 139.69171, x: lon2x(139.69171), y: lat2y(35.6895) },
+    { name: "Sydney", tz: "Australia/Sydney", lat: -33.86785, lon: 151.20732, x: lon2x(151.20732), y: lat2y(-33.86785) },
+    { name: "Los Angeles", tz: "America/Los_Angeles", lat: 34.05223, lon: -118.24368, x: lon2x(-118.24368), y: lat2y(34.05223) },
+    { name: "Paris", tz: "Europe/Paris", lat: 48.85341, lon: 2.3488, x: lon2x(2.3488), y: lat2y(48.85341) },
+    { name: "Dubai", tz: "Asia/Dubai", lat: 25.25817, lon: 55.30472, x: lon2x(55.30472), y: lat2y(25.25817) },
+    { name: "Shanghai", tz: "Asia/Shanghai", lat: 31.22222, lon: 121.45806, x: lon2x(121.45806), y: lat2y(31.22222) },
+    { name: "Moscow", tz: "Europe/Moscow", lat: 55.75222, lon: 37.61556, x: lon2x(37.61556), y: lat2y(55.75222) },
+    { name: "Rio", tz: "America/Sao_Paulo", lat: -22.90278, lon: -43.2075, x: lon2x(-43.2075), y: lat2y(-22.90278) },
+    { name: "Cape Town", tz: "Africa/Johannesburg", lat: -33.92584, lon: 18.42322, x: lon2x(18.42322), y: lat2y(-33.92584) },
+    { name: "Delhi", tz: "Asia/Kolkata", lat: 28.65195, lon: 77.23149, x: lon2x(77.23149), y: lat2y(28.65195) },
+    { name: "Auckland", tz: "Pacific/Auckland", lat: -36.86667, lon: 174.76667, x: lon2x(174.76667), y: lat2y(-36.86667) },
+    { name: "Anchorage", tz: "America/Anchorage", lat: 61.21806, lon: -149.90028, x: lon2x(-149.90028), y: lat2y(61.21806) },
+    { name: "Honolulu", tz: "Pacific/Honolulu", lat: 21.30694, lon: -157.85833, x: lon2x(-157.85833), y: lat2y(21.30694) },
+    { name: "Cairo", tz: "Africa/Cairo", lat: 30.06263, lon: 31.24967, x: lon2x(31.24967), y: lat2y(30.06263) },
+    { name: "Beijing", tz: "Asia/Shanghai", lat: 39.9075, lon: 116.39723, x: lon2x(116.39723), y: lat2y(39.9075) },
+    { name: "Singapore", tz: "Asia/Singapore", lat: 1.28967, lon: 103.85007, x: lon2x(103.85007), y: lat2y(1.28967) },
+    { name: "Berlin", tz: "Europe/Berlin", lat: 52.52437, lon: 13.41053, x: lon2x(13.41053), y: lat2y(52.52437) },
+    { name: "Mexico City", tz: "America/Mexico_City", lat: 19.42847, lon: -99.12766, x: lon2x(-99.12766), y: lat2y(19.42847) }
 ];
 
 // Draw dots and labels for each city using recalculated x/y
