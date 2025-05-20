@@ -10,22 +10,29 @@ showUserTimezone();
 
 // SVG map setup
 const svg = document.getElementById('timezone-map');
-const width = 1000; // Match your SVG viewBox width
-const height = 500; // Match your SVG viewBox height
+const width = 1000; // SVG viewBox width
+const height = 500; // SVG viewBox height
 svg.setAttribute('width', width);
 svg.setAttribute('height', height);
-svg.setAttribute('viewBox', `0 0 ${width} ${height}`); // Ensure viewBox matches dimensions
+svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-// Mercator projection for world map (like moment-timezone)
+// ==== CALIBRATION SECTION ====
+// These values may need to be tweaked for your SVG background.
+// They define the actual map area (not the whitespace).
+const mapLeft = 60;    // px from left edge to where the map drawing starts
+const mapTop = 40;     // px from top edge to where the map drawing starts
+const mapWidth = 880;  // width of the actual map drawing
+const mapHeight = 420; // height of the actual map drawing
+
 function lon2x(lon) {
-    return ((lon + 180) / 360) * width;
+    return mapLeft + ((lon + 180) / 360) * mapWidth;
 }
 function lat2y(lat) {
     // Clamp latitude to avoid infinity at the poles
     const maxLat = 85.05112878;
     lat = Math.max(Math.min(lat, maxLat), -maxLat);
     const latRad = lat * Math.PI / 180;
-    return (0.5 - Math.log(Math.tan(Math.PI / 4 + latRad / 2)) / (2 * Math.PI)) * height;
+    return mapTop + (0.5 - Math.log(Math.tan(Math.PI / 4 + latRad / 2)) / (2 * Math.PI)) * mapHeight;
 }
 
 // City data (from moment-timezone map)
