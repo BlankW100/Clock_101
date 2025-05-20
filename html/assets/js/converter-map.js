@@ -16,29 +16,28 @@ svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-// Manually calibrated city positions (x, y in SVG pixels)
+// Improved manually calibrated city positions (x, y in SVG pixels)
 const cities = [
-    // x, y values are visually estimated for your SVG map
-    { name: "New York",      tz: "America/New_York",      x: 355, y: 170 },
-    { name: "London",        tz: "Europe/London",         x: 495, y: 120 },
-    { name: "Tokyo",         tz: "Asia/Tokyo",            x: 845, y: 185 },
-    { name: "Sydney",        tz: "Australia/Sydney",      x: 930, y: 340 },
-    { name: "Los Angeles",   tz: "America/Los_Angeles",   x: 185, y: 190 },
-    { name: "Paris",         tz: "Europe/Paris",          x: 515, y: 135 },
-    { name: "Dubai",         tz: "Asia/Dubai",            x: 630, y: 185 },
-    { name: "Shanghai",      tz: "Asia/Shanghai",         x: 800, y: 185 },
-    { name: "Moscow",        tz: "Europe/Moscow",         x: 620, y: 110 },
-    { name: "Rio",           tz: "America/Sao_Paulo",     x: 410, y: 340 },
-    { name: "Cape Town",     tz: "Africa/Johannesburg",   x: 570, y: 390 },
-    { name: "Delhi",         tz: "Asia/Kolkata",          x: 720, y: 180 },
-    { name: "Auckland",      tz: "Pacific/Auckland",      x: 990, y: 410 },
-    { name: "Anchorage",     tz: "America/Anchorage",     x: 90,  y: 80  },
-    { name: "Honolulu",      tz: "Pacific/Honolulu",      x: 120, y: 260 },
-    { name: "Cairo",         tz: "Africa/Cairo",          x: 570, y: 190 },
-    { name: "Beijing",       tz: "Asia/Shanghai",         x: 780, y: 160 },
-    { name: "Singapore",     tz: "Asia/Singapore",        x: 800, y: 270 },
-    { name: "Berlin",        tz: "Europe/Berlin",         x: 540, y: 120 },
-    { name: "Mexico City",   tz: "America/Mexico_City",   x: 250, y: 230 }
+    { name: "New York",      tz: "America/New_York",      x: 390, y: 185 },
+    { name: "London",        tz: "Europe/London",         x: 520, y: 120 },
+    { name: "Tokyo",         tz: "Asia/Tokyo",            x: 870, y: 200 },
+    { name: "Sydney",        tz: "Australia/Sydney",      x: 930, y: 370 },
+    { name: "Los Angeles",   tz: "America/Los_Angeles",   x: 170, y: 210 },
+    { name: "Paris",         tz: "Europe/Paris",          x: 540, y: 140 },
+    { name: "Dubai",         tz: "Asia/Dubai",            x: 670, y: 200 },
+    { name: "Shanghai",      tz: "Asia/Shanghai",         x: 820, y: 190 },
+    { name: "Moscow",        tz: "Europe/Moscow",         x: 630, y: 110 },
+    { name: "Rio",           tz: "America/Sao_Paulo",     x: 430, y: 340 },
+    { name: "Cape Town",     tz: "Africa/Johannesburg",   x: 570, y: 410 },
+    { name: "Delhi",         tz: "Asia/Kolkata",          x: 760, y: 190 },
+    { name: "Auckland",      tz: "Pacific/Auckland",      x: 980, y: 420 },
+    { name: "Anchorage",     tz: "America/Anchorage",     x: 80,  y: 90  },
+    { name: "Honolulu",      tz: "Pacific/Honolulu",      x: 140, y: 270 },
+    { name: "Cairo",         tz: "Africa/Cairo",          x: 610, y: 200 },
+    { name: "Beijing",       tz: "Asia/Shanghai",         x: 800, y: 170 },
+    { name: "Singapore",     tz: "Asia/Singapore",        x: 830, y: 270 },
+    { name: "Berlin",        tz: "Europe/Berlin",         x: 560, y: 130 },
+    { name: "Mexico City",   tz: "America/Mexico_City",   x: 240, y: 250 }
 ];
 
 // Draw dots and labels for each city using manual x/y
