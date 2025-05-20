@@ -52,7 +52,7 @@ main {
 
 /* Make Profile black in light mode and white in dark mode */
 header h1 {
-  color: #111528; /* Black in light mode */
+  color: #ffffff; /* Black in light mode */
 }
 
 .darkmode header h1 {
