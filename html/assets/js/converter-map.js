@@ -15,9 +15,9 @@ const height = 500; // Match your SVG viewBox height
 svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 
-// Simple equirectangular projection
+// Equirectangular projection (SVG: lon -180~180, lat 90~-90)
 function lon2x(lon) { return ((lon + 180) / 360) * width; }
-function lat2y(lat) { return height - ((lat + 90) / 180) * height; }
+function lat2y(lat) { return ((90 - lat) / 180) * height; }
 
 // Example city/timezone data (expand as needed)
 const cities = [
@@ -66,6 +66,8 @@ cities.forEach(city => {
     label.setAttribute("fill", "#fff");
     label.setAttribute("font-size", "13");
     label.setAttribute("font-family", "monospace");
+    label.setAttribute("stroke", "#222");
+    label.setAttribute("stroke-width", "0.8");
     label.textContent = city.name;
     svg.appendChild(label);
 });
