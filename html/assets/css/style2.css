@@ -2,8 +2,8 @@
 
 /* Root Variables */
 :root {
-  --base-color: white;
-  --base-variant: #e8e9ed;
+  --base-color: #ffffff;
+  --base-variant: #f4f4f9;
   --text-color: #111528;
   --secondary-text: #232738;
   --primary-color: #3a435d;
@@ -11,12 +11,12 @@
 }
 
 .darkmode {
-  --base-color: #070b1d;
-  --base-variant: #101425;
-  --text-color: #ffffff;
+  --base-color: #181a20;
+  --base-variant: #23263a;
+  --text-color: #f4f4f9;
   --secondary-text: #a4a5b8;
   --primary-color: #3a435d;
-  --accent-color: #0071ff;
+  --accent-color: #3399ff;
 }
 
 /* Global Styles */
@@ -54,6 +54,17 @@ p {
 h1, h2, h3, h4, h5, h6 {
   margin: 10px 0 20px 0;
   color: var(--secondary-text);
+}
+
+/* Make headings and paragraphs readable in dark mode */
+.darkmode h1,
+.darkmode h2,
+.darkmode h3,
+.darkmode h4,
+.darkmode h5,
+.darkmode h6,
+.darkmode p {
+  color: var(--text-color);
 }
 
 /* Buttons */
@@ -186,7 +197,11 @@ main {
 
 .hero p {
   font-size: 1.2rem;
-  color: #555;
+  color: var(--secondary-text);
+}
+
+.darkmode .hero p {
+  color: var(--text-color);
 }
 
 /* Features Section */
@@ -198,7 +213,7 @@ main {
 }
 
 .feature-card {
-  background: #f9f9f9;
+  background: var(--base-variant);
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 1rem;
@@ -207,26 +222,40 @@ main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.darkmode .feature-card {
+  background: #23263a;
+  border-color: #33384d;
+}
+
 .feature-card i {
   font-size: 2rem;
-  color: #007bff;
+  color: var(--accent-color);
   margin-bottom: 0.5rem;
 }
 
 .feature-card h3 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
+  color: var(--secondary-text);
+}
+
+.darkmode .feature-card h3 {
+  color: var(--text-color);
 }
 
 .feature-card p {
   font-size: 1rem;
-  color: #555;
+  color: var(--secondary-text);
+}
+
+.darkmode .feature-card p {
+  color: var(--text-color);
 }
 
 .feature-link {
   display: inline-block;
   margin-top: 1rem;
-  color: #007bff;
+  color: var(--accent-color);
   text-decoration: none;
   font-weight: 500;
 }
