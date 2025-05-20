@@ -3,6 +3,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f4f4f9;
+  padding-top: 0; /* Adjust this value if needed */
 }
 
 header {
@@ -10,6 +11,14 @@ header {
   color: white;
   padding: 10px 0;
   text-align: center;
+}
+
+header nav {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 header nav ul {
@@ -39,6 +48,15 @@ main {
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Make Profile black in light mode and white in dark mode */
+header h1 {
+  color: #ffffff; /* Black in light mode */
+}
+
+.darkmode header h1 {
+  color: #fff !important; /* White in dark mode */
 }
 
 h2 {
@@ -74,4 +92,35 @@ button {
 
 button:hover {
   background-color: #575757;
+}
+
+.change-password-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.change-password-button:hover {
+  background-color: #0056b3;
+}
+
+/* Logout Button Styling */
+.logout-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #ff4d4d; /* Red color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.logout-button:hover {
+  background-color: #cc0000; /* Darker red on hover */
 }

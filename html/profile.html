@@ -5,8 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Profile</title>
+  <link rel="stylesheet" href="assets/css/navbar.css">
   <link rel="stylesheet" href="assets/css/profile.css">
-  <script type="module" src="assets/js/profile.js" defer></script>
+  <link rel="stylesheet" href="assets/css/style2.css">
+  <script src="assets/js/darkmode.js" defer></script>
 </head>
 
 <body>
@@ -18,7 +20,6 @@
         <li><a href="converter.html">Time Converter</a></li>
         <li><a href="calculator.html">Date Calculator</a></li>
         <li><a href="alarm.html">Alarm</a></li>
-        <li><button id="signout-link">Logout</button></li>
       </ul>
     </nav>
   </header>
@@ -43,12 +44,40 @@
 
         <button type="submit">Save Changes</button>
       </form>
+
+      
+      <div class="input-group">
+        <button id="change-password-button" class="change-password-button">Change Password</button>
+      </div>
+
+      <!-- Logout Button -->
+      <div class="input-group">
+        <button id="logout-button" class="logout-button">Logout</button>
+      </div>
     </section>
   </main>
 
   <footer>
     <p>&copy; Clock 101. All rights reserved.</p>
   </footer>
+
+  <script>
+    // Redirect to forgot-password.html when "Change Password" is clicked
+    document.getElementById("change-password-button").addEventListener("click", (event) => {
+      event.preventDefault();
+      window.location.href = "forgot-password.html";
+    });
+
+    // Logout confirmation popup
+    document.getElementById("logout-button").addEventListener("click", (event) => {
+      event.preventDefault();
+      const confirmLogout = confirm("Are you sure you want to log out?");
+      if (confirmLogout) {
+        sessionStorage.removeItem("userId");
+        window.location.href = "login.html";
+      }
+    });
+  </script>
 </body>
 
 </html>
