@@ -14,8 +14,9 @@ const width = 564.444; // Match your SVG viewBox width
 const height = 241.653; // Match your SVG viewBox height
 svg.setAttribute('width', width);
 svg.setAttribute('height', height);
+svg.setAttribute('viewBox', `0 0 ${width} ${height}`); // Ensure viewBox matches dimensions
 
-// Corrected projection functions using Mercator
+// Corrected projection functions with adjustments
 function lon2x(lon) {
     return ((lon + 180) / 360) * 564.444;
 }
@@ -25,7 +26,7 @@ function lat2y(lat) {
     const mercator = Math.log(Math.tan(Math.PI / 4 + radians / 2));
     const mercatorMax = Math.log(Math.tan(Math.PI / 4 + (85 * Math.PI) / 360));
     const mercatorMin = Math.log(Math.tan(Math.PI / 4 + (-85 * Math.PI) / 360));
-    return ((mercatorMax - mercator) / (mercatorMax - mercatorMin)) * 241.653;
+    return ((mercatorMax - mercator) / (mercatorMax - mercatorMin)) * 241.653 * 0.9 + 20;
 }
 
 // City data with recalculated x/y
@@ -53,6 +54,7 @@ const cities = [
 ];
 
 // Draw dots and labels for each city using recalculated x/y
+const labelPositions = [];
 cities.forEach(city => {
     let dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     dot.setAttribute("cx", city.x);
@@ -68,9 +70,17 @@ cities.forEach(city => {
 
     // Add label with dynamic positioning
     let label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    const offsetX = city.x < width / 2 ? 15 : -15;
+    let offsetX = city.x < width / 2 ? 15 : -15;
+    let offsetY = 5;
+
+    // Check for nearby labels in the X direction and adjust Y if needed
+    const nearbyLabels = labelPositions.filter(pos => Math.abs(pos.x - city.x) < 50);
+    if (nearbyLabels.length > 0) {
+        offsetY += nearbyLabels.length * 15;
+    }
+
     label.setAttribute("x", city.x + offsetX);
-    label.setAttribute("y", city.y + 5);
+    label.setAttribute("y", city.y + offsetY);
     label.setAttribute("fill", "#fff");
     label.setAttribute("font-size", "13");
     label.setAttribute("font-family", "monospace");
@@ -79,6 +89,8 @@ cities.forEach(city => {
     label.setAttribute("text-anchor", city.x < width / 2 ? "start" : "end");
     label.textContent = city.name;
     svg.appendChild(label);
+
+    labelPositions.push({ x: city.x, y: city.y + offsetY });
 });
 
 // Tooltip logic
