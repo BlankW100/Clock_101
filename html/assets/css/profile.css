@@ -50,6 +50,15 @@ main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Make Profile black in light mode and white in dark mode */
+header h1 {
+  color: #111528; /* Black in light mode */
+}
+
+.darkmode header h1 {
+  color: #fff !important; /* White in dark mode */
+}
+
 h2 {
   text-align: center;
 }
