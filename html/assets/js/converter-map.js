@@ -10,8 +10,8 @@ showUserTimezone();
 
 // SVG map setup
 const svg = document.getElementById('timezone-map');
-const width = svg.parentElement.offsetWidth;
-const height = 500;
+const width = 1000; // Match your SVG viewBox width
+const height = 500; // Match your SVG viewBox height
 svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 
@@ -42,9 +42,6 @@ const cities = [
     { name: "Berlin", tz: "Europe/Berlin", lat: 52.5200, lon: 13.4050 },
     { name: "Mexico City", tz: "America/Mexico_City", lat: 19.4326, lon: -99.1332 }
 ];
-
-// Draw simple world map background (rectangular, blue)
-svg.innerHTML = `<rect x="0" y="0" width="${width}" height="${height}" fill="#3b6ea5" />`;
 
 // Draw dots and labels for each city
 cities.forEach(city => {
