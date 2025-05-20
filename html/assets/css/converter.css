@@ -63,3 +63,42 @@ body {
     border-radius: 8px;                  /* Rounded corners for a soft look */
     font-weight: bold;                   /* Bold text for attention */
   }
+
+#user-tz {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-family: monospace;
+    color: #2a3d5c;
+}
+
+#timezone-map-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto 0 auto;
+    position: relative;
+}
+
+#timezone-map {
+    width: 100%;
+    height: 500px;
+    background: #e6f0fa;
+    border: 1px solid #b3c6e0;
+    border-radius: 8px;
+    display: block;
+}
+
+#tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: #fff;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    color: #222;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 10;
+}
