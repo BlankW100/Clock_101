@@ -15,12 +15,17 @@ const height = 241.653; // Match your SVG viewBox height
 svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 
-// Corrected projection functions
+// Corrected projection functions using Mercator
 function lon2x(lon) {
-    return ((lon + 180) / 360) * 564.444 + 104.775;
+    return ((lon + 180) / 360) * 564.444;
 }
+
 function lat2y(lat) {
-    return ((90 - lat) / 180) * 241.653 - 148.696;
+    const radians = (lat * Math.PI) / 180;
+    const mercator = Math.log(Math.tan(Math.PI / 4 + radians / 2));
+    const mercatorMax = Math.log(Math.tan(Math.PI / 4 + (85 * Math.PI) / 360));
+    const mercatorMin = Math.log(Math.tan(Math.PI / 4 + (-85 * Math.PI) / 360));
+    return ((mercatorMax - mercator) / (mercatorMax - mercatorMin)) * 241.653;
 }
 
 // City data with recalculated x/y
@@ -61,15 +66,17 @@ cities.forEach(city => {
     dot.setAttribute("data-name", city.name);
     svg.appendChild(dot);
 
-    // Add label
+    // Add label with dynamic positioning
     let label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", city.x + 15); // Adjusted offset
+    const offsetX = city.x < width / 2 ? 15 : -15;
+    label.setAttribute("x", city.x + offsetX);
     label.setAttribute("y", city.y + 5);
     label.setAttribute("fill", "#fff");
     label.setAttribute("font-size", "13");
     label.setAttribute("font-family", "monospace");
     label.setAttribute("stroke", "#222");
     label.setAttribute("stroke-width", "0.8");
+    label.setAttribute("text-anchor", city.x < width / 2 ? "start" : "end");
     label.textContent = city.name;
     svg.appendChild(label);
 });
