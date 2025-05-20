@@ -53,7 +53,6 @@ function renderEvents(events) {
 
     // Start countdowns for all events
     updateAllCountdowns();
-    setInterval(updateAllCountdowns, 1000);
 }
 
 function updateAllCountdowns() {
@@ -71,21 +70,12 @@ onValue(ref(db, "events"), (snapshot) => {
         events.push(childSnapshot.val());
     });
     renderEvents(events);
+    // Start interval for updating countdowns only once
+    if (!window._countdownInterval) {
+        window._countdownInterval = setInterval(updateAllCountdowns, 1000);
+    }
 });
 
-window.saveEvent = saveEvent;
-
-// Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBiOkxZFBwCP3NOXqZqpit5tF9MnwKaavQ",
-    authDomain: "clock-101-10e68.firebaseapp.com",
-    databaseURL: "https://clock-101-10e68-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "clock-101-10e68",
-    storageBucket: "clock-101-10e68.firebasestorage.app",
-    messagingSenderId: "654434052980",
-    appId: "1:654434052980:web:d270879ef90c796a059a21"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("saveEventBtn").addEventListener("click", saveEvent);
+});
