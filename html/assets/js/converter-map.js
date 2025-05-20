@@ -10,23 +10,20 @@ showUserTimezone();
 
 // SVG map setup
 const svg = document.getElementById('timezone-map');
-const width = 564.444; // Match your SVG viewBox width
-const height = 241.653; // Match your SVG viewBox height
+const width = 1000; // Match your SVG viewBox width
+const height = 500; // Match your SVG viewBox height
 svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 svg.setAttribute('viewBox', `0 0 ${width} ${height}`); // Ensure viewBox matches dimensions
 
-// Corrected projection functions with adjustments
+// Equirectangular projection for simple world map
 function lon2x(lon) {
-    return ((lon + 180) / 360) * 564.444;
+    return ((lon + 180) / 360) * width;
 }
 
 function lat2y(lat) {
-    const radians = (lat * Math.PI) / 180;
-    const mercator = Math.log(Math.tan(Math.PI / 4 + radians / 2));
-    const mercatorMax = Math.log(Math.tan(Math.PI / 4 + (85 * Math.PI) / 360));
-    const mercatorMin = Math.log(Math.tan(Math.PI / 4 + (-85 * Math.PI) / 360));
-    return ((mercatorMax - mercator) / (mercatorMax - mercatorMin)) * 241.653 * 0.9 + 20;
+    // Invert Y axis: latitude 90 (top) -> y=0, latitude -90 (bottom) -> y=height
+    return ((90 - lat) / 180) * height;
 }
 
 // City data with recalculated x/y
