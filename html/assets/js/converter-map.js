@@ -1,6 +1,6 @@
 // --- Add Firebase imports at the top ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- Your Firebase config here ---
 const firebaseConfig = {
@@ -25,7 +25,6 @@ function initTimezoneMap() {
 
     const svg = document.getElementById('timezone-map');
     const cityTzDiv = document.getElementById('city-tz');
-    let favoriteCity = null;
     let labelElements = {};
 
     // Add favorite display below the map
