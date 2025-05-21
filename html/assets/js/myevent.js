@@ -1,14 +1,34 @@
-import { db } from "assets/js/firebase-init.js";
-import { ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    onSnapshot,
+    query,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-function saveEvent() {
+// Your Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBiOkxZFBwCP3NOXqZqpit5tF9MnwKaavQ",
+    authDomain: "clock-101-10e68.firebaseapp.com",
+    projectId: "clock-101-10e68",
+    storageBucket: "clock-101-10e68.firebasestorage.app",
+    messagingSenderId: "654434052980",
+    appId: "1:654434052980:web:d270879ef90c796a059a21"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function saveEvent() {
     const eventName = document.getElementById("eventName").value;
     const eventDate = document.getElementById("eventDate").value;
 
     if (!eventName || !eventDate) return alert("Please enter both fields!");
 
-    // Use push to generate a unique key for each event
-    push(ref(db, "events"), {
+    await addDoc(collection(db, "events"), {
         name: eventName,
         date: eventDate
     });
@@ -63,11 +83,12 @@ function updateAllCountdowns() {
     });
 }
 
-// Listen for changes in the events list
-onValue(ref(db, "events"), (snapshot) => {
+// Listen for changes in the events collection (real-time updates)
+const q = query(collection(db, "events"), orderBy("date"));
+onSnapshot(q, (snapshot) => {
     const events = [];
-    snapshot.forEach(childSnapshot => {
-        events.push(childSnapshot.val());
+    snapshot.forEach(doc => {
+        events.push(doc.data());
     });
     renderEvents(events);
     // Start interval for updating countdowns only once
