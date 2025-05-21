@@ -73,6 +73,17 @@ function initTimezoneMap() {
             const cityDisplay = `${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
             cityTzDiv.innerHTML = `<span style="color:#ffa;"><b>${city.name}:</b></span> ${cityDisplay}`;
         });
+
+        // Show city time on hover (not click)
+        dot.addEventListener('mouseenter', function() {
+            const now = moment().tz(city.tz);
+            const offset = now.format('Z');
+            const cityDisplay = `${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
+            cityTzDiv.innerHTML = `<span style="color:#000;"><b>${city.name}:</b></span> ${cityDisplay}`;
+        });
+        dot.addEventListener('mouseleave', function() {
+            cityTzDiv.innerHTML = "";
+        });
     });
 }
 
