@@ -20,16 +20,28 @@ const currentTime = document.querySelector("h1"),
 content = document.querySelector(".content"),
 selectMenu = document.querySelectorAll("select"),
 setAlarmBtn = document.querySelector("button");
+
+// --- Fix: define alarms and stopAlarmBtn ---
+let alarms = [];
 let alarmTime, isAlarmSet,
 ringtone = new Audio("assets/Alarm files/ringtone.mp3");
+
+// Create and append stopAlarmBtn
+const stopAlarmBtn = document.createElement("button");
+stopAlarmBtn.textContent = "Stop Alarm";
+stopAlarmBtn.className = "hidden";
+stopAlarmBtn.style.marginTop = "20px";
+content.parentNode.appendChild(stopAlarmBtn);
+
+// Populate select menus
 for (let i = 12; i > 0; i--) {
-    i = i < 10 ? `0${i}` : i;
-    let option = `<option value="${i}">${i}</option>`;
+    let val = i < 10 ? `0${i}` : i;
+    let option = `<option value="${val}">${val}</option>`;
     selectMenu[0].firstElementChild.insertAdjacentHTML("afterend", option);
 }
 for (let i = 59; i >= 0; i--) {
-    i = i < 10 ? `0${i}` : i;
-    let option = `<option value="${i}">${i}</option>`;
+    let val = i < 10 ? `0${i}` : i;
+    let option = `<option value="${val}">${val}</option>`;
     selectMenu[1].firstElementChild.insertAdjacentHTML("afterend", option);
 }
 for (let i = 2; i > 0; i--) {
@@ -37,6 +49,8 @@ for (let i = 2; i > 0; i--) {
     let option = `<option value="${ampm}">${ampm}</option>`;
     selectMenu[2].firstElementChild.insertAdjacentHTML("afterend", option);
 }
+
+// Live clock and alarm check
 setInterval(() => {
     let date = new Date(),
     h = date.getHours(),
@@ -56,11 +70,12 @@ setInterval(() => {
     // Check if any alarm matches the current time
     alarms.forEach(async alarm => {
         if (alarm.time === `${h}:${m} ${ampm}`) {
-            if (!ringtone) {
-                ringtone = new Audio(`assets/Alarm files/${alarm.sound}`);
+            if (ringtone.paused) {
+                ringtone = new Audio(`assets/Alarm files/${alarm.sound || "ringtone.mp3"}`);
                 ringtone.loop = true;
                 ringtone.play();
-                stopAlarmBtn.classList.remove("hidden"); // Show the stop button
+                stopAlarmBtn.classList.remove("hidden");
+                stopAlarmBtn.style.display = "block";
 
                 // Fetch user email from Firestore
                 const userId = sessionStorage.getItem("userId");
@@ -70,7 +85,7 @@ setInterval(() => {
 
                     if (userSnapshot.exists()) {
                         const userEmail = userSnapshot.data().email;
-                        sendEmailNotification(userEmail, alarm.time); // Send email notification
+                        sendEmailNotification(userEmail, alarm.time);
                     } else {
                         console.error("User document does not exist");
                     }
@@ -103,6 +118,11 @@ async function sendEmailNotification(email, alarmTime) {
 
 // Set a new alarm
 async function setAlarm() {
+    const hourSelect = selectMenu[0];
+    const minuteSelect = selectMenu[1];
+    const ampmSelect = selectMenu[2];
+    const soundSelect = { value: "ringtone.mp3" }; // Default sound, adjust if you have a sound selector
+
     let time = `${hourSelect.value}:${minuteSelect.value} ${ampmSelect.value}`;
     let sound = soundSelect.value;
 
@@ -128,8 +148,8 @@ async function setAlarm() {
         const alarmCollectionRef = collection(userDocRef, "alarm");
         const docRef = await addDoc(alarmCollectionRef, alarmDoc);
 
-        alarms.push({ id: docRef.id, ...alarmDoc }); // Add to local array with ID
-        displayAlarms(); // Update UI
+        alarms.push({ id: docRef.id, ...alarmDoc });
+        displayAlarms();
         alert("Alarm set successfully!");
     } catch (error) {
         console.error("Error setting alarm:", error);
@@ -140,21 +160,35 @@ async function setAlarm() {
 function stopAlarm() {
     if (ringtone) {
         ringtone.pause();
+        ringtone.currentTime = 0;
+        stopAlarmBtn.classList.add("hidden");
+        stopAlarmBtn.style.display = "none";
         content.classList.remove("disable");
         setAlarmBtn.innerText = "Set Alarm";
-        return isAlarmSet = false;
+        isAlarmSet = false;
     }
-    let time = `${selectMenu[0].value}:${selectMenu[1].value} ${selectMenu[2].value}`;
-    if (time.includes("Hour") || time.includes("Minute") || time.includes("AM/PM")) {
-        return alert("Please, select a valid time to set Alarm!");
-    }
-    alarmTime = time;
-    isAlarmSet = true;
-    content.classList.add("disable");
-    setAlarmBtn.innerText = "Clear Alarm";
 }
+
+// Display alarms (placeholder, implement as needed)
+function displayAlarms() {
+    // You can implement alarm list UI here if needed
+}
+
+// Fetch alarms from Firestore
+async function fetchAlarms() {
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) return;
+    const userDocRef = doc(db, "users", userId);
+    const alarmCollectionRef = collection(userDocRef, "alarm");
+    const snapshot = await getDocs(alarmCollectionRef);
+    alarms = [];
+    snapshot.forEach(docSnap => {
+        alarms.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    displayAlarms();
+}
+
+// Event listeners
 setAlarmBtn.addEventListener("click", setAlarm);
 stopAlarmBtn.addEventListener("click", stopAlarm);
-
-// Fetch alarms on page load
 window.addEventListener("load", fetchAlarms);
