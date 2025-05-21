@@ -70,10 +70,13 @@ body {
 }
 
 #timezone-map-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 40px auto 0 auto;
+    width: 90%;
+    max-width: 1450px;
+    margin: 40px auto 0 auto; /* auto centers the container */
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #timezone-map {
@@ -83,6 +86,7 @@ body {
     border: 1px solid #b3c6e0;
     border-radius: 8px;
     display: block;
+    margin: 0 auto; /* center the SVG inside the container */
 }
 
 #tooltip {
