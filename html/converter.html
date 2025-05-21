@@ -33,6 +33,33 @@
             <!-- City dots and labels will be drawn on top by JS -->
         </svg>
     </div>
+    <div id="favorite-search-container" style="text-align:center; margin-top:18px;">
+        <input list="city-list" id="favorite-search" placeholder="Search or select city..." style="font-size:1.1rem; padding:6px; width:220px; border-radius:6px; border:1px solid #bbb;">
+        <datalist id="city-list">
+            <option value="New York">
+            <option value="London">
+            <option value="Tokyo">
+            <option value="Sydney">
+            <option value="Los Angeles">
+            <option value="Paris">
+            <option value="Dubai">
+            <option value="Shanghai">
+            <option value="Moscow">
+            <option value="Rio">
+            <option value="Cape Town">
+            <option value="Delhi">
+            <option value="Auckland">
+            <option value="Anchorage">
+            <option value="Honolulu">
+            <option value="Cairo">
+            <option value="Beijing">
+            <option value="Singapore">
+            <option value="Berlin">
+            <option value="Mexico City">
+        </datalist>
+        <button id="favorite-search-btn" style="font-size:1.1rem; padding:6px 14px; border-radius:6px; background:#ff9800; color:#fff; border:none; cursor:pointer;">Set Favorite</button>
+    </div>
+    <div id="favorite-tz" style="text-align:center; font-size:1.2rem; font-family:monospace; margin-top:18px;"></div>
 </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
