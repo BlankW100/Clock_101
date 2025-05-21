@@ -115,8 +115,8 @@ function initTimezoneMap() {
     window.favoriteCity = null;
 }
 
-// Helper to set favorite city, highlight, show, and save to Firestore/localStorage
-async function setFavorite(cityName) {
+// Helper to set favorite city, highlight, show, and save to localStorage
+function setFavorite(cityName) {
     const favoriteDiv = document.getElementById('favorite-tz');
     const city = window.cities.find(c => c.name.toLowerCase() === cityName.toLowerCase());
     if (!city) {
@@ -138,27 +138,16 @@ async function setFavorite(cityName) {
     favoriteDiv.innerHTML = `<span style="color:#ff9800;"><b>★ Favorite: ${city.name}</b></span> ${cityDisplay}`;
     // Save to localStorage
     localStorage.setItem('favoriteCity', city.name);
-
-    // --- Save to Firestore ---
-    try {
-        const userId = sessionStorage.getItem("userId");
-        if (userId) {
-            const userDocRef = doc(db, "users", userId);
-            await setDoc(userDocRef, { favoriteCity: city.name }, { merge: true });
-        }
-    } catch (err) {
-        console.error("Failed to save favorite city to Firestore:", err);
-    }
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', function() {
     initTimezoneMap();
 
     const searchInput = document.getElementById('favorite-search');
     const searchBtn = document.getElementById('favorite-search-btn');
     const favoriteDiv = document.getElementById('favorite-tz');
 
-    // Restore favorite from localStorage (or Firestore if you want)
+    // Restore favorite from localStorage
     const savedFavorite = localStorage.getItem('favoriteCity');
     if (savedFavorite) {
         setFavorite(savedFavorite);
