@@ -1,14 +1,20 @@
 import { db } from "./firebase-init.js";
-import { ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+import {
+    collection,
+    addDoc,
+    getDocs,
+    onSnapshot,
+    query,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-function saveEvent() {
+async function saveEvent() {
     const eventName = document.getElementById("eventName").value;
     const eventDate = document.getElementById("eventDate").value;
 
     if (!eventName || !eventDate) return alert("Please enter both fields!");
 
-    // Use push to generate a unique key for each event
-    push(ref(db, "events"), {
+    await addDoc(collection(db, "events"), {
         name: eventName,
         date: eventDate
     });
@@ -63,11 +69,12 @@ function updateAllCountdowns() {
     });
 }
 
-// Listen for changes in the events list
-onValue(ref(db, "events"), (snapshot) => {
+// Listen for changes in the events collection (real-time updates)
+const q = query(collection(db, "events"), orderBy("date"));
+onSnapshot(q, (snapshot) => {
     const events = [];
-    snapshot.forEach(childSnapshot => {
-        events.push(childSnapshot.val());
+    snapshot.forEach(doc => {
+        events.push(doc.data());
     });
     renderEvents(events);
     // Start interval for updating countdowns only once
