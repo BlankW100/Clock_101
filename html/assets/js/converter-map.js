@@ -12,11 +12,24 @@ function initTimezoneMap() {
     showUserTimezone();
     setInterval(showUserTimezone, 60000);
 
-    // SVG map setup
     const svg = document.getElementById('timezone-map');
     const cityTzDiv = document.getElementById('city-tz');
+    let favoriteCity = null;
+    let labelElements = {};
 
-    // Manually calibrated city coordinates and label offsets for 1450x711 SVG
+    // Add favorite display below the map
+    let favoriteDiv = document.getElementById('favorite-tz');
+    if (!favoriteDiv) {
+        favoriteDiv = document.createElement('div');
+        favoriteDiv.id = 'favorite-tz';
+        favoriteDiv.style.textAlign = 'center';
+        favoriteDiv.style.fontSize = '1.2rem';
+        favoriteDiv.style.fontFamily = 'monospace';
+        favoriteDiv.style.marginTop = '18px';
+        document.querySelector('main').appendChild(favoriteDiv);
+    }
+
+    // City data
     const cities = [
         { name: "New York",      tz: "America/New_York",      x: 595,  y: 250,  labelDX: 20,  labelDY: 0,   anchor: "start" },
         { name: "London",        tz: "Europe/London",         x: 790,  y: 120,  labelDX: 10,  labelDY: -10, anchor: "start" },
@@ -66,13 +79,8 @@ function initTimezoneMap() {
         label.textContent = city.name;
         svg.appendChild(label);
 
-        // Add click event to show city time below user time
-        dot.addEventListener('click', function() {
-            const now = moment().tz(city.tz);
-            const offset = now.format('Z');
-            const cityDisplay = `${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
-            cityTzDiv.innerHTML = `<span style="color:#ffa;"><b>${city.name}:</b></span> ${cityDisplay}`;
-        });
+        // Store label element for color change
+        labelElements[city.name] = label;
 
         // Show city time on hover (not click)
         dot.addEventListener('mouseenter', function() {
@@ -83,6 +91,23 @@ function initTimezoneMap() {
         });
         dot.addEventListener('mouseleave', function() {
             cityTzDiv.innerHTML = "";
+        });
+
+        // Favorite on click
+        dot.addEventListener('click', function() {
+            // Remove highlight from previous favorite
+            if (favoriteCity && labelElements[favoriteCity.name]) {
+                labelElements[favoriteCity.name].setAttribute("fill", "#222");
+            }
+            // Set new favorite
+            favoriteCity = city;
+            label.setAttribute("fill", "#ff9800"); // orange color for favorite
+
+            // Show favorite time below the map
+            const now = moment().tz(city.tz);
+            const offset = now.format('Z');
+            const cityDisplay = `${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
+            favoriteDiv.innerHTML = `<span style="color:#ff9800;"><b>★ Favorite: ${city.name}</b></span> ${cityDisplay}`;
         });
     });
 }
