@@ -29,26 +29,26 @@ function initTimezoneMap() {
 
     // Major cities with their timezones and positions
    const cities = [
-        { name: "New York",      tz: "America/New_York",      x: 320, y: 190 },
-        { name: "London",        tz: "Europe/London",         x: 490, y: 115 },
-        { name: "Tokyo",         tz: "Asia/Tokyo",            x: 855, y: 195 },
-        { name: "Sydney",        tz: "Australia/Sydney",      x: 950, y: 355 },
-        { name: "Los Angeles",   tz: "America/Los_Angeles",   x: 170, y: 200 },
-        { name: "Paris",         tz: "Europe/Paris",          x: 510, y: 120 },
-        { name: "Dubai",         tz: "Asia/Dubai",            x: 635, y: 185 },
-        { name: "Shanghai",      tz: "Asia/Shanghai",         x: 795, y: 180 },
-        { name: "Moscow",        tz: "Europe/Moscow",         x: 600, y: 115 },
-        { name: "Rio",           tz: "America/Sao_Paulo",     x: 390, y: 320 },
-        { name: "Cape Town",     tz: "Africa/Johannesburg",   x: 575, y: 360 },
-        { name: "Delhi",         tz: "Asia/Kolkata",          x: 695, y: 180 },
-        { name: "Auckland",      tz: "Pacific/Auckland",      x: 985, y: 405 },
-        { name: "Anchorage",     tz: "America/Anchorage",     x: 80,  y: 85 },
-        { name: "Honolulu",      tz: "Pacific/Honolulu",      x: 130, y: 260 },
-        { name: "Cairo",         tz: "Africa/Cairo",          x: 565, y: 180 },
-        { name: "Beijing",       tz: "Asia/Shanghai",         x: 780, y: 170 },
-        { name: "Singapore",     tz: "Asia/Singapore",        x: 805, y: 250 },
-        { name: "Berlin",        tz: "Europe/Berlin",         x: 530, y: 115 },
-        { name: "Mexico City",   tz: "America/Mexico_City",   x: 230, y: 230 }
+    { name: "New York",      tz: "America/New_York",      x: 589,  y: 235 },
+    { name: "London",        tz: "Europe/London",         x: 999,  y: 183 },
+    { name: "Tokyo",         tz: "Asia/Tokyo",            x: 1776, y: 259 },
+    { name: "Sydney",        tz: "Australia/Sydney",      x: 1840, y: 590 },
+    { name: "Los Angeles",   tz: "America/Los_Angeles",   x: 343,  y: 266 },
+    { name: "Paris",         tz: "Europe/Paris",          x: 1013, y: 196 },
+    { name: "Dubai",         tz: "Asia/Dubai",            x: 1307, y: 308 },
+    { name: "Shanghai",      tz: "Asia/Shanghai",         x: 1675, y: 280 },
+    { name: "Moscow",        tz: "Europe/Moscow",         x: 1209, y: 163 },
+    { name: "Rio",           tz: "America/Sao_Paulo",     x: 760,  y: 538 },
+    { name: "Cape Town",     tz: "Africa/Johannesburg",   x: 1102, y: 590 },
+    { name: "Delhi",         tz: "Asia/Kolkata",          x: 1429, y: 292 },
+    { name: "Auckland",      tz: "Pacific/Auckland",      x: 1971, y: 604 },
+    { name: "Anchorage",     tz: "America/Anchorage",     x: 167,  y: 137 },
+    { name: "Honolulu",      tz: "Pacific/Honolulu",      x: 123,  y: 327 },
+    { name: "Cairo",         tz: "Africa/Cairo",          x: 1174, y: 285 },
+    { name: "Beijing",       tz: "Asia/Shanghai",         x: 1647, y: 239 },
+    { name: "Singapore",     tz: "Asia/Singapore",        x: 1577, y: 422 },
+    { name: "Berlin",        tz: "Europe/Berlin",         x: 1074, y: 178 },
+    { name: "Mexico City",   tz: "America/Mexico_City",   x: 449,  y: 336 }
     ];
         
     // Draw dots and labels for each city
