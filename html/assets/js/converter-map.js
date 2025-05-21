@@ -16,29 +16,28 @@ svg.setAttribute('width', width);
 svg.setAttribute('height', height);
 svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-// Manually calibrated city positions (x, y in SVG pixels)
+// Updated city positions (x, y in SVG pixels) after reviewing SVG map
 const cities = [
-    // x, y values are visually estimated for your SVG map
-    { name: "New York",      tz: "America/New_York",      x: 355, y: 170 },
-    { name: "London",        tz: "Europe/London",         x: 495, y: 120 },
-    { name: "Tokyo",         tz: "Asia/Tokyo",            x: 845, y: 185 },
-    { name: "Sydney",        tz: "Australia/Sydney",      x: 930, y: 340 },
-    { name: "Los Angeles",   tz: "America/Los_Angeles",   x: 185, y: 190 },
-    { name: "Paris",         tz: "Europe/Paris",          x: 515, y: 135 },
-    { name: "Dubai",         tz: "Asia/Dubai",            x: 630, y: 185 },
-    { name: "Shanghai",      tz: "Asia/Shanghai",         x: 800, y: 185 },
-    { name: "Moscow",        tz: "Europe/Moscow",         x: 620, y: 110 },
-    { name: "Rio",           tz: "America/Sao_Paulo",     x: 410, y: 340 },
-    { name: "Cape Town",     tz: "Africa/Johannesburg",   x: 570, y: 390 },
-    { name: "Delhi",         tz: "Asia/Kolkata",          x: 720, y: 180 },
-    { name: "Auckland",      tz: "Pacific/Auckland",      x: 990, y: 410 },
-    { name: "Anchorage",     tz: "America/Anchorage",     x: 90,  y: 80  },
+    { name: "New York",      tz: "America/New_York",      x: 370, y: 180 },
+    { name: "London",        tz: "Europe/London",         x: 505, y: 110 },
+    { name: "Tokyo",         tz: "Asia/Tokyo",            x: 875, y: 175 },
+    { name: "Sydney",        tz: "Australia/Sydney",      x: 950, y: 360 },
+    { name: "Los Angeles",   tz: "America/Los_Angeles",   x: 190, y: 195 },
+    { name: "Paris",         tz: "Europe/Paris",          x: 520, y: 120 },
+    { name: "Dubai",         tz: "Asia/Dubai",            x: 630, y: 165 },
+    { name: "Shanghai",      tz: "Asia/Shanghai",         x: 800, y: 180 },
+    { name: "Moscow",        tz: "Europe/Moscow",         x: 600, y: 110 },
+    { name: "Rio",           tz: "America/Sao_Paulo",     x: 410, y: 330 },
+    { name: "Cape Town",     tz: "Africa/Johannesburg",   x: 580, y: 370 },
+    { name: "Delhi",         tz: "Asia/Kolkata",          x: 710, y: 170 },
+    { name: "Auckland",      tz: "Pacific/Auckland",      x: 985, y: 410 },
+    { name: "Anchorage",     tz: "America/Anchorage",     x: 95,  y: 90  },
     { name: "Honolulu",      tz: "Pacific/Honolulu",      x: 120, y: 260 },
     { name: "Cairo",         tz: "Africa/Cairo",          x: 570, y: 190 },
-    { name: "Beijing",       tz: "Asia/Shanghai",         x: 780, y: 160 },
-    { name: "Singapore",     tz: "Asia/Singapore",        x: 800, y: 270 },
-    { name: "Berlin",        tz: "Europe/Berlin",         x: 540, y: 120 },
-    { name: "Mexico City",   tz: "America/Mexico_City",   x: 250, y: 230 }
+    { name: "Beijing",       tz: "Asia/Shanghai",         x: 785, y: 160 },
+    { name: "Singapore",     tz: "Asia/Singapore",        x: 805, y: 260 },
+    { name: "Berlin",        tz: "Europe/Berlin",         x: 535, y: 115 },
+    { name: "Mexico City",   tz: "America/Mexico_City",   x: 240, y: 230 }
 ];
 
 // Draw dots and labels for each city using manual x/y
@@ -61,7 +60,6 @@ cities.forEach(city => {
     let offsetX = city.x < width / 2 ? 15 : -15;
     let offsetY = 5;
 
-    // Check for nearby labels in the X direction and adjust Y if needed
     const nearbyLabels = labelPositions.filter(pos => Math.abs(pos.x - city.x) < 50);
     if (nearbyLabels.length > 0) {
         offsetY += nearbyLabels.length * 15;
