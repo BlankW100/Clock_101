@@ -1,14 +1,3 @@
-// --- Add Firebase imports at the top ---
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-// --- Your Firebase config here ---
-const firebaseConfig = {
-    // ...your config...
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
 // Show user's timezone at the top
 function showUserTimezone() {
     const tz = moment.tz.guess();
@@ -23,23 +12,11 @@ function initTimezoneMap() {
     showUserTimezone();
     setInterval(showUserTimezone, 60000);
 
+    // SVG map setup
     const svg = document.getElementById('timezone-map');
     const cityTzDiv = document.getElementById('city-tz');
-    let labelElements = {};
 
-    // Add favorite display below the map
-    let favoriteDiv = document.getElementById('favorite-tz');
-    if (!favoriteDiv) {
-        favoriteDiv = document.createElement('div');
-        favoriteDiv.id = 'favorite-tz';
-        favoriteDiv.style.textAlign = 'center';
-        favoriteDiv.style.fontSize = '1.2rem';
-        favoriteDiv.style.fontFamily = 'monospace';
-        favoriteDiv.style.marginTop = '18px';
-        document.querySelector('main').appendChild(favoriteDiv);
-    }
-
-    // City data
+    // Manually calibrated city coordinates and label offsets for 1450x711 SVG
     const cities = [
         { name: "New York",      tz: "America/New_York",      x: 595,  y: 250,  labelDX: 20,  labelDY: 0,   anchor: "start" },
         { name: "London",        tz: "Europe/London",         x: 790,  y: 120,  labelDX: 10,  labelDY: -10, anchor: "start" },
@@ -89,8 +66,13 @@ function initTimezoneMap() {
         label.textContent = city.name;
         svg.appendChild(label);
 
-        // Store label element for color change
-        labelElements[city.name] = label;
+        // Add click event to show city time below user time
+        dot.addEventListener('click', function() {
+            const now = moment().tz(city.tz);
+            const offset = now.format('Z');
+            const cityDisplay = `${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
+            cityTzDiv.innerHTML = `<span style="color:#ffa;"><b>${city.name}:</b></span> ${cityDisplay}`;
+        });
 
         // Show city time on hover (not click)
         dot.addEventListener('mouseenter', function() {
@@ -102,68 +84,8 @@ function initTimezoneMap() {
         dot.addEventListener('mouseleave', function() {
             cityTzDiv.innerHTML = "";
         });
-
-        // Favorite on click
-        dot.addEventListener('click', function() {
-            setFavorite(city.name);
-        });
     });
-
-    // Make cities and labelElements globally accessible for search
-    window.cities = cities;
-    window.labelElements = labelElements;
-    window.favoriteCity = null;
 }
 
-// Helper to set favorite city, highlight, show, and save to localStorage
-function setFavorite(cityName) {
-    const favoriteDiv = document.getElementById('favorite-tz');
-    const city = window.cities.find(c => c.name.toLowerCase() === cityName.toLowerCase());
-    if (!city) {
-        favoriteDiv.innerHTML = `<span style="color:#d32f2f;"><b>City not found.</b></span>`;
-        return;
-    }
-    // Remove highlight from previous favorite
-    if (window.favoriteCity && window.labelElements && window.labelElements[window.favoriteCity.name]) {
-        window.labelElements[window.favoriteCity.name].setAttribute("fill", "#222");
-    }
-    // Set new favorite
-    window.favoriteCity = city;
-    if (window.labelElements && window.labelElements[city.name]) {
-        window.labelElements[city.name].setAttribute("fill", "#ff9800");
-    }
-    const now = moment().tz(city.tz);
-    const offset = now.format('Z');
-    const cityDisplay = `${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
-    favoriteDiv.innerHTML = `<span style="color:#ff9800;"><b>★ Favorite: ${city.name}</b></span> ${cityDisplay}`;
-    // Save to localStorage
-    localStorage.setItem('favoriteCity', city.name);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    initTimezoneMap();
-
-    const searchInput = document.getElementById('favorite-search');
-    const searchBtn = document.getElementById('favorite-search-btn');
-    const favoriteDiv = document.getElementById('favorite-tz');
-
-    // Restore favorite from localStorage
-    const savedFavorite = localStorage.getItem('favoriteCity');
-    if (savedFavorite) {
-        setFavorite(savedFavorite);
-    }
-
-    // Set favorite on button click
-    searchBtn.addEventListener('click', function() {
-        const cityName = searchInput.value.trim();
-        if (!cityName) return;
-        setFavorite(cityName);
-    });
-
-    // Also set favorite on Enter key in input
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            setFavorite(searchInput.value.trim());
-        }
-    });
-});
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initTimezoneMap);
