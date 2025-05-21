@@ -7,62 +7,32 @@
     <link rel="stylesheet" href="assets/css/alarm.css">
     <link rel="stylesheet" href="assets/css/navbar.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      /* Navigation Bar Styling */
-      nav {
-        background-color: #333;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        padding: 10px 0;
-      }
-      nav ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-      }
-      nav ul li {
-        margin: 0 15px;
-      }
-      nav ul li a {
-        text-decoration: none;
-        color: white;
-        font-size: 16px;
-        padding: 8px 16px;
-        transition: background-color 0.3s;
-      }
-      nav ul li a:hover {
-        background-color: #575757;
-        border-radius: 4px;
-      }
-
-      /* Live Time Styling */
-      .live-time {
-        font-size: 2rem;
-        font-weight: bold;
-        text-align: center;
-        margin: 20px 0;
-      }
-    </style>
+    <script type="module" src="assets/js/fetch-username.js" defer></script>
+    <script type="module" src="assets/js/fetch-user-settings.js"></script>
+    
   </head>
   <body>
     <header>
-        <h1>Clock 101</h1>
-        <nav>
-            <ul>
-                <li><a href="converter.html">Time Converter</a></li>
-                <li><a href="calculator.html">Date Calculator</a></li>
-                <li><a href="alarm.html">Alarm</a></li>
-                <li><a href="account/login.html">Login</a></li>
-                <li><a href="account/signup.html">Sign Up</a></li>
+        <nav class="nav-bar">
+            <!-- Left-aligned buttons -->
+            <ul class="nav-menu">
+                <li><button class="nav-button" onclick="window.location.href='converter.html'">Time Converter</button></li>
+                <li><button class="nav-button" onclick="window.location.href='calculator.html'">Date Calculator</button></li>
+                <li><button class="nav-button" onclick="window.location.href='alarm.html'">Alarm</button></li>
+                <li><button id="signout-link" class="nav-button">Logout</button></li>
             </ul>
+
+            <!-- Centered title -->
+            <h2 class="header-title" onclick="window.location.href='index.html'">Clock 101</h2>
+
+            <!-- Right-aligned welcome message -->
+            <div class="welcome-message" id="welcome-message">Welcome, <span id="username">Loading...</span></div>
         </nav>
     </header>
 
     <div class="wrapper">
       <img src="assets/Alarm files/clock.svg" alt="clock">
-      <h1>00:00:00 PM</h1>
+      <h1 id="live-time">00:00:00 PM</h1>
       <div class="content">
         <div class="column">
           <select>
@@ -96,8 +66,6 @@
       }, 1000);
     </script>
 
-
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -121,7 +89,7 @@
         const fetchUsername = async () => {
             const userId = sessionStorage.getItem('userId');
             if (userId) {
-                const userDoc = doc(db, "users", JSON.parse(userId));
+                const userDoc = doc(db, "users", userId);
                 const userSnapshot = await getDoc(userDoc);
                 if (userSnapshot.exists()) {
                     const username = userSnapshot.data().username || "Guest";
@@ -163,4 +131,3 @@
     </script>
   </body>
 </html>
-``` 
