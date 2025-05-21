@@ -14,19 +14,7 @@ function initTimezoneMap() {
 
     // SVG map setup
     const svg = document.getElementById('timezone-map');
-    const tooltip = document.getElementById('tooltip');
     const cityTzDiv = document.getElementById('city-tz');
-
-    // Style the tooltip
-    tooltip.style.position = 'absolute';
-    tooltip.style.background = 'rgba(0,0,0,0.8)';
-    tooltip.style.color = 'white';
-    tooltip.style.padding = '8px 12px';
-    tooltip.style.borderRadius = '4px';
-    tooltip.style.fontSize = '14px';
-    tooltip.style.pointerEvents = 'none';
-    tooltip.style.display = 'none';
-    tooltip.style.zIndex = '100';
 
     // Manually calibrated city coordinates and label offsets for 1450x711 SVG
     const cities = [
@@ -53,7 +41,6 @@ function initTimezoneMap() {
     ];
 
     // Draw dots and labels for each city
-    const labelPositions = [];
     cities.forEach(city => {
         // Create city dot
         const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -79,46 +66,13 @@ function initTimezoneMap() {
         label.textContent = city.name;
         svg.appendChild(label);
 
-        labelPositions.push({ x: city.x + city.labelDX, y: city.y + city.labelDY });
-
         // Add click event to show city time below user time
         dot.addEventListener('click', function() {
             const now = moment().tz(city.tz);
             const offset = now.format('Z');
             const cityDisplay = `${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
-
             cityTzDiv.innerHTML = `<span style="color:#ffa;"><b>${city.name}:</b></span> ${cityDisplay}`;
         });
-    });
-
-    // Tooltip functionality
-    svg.addEventListener('mousemove', function(e) {
-        const target = e.target;
-        if (target.tagName === "circle" && target.hasAttribute("data-tz")) {
-            const tz = target.getAttribute("data-tz");
-            const name = target.getAttribute("data-name");
-            const now = moment().tz(tz);
-            const offset = now.format('Z');
-            const cityDisplay = `${tz}  ${now.format('hh:mm a')} UTC${offset}`;
-
-            const userTz = moment.tz.guess();
-            const userNow = moment().tz(userTz);
-            const userOffset = userNow.format('Z');
-            const userDisplay = `${userTz}  ${userNow.format('hh:mm a')} UTC${userOffset}`;
-
-            tooltip.style.display = "block";
-            tooltip.innerHTML = `<strong>${name}</strong><br>
-                <span style="color:#aaf;">Your time:</span> ${userDisplay}<br>
-                <span style="color:#ffa;">City time:</span> ${cityDisplay}`;
-            tooltip.style.left = (e.clientX + 15) + "px";
-            tooltip.style.top = (e.clientY + window.scrollY - 30) + "px";
-        } else {
-            tooltip.style.display = "none";
-        }
-    });
-
-    svg.addEventListener('mouseleave', function() {
-        tooltip.style.display = "none";
     });
 }
 
