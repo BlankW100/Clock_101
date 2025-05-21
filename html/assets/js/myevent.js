@@ -1,4 +1,4 @@
-import { db } from "assets/js/firebase-init.js";
+import { db } from "./firebase-init.js";
 import { ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
 function saveEvent() {
