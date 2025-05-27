@@ -23,11 +23,11 @@ const setAlarmBtn = document.getElementById("set-alarm-btn");
 const stopAlarmBtn = document.getElementById("stop-alarm-btn");
 const alarmsListDiv = document.getElementById("alarms-list");
 const liveTimeElement = document.getElementById("live-time");
+const alarmLabelInput = document.getElementById("alarm-label-input");
 
 // State
 let alarms = [];
 let currentRingtone = null;
-let alarmTimeout = null;
 
 // Populate select menus
 for (let i = 1; i <= 12; i++) {
@@ -67,6 +67,9 @@ function checkAlarms() {
             playRingtone(alarm.sound || "ringtone.mp3");
             alarm.triggered = true;
             stopAlarmBtn.classList.remove("hidden");
+            if (alarm.label) {
+                alert(`Alarm: ${alarm.label}`);
+            }
         }
     });
 }
@@ -94,6 +97,7 @@ async function setAlarm() {
     const minute = minuteSelect.value;
     const ampm = ampmSelect.value;
     const sound = ringtoneSelect.value;
+    const label = alarmLabelInput.value.trim();
 
     if (hour === "Hour" || minute === "Minute" || ampm === "AM/PM") {
         alert("Please select a valid time to set Alarm!");
@@ -110,6 +114,7 @@ async function setAlarm() {
     const alarmDoc = {
         time,
         sound,
+        label,
         createdAt: new Date().toISOString()
     };
 
@@ -117,7 +122,8 @@ async function setAlarm() {
         const userDocRef = doc(db, "users", userId);
         const alarmCollectionRef = collection(userDocRef, "alarm");
         await addDoc(alarmCollectionRef, alarmDoc);
-        await fetchAlarms(); // <-- fetch after adding
+        await fetchAlarms();
+        alarmLabelInput.value = ""; // Clear label input
         alert("Alarm set successfully!");
     } catch (error) {
         console.error("Error setting alarm:", error);
@@ -135,9 +141,12 @@ function displayAlarms() {
         const div = document.createElement("div");
         div.className = "alarm-item";
         div.innerHTML = `
-            <span>${alarm.time}</span>
-            <span style="margin-left:10px;">🔔 ${alarm.sound.replace(".mp3", "")}</span>
-            <button data-id="${alarm.id}" class="delete-alarm-btn" style="margin-left:10px;">Delete</button>
+            <span class="alarm-time">${alarm.time}</span>
+            <span class="alarm-label">${alarm.label ? alarm.label : ""}</span>
+            <span style="margin-left:10px;">🔔 ${alarm.sound.replace(".mp3", "").replace(/^\w/, c => c.toUpperCase())}</span>
+            <span class="alarm-controls">
+                <button data-id="${alarm.id}" class="delete-alarm-btn" title="Delete">🗑️</button>
+            </span>
         `;
         alarmsListDiv.appendChild(div);
     });
