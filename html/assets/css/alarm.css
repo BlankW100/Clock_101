@@ -143,29 +143,29 @@ body{
 
 /* Make the time display bigger and bolder */
 .big-live-time {
-  font-size: 12.8rem; /* 200% larger than before */
-  font-weight: 900;
+  font-size: 4.2rem;
+  font-weight: 800;
   letter-spacing: 2px;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
   text-align: center;
   color: #222;
   line-height: 1.1;
 }
 
-/* Modern select styling for time */
+/* Set alarm time row: compact but readable */
 .alarm-time-row {
-  gap: 12px;
-  margin-bottom: 28px;
+  gap: 10px;
+  margin-bottom: 22px;
 }
 .alarm-time-select {
-  font-size: 0.66rem; /* 1.1rem * 0.6 = 0.66rem */
-  padding: 4px 7px;
+  font-size: 1.1rem;
+  padding: 7px 12px;
   border-radius: 8px;
   border: 1.5px solid #4A98F7;
   background: #f7faff;
   color: #222;
   font-weight: 500;
-  min-width: 33px; /* 55px * 0.6 = 33px */
+  min-width: 55px;
   transition: border 0.2s;
 }
 .alarm-time-select:focus {
@@ -179,33 +179,45 @@ body{
   margin: 0 2px;
 }
 
-/* Make label input longer and nice */
-.long-label {
+/* Ringtone dropdown: comfortable size */
+.alarm-sound-select {
   width: 100%;
-  max-width: 480px;
-  font-size: 1.4rem;
-  padding: 18px;
+  min-width: 180px;
+  font-size: 1.15em;
+  padding: 10px 8px;
+  border-radius: 8px;
+  border: 1.5px solid #bfbfbf;
+  margin-bottom: 0;
+}
+
+/* Label input: long and clear */
+.long-label,
+.alarm-label-input {
+  width: 100%;
+  max-width: 380px;
+  font-size: 1.15rem;
+  padding: 13px;
   margin: 0 auto;
-  border-radius: 10px;
-  border: 2px solid #bfbfbf;
+  border-radius: 8px;
+  border: 1.5px solid #bfbfbf;
   background: #f7faff;
   display: block;
 }
 
-/* Buttons side by side, same size */
+/* Buttons: side by side, same size */
 .alarm-btn-row {
-  gap: 24px;
+  gap: 18px;
   margin-bottom: 0;
   justify-content: center;
   width: 100%;
 }
 .alarm-btn {
   width: 100%;
-  max-width: 220px;
-  padding: 22px 0;
+  max-width: 180px;
+  padding: 15px 0;
   margin-top: 0;
-  font-size: 1.5rem;
-  border-radius: 10px;
+  font-size: 1.2rem;
+  border-radius: 8px;
   background: #4A98F7;
   color: #fff;
   border: none;
@@ -218,8 +230,6 @@ body{
 .alarm-btn:hover {
   background: #3576c7;
 }
-
-/* Make both buttons always take up the same width, even if one is hidden */
 .alarm-btn-row {
   display: flex;
   width: 100%;
@@ -227,6 +237,54 @@ body{
 .alarm-btn-row .alarm-btn {
   flex: 1 1 0;
   min-width: 0;
+}
+
+/* Alarm list: readable */
+#alarms-list {
+  margin-top: 28px;
+  width: 100%;
+  font-size: 1.1rem;
+}
+
+.alarm-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f7f7fa;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.alarm-label {
+  color: #4A98F7;
+  font-weight: 600;
+  margin-left: 12px;
+  font-size: 1em;
+}
+
+.alarm-time {
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.alarm-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-alarm-btn {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.delete-alarm-btn:hover {
+  color: #b71c1c;
 }
 
 /* Responsive for mobile */
@@ -237,34 +295,34 @@ body{
     font-size: 1.05rem;
   }
   .big-live-time {
-    font-size: 3.2rem;
+    font-size: 2.2rem;
   }
   .alarm-time-select {
-    font-size: 1.1rem;
-    padding: 8px 8px;
-    min-width: 50px;
+    font-size: 1rem;
+    padding: 6px 6px;
+    min-width: 40px;
   }
   .alarm-sound-select {
-    min-width: 120px;
+    min-width: 100px;
     font-size: 1em;
-    padding: 8px 4px;
+    padding: 7px 4px;
   }
   .long-label,
   .alarm-label-input {
     max-width: 98vw;
     font-size: 1rem;
-    padding: 10px;
+    padding: 8px;
   }
   .alarm-btn {
     max-width: 100vw;
     font-size: 1rem;
-    padding: 12px 0;
+    padding: 10px 0;
   }
   #alarms-list {
     font-size: 1rem;
   }
   .alarm-item {
-    padding: 8px 8px;
+    padding: 7px 7px;
     font-size: 1em;
   }
 }
