@@ -69,3 +69,56 @@ body{
   border-radius: 5px;
   background: #4A98F7;
 }
+.alarm-label-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0 0 0;
+  border-radius: 5px;
+  border: 1px solid #bfbfbf;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+#alarms-list {
+  margin-top: 18px;
+  width: 100%;
+}
+
+.alarm-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f7f7fa;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.alarm-label {
+  color: #4A98F7;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+.alarm-time {
+  font-weight: 600;
+}
+
+.alarm-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.delete-alarm-btn {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.delete-alarm-btn:hover {
+  color: #b71c1c;
+}

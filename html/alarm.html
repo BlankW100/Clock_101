@@ -26,6 +26,7 @@
     <div class="wrapper">
       <img src="assets/Alarm files/clock.svg" alt="clock">
       <h1 id="live-time">00:00:00 PM</h1>
+      <input type="text" id="alarm-label-input" class="alarm-label-input" maxlength="32" placeholder="Alarm label (e.g. Wake up, Meeting)">
       <div class="content">
         <div class="column">
           <select id="hour-select">
@@ -57,8 +58,8 @@
         </div>
       </div>
       <button id="set-alarm-btn">Set Alarm</button>
-      <button id="stop-alarm-btn" class="hidden" style="margin-top:20px;">Stop Alarm</button>
-      <div id="alarms-list" style="margin-top:20px;"></div>
+      <button id="stop-alarm-btn" class="hidden">Stop Alarm</button>
+      <div id="alarms-list"></div>
     </div>
     <script src="assets/js/alarm.js" type="module"></script>
     <script>
