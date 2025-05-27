@@ -54,11 +54,10 @@ function sendEmailWhenEventEnds(eventName, userEmail) {
     })
     .then((response) => {
         console.log("Email sent!", response.status, response.text);
-    }, (error) => {
-        console.error("Failed to send email:", error);
-    });
-}
-}
+        }, (error) => {
+            console.error("Failed to send email:", error);
+        });
+    }
 
 // --- Save Event ---
 async function saveEvent() {
