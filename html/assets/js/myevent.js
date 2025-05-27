@@ -50,13 +50,14 @@ function sendNoReplyEmail(userEmail, eventName) {
 function sendEmailWhenEventEnds(eventName, userEmail) {
     emailjs.send("service_nereuyw", "template_m05yqxb", {
         event_name: eventName,
-        user_email: userEmail
+        user_email: userEmail // This must match the "To" field in your EmailJS template
     })
     .then((response) => {
         console.log("Email sent!", response.status, response.text);
     }, (error) => {
         console.error("Failed to send email:", error);
     });
+}
 }
 
 // --- Save Event ---
