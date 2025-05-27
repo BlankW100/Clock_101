@@ -143,7 +143,7 @@ body{
 
 /* Make the time display bigger and bolder */
 .big-live-time {
-  font-size: 8rem; /* 200% larger than before */
+  font-size: 12.8rem; /* 200% larger than before */
   font-weight: 900;
   letter-spacing: 2px;
   margin-bottom: 40px;
@@ -158,14 +158,14 @@ body{
   margin-bottom: 28px;
 }
 .alarm-time-select {
-  font-size: 1.1rem;
-  padding: 7px 10px;
+  font-size: 0.66rem; /* 1.1rem * 0.6 = 0.66rem */
+  padding: 4px 7px;
   border-radius: 8px;
   border: 1.5px solid #4A98F7;
   background: #f7faff;
   color: #222;
   font-weight: 500;
-  min-width: 55px;
+  min-width: 33px; /* 55px * 0.6 = 33px */
   transition: border 0.2s;
 }
 .alarm-time-select:focus {
