@@ -26,39 +26,42 @@
     <div class="wrapper">
       <img src="assets/Alarm files/clock.svg" alt="clock">
       <h1 id="live-time">00:00:00 PM</h1>
-      <input type="text" id="alarm-label-input" class="alarm-label-input" maxlength="32" placeholder="Alarm label (e.g. Wake up, Meeting)">
-      <div class="content">
-        <div class="column">
-          <select id="hour-select">
-            <option value="Hour" selected disabled hidden>Hour</option>
-          </select>
-        </div>
-        <div class="column">
-          <select id="minute-select">
-            <option value="Minute" selected disabled hidden>Minute</option>
-          </select>
-        </div>
-        <div class="column">
-          <select id="ampm-select">
-            <option value="AM/PM" selected disabled hidden>AM/PM</option>
-          </select>
-        </div>
-        <div class="column">
-          <select id="ringtone-select">
-            <option value="bells.mp3">Bells</option>
-            <option value="classic.mp3">Classic</option>
-            <option value="cuckoo.mp3">Cuckoo</option>
-            <option value="glow.mp3">Glow</option>
-            <option value="ringtone.mp3" selected>Default</option>
-            <option value="rooster.mp3">Rooster</option>
-            <option value="school.mp3">School</option>
-            <option value="twinkle.mp3">Twinkle</option>
-            <option value="windchimes.mp3">Windchimes</option>
-          </select>
-        </div>
+      <!-- Time row -->
+      <div class="alarm-row">
+        <select id="hour-select">
+          <option value="Hour" selected disabled hidden>Hour</option>
+        </select>
+        <span class="alarm-sep">:</span>
+        <select id="minute-select">
+          <option value="Minute" selected disabled hidden>Minute</option>
+        </select>
+        <select id="ampm-select">
+          <option value="AM/PM" selected disabled hidden>AM/PM</option>
+        </select>
       </div>
-      <button id="set-alarm-btn">Set Alarm</button>
-      <button id="stop-alarm-btn" class="hidden">Stop Alarm</button>
+      <!-- Sound row -->
+      <div class="alarm-row">
+        <select id="ringtone-select" class="alarm-sound-select">
+          <option value="bells.mp3">Bells</option>
+          <option value="classic.mp3">Classic</option>
+          <option value="cuckoo.mp3">Cuckoo</option>
+          <option value="glow.mp3">Glow</option>
+          <option value="ringtone.mp3" selected>Default</option>
+          <option value="rooster.mp3">Rooster</option>
+          <option value="school.mp3">School</option>
+          <option value="twinkle.mp3">Twinkle</option>
+          <option value="windchimes.mp3">Windchimes</option>
+        </select>
+      </div>
+      <!-- Label row -->
+      <div class="alarm-row">
+        <input type="text" id="alarm-label-input" class="alarm-label-input" maxlength="32" placeholder="Alarm label (e.g. Wake up, Meeting)">
+      </div>
+      <!-- Buttons row -->
+      <div class="alarm-row alarm-btn-row">
+        <button id="set-alarm-btn" class="alarm-btn">Set Alarm</button>
+        <button id="stop-alarm-btn" class="alarm-btn hidden">Stop Alarm</button>
+      </div>
       <div id="alarms-list"></div>
     </div>
     <script src="assets/js/alarm.js" type="module"></script>
