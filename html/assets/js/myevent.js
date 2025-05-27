@@ -5,7 +5,10 @@ import {
     addDoc,
     onSnapshot,
     query,
-    orderBy
+    orderBy,
+    deleteDoc,
+    doc,
+    updateDoc
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Your Firebase configuration
@@ -22,18 +25,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+let editingEventId = null;
+
 async function saveEvent() {
     const eventName = document.getElementById("eventName").value;
     const eventDate = document.getElementById("eventDate").value;
 
     if (!eventName || !eventDate) return alert("Please enter both fields!");
 
-    await addDoc(collection(db, "events"), {
-        name: eventName,
-        date: eventDate
-    });
-
-    alert("Event Saved!");
+    if (editingEventId) {
+        // Update existing event
+        const eventRef = doc(db, "events", editingEventId);
+        await updateDoc(eventRef, {
+            name: eventName,
+            date: eventDate
+        });
+        editingEventId = null;
+        document.getElementById("saveEventBtn").textContent = "Save Event";
+        alert("Event updated!");
+    } else {
+        // Add new event
+        await addDoc(collection(db, "events"), {
+            name: eventName,
+            date: eventDate
+        });
+        alert("Event Saved!");
+    }
     document.getElementById("eventName").value = "";
     document.getElementById("eventDate").value = "";
 }
@@ -67,8 +84,32 @@ function renderEvents(events) {
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}"></div>
+            <button class="edit-btn" data-id="${event.id}">Edit</button>
+            <button class="delete-btn" data-id="${event.id}">Delete</button>
         `;
         eventsList.appendChild(eventDiv);
+    });
+
+    // Add event listeners for edit and delete
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+            const id = btn.getAttribute("data-id");
+            const event = events.find(ev => ev.id === id);
+            if (event) {
+                document.getElementById("eventName").value = event.name;
+                document.getElementById("eventDate").value = event.date;
+                editingEventId = id;
+                document.getElementById("saveEventBtn").textContent = "Update Event";
+            }
+        });
+    });
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+            const id = btn.getAttribute("data-id");
+            if (confirm("Are you sure you want to delete this event?")) {
+                await deleteDoc(doc(db, "events", id));
+            }
+        });
     });
 
     // Start countdowns for all events
@@ -87,8 +128,9 @@ function updateAllCountdowns() {
 const q = query(collection(db, "events"), orderBy("date"));
 onSnapshot(q, (snapshot) => {
     const events = [];
-    snapshot.forEach(doc => {
-        events.push(doc.data());
+    snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        events.push({ ...data, id: docSnap.id });
     });
     renderEvents(events);
     // Start interval for updating countdowns only once
