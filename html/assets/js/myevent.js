@@ -7,6 +7,7 @@ import {
     query,
     orderBy
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
 // Initialize Firebase (for Firestore)
 const firebaseConfig = {
@@ -20,8 +21,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- 1. Set your email globally so it is always used ---
-window.currentUserEmail = "weier0816@gmail.com";
+// --- Get current user's email automatically ---
+const auth = getAuth(app);
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        window.currentUserEmail = user.email;
+        console.log("Logged in as:", user.email);
+    } else {
+        window.currentUserEmail = null;
+        console.log("No user logged in");
+    }
+});
 
 // --- EmailJS Notification Function ---
 function sendNoReplyEmail(userEmail, eventName) {
@@ -100,14 +110,12 @@ function updateAllCountdowns(events = []) {
         const countdownStr = getCountdownString(date);
         div.textContent = countdownStr;
 
-        // --- 2. Add debug log to check which email will be used ---
+        // --- Use the logged-in user's email ---
         const userEmail = window.currentUserEmail || "user@example.com";
-        // --- 3. Only send if not already notified and event has started ---
         if (countdownStr === "Event has started!" && !notifiedEvents.has(date + name)) {
             notifiedEvents.add(date + name);
             console.log("Sending email to:", userEmail);
 
-            // --- Use EmailJS for notification ---
             sendNoReplyEmail(userEmail, name);
         }
     });
