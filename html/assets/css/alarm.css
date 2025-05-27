@@ -143,8 +143,8 @@ body{
 
 /* Make the time display bigger and bolder */
 .big-live-time {
-  font-size: 6.4rem; /* 200% larger than before */
-  font-weight: 800;
+  font-size: 8rem; /* 200% larger than before */
+  font-weight: 900;
   letter-spacing: 2px;
   margin-bottom: 40px;
   text-align: center;
@@ -154,29 +154,29 @@ body{
 
 /* Modern select styling for time */
 .alarm-time-row {
-  gap: 24px;
+  gap: 12px;
   margin-bottom: 28px;
 }
 .alarm-time-select {
-  font-size: 2.2rem;
-  padding: 18px 28px;
-  border-radius: 12px;
-  border: 2.5px solid #4A98F7;
+  font-size: 1.1rem;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #4A98F7;
   background: #f7faff;
   color: #222;
-  font-weight: 600;
-  min-width: 110px;
+  font-weight: 500;
+  min-width: 55px;
   transition: border 0.2s;
 }
 .alarm-time-select:focus {
-  border: 2.5px solid #3576c7;
+  border: 1.5px solid #3576c7;
   outline: none;
 }
 .alarm-sep {
-  font-size: 2.5em;
-  font-weight: 800;
+  font-size: 1.3em;
+  font-weight: 700;
   color: #4A98F7;
-  margin: 0 6px;
+  margin: 0 2px;
 }
 
 /* Make label input longer and nice */
