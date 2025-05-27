@@ -1,7 +1,7 @@
 // Time Converter Script using Moment.js and Moment Timezone
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -19,26 +19,26 @@ const db = getFirestore(app);
 const timezones = moment.tz.names();
 let favTimezones = [];
 
-// Fetch and display favorite timezones from Firestore
+// Fetch and display favorite timezones from Firestore (favtime collection)
 async function fetchFavoriteTimezones() {
     const userId = sessionStorage.getItem("userId");
     if (!userId) return;
-    const userDoc = doc(db, "users", JSON.parse(userId));
+    const userDoc = doc(db, "favtime", userId);
     const userSnapshot = await getDoc(userDoc);
     if (userSnapshot.exists()) {
-        favTimezones = userSnapshot.data().fav_tz || [];
+        favTimezones = userSnapshot.data().timezones || [];
     } else {
         favTimezones = [];
     }
     displayFavoriteTimezones();
 }
 
-// Save favorite timezones to Firestore
+// Save favorite timezones to Firestore (favtime collection)
 async function saveFavoriteTimezones() {
     const userId = sessionStorage.getItem("userId");
     if (!userId) return;
-    const userDoc = doc(db, "users", JSON.parse(userId));
-    await setDoc(userDoc, { fav_tz: favTimezones }, { merge: true });
+    const userDoc = doc(db, "favtime", userId);
+    await setDoc(userDoc, { timezones: favTimezones }, { merge: true });
 }
 
 // Display favorite timezones as star buttons
