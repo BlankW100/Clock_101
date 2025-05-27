@@ -35,7 +35,7 @@ onAuthStateChanged(auth, (user) => {
 
 // --- EmailJS Notification Function ---
 function sendNoReplyEmail(userEmail, eventName) {
-    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+    emailjs.send("service_nereuyw", "template_m05yqxb", {
         to_email: userEmail,
         message: `Your event "${eventName}" has started!`
     })
@@ -43,6 +43,19 @@ function sendNoReplyEmail(userEmail, eventName) {
         console.log("SUCCESS", response.status, response.text);
     }, function(error) {
         console.log("FAILED", error);
+    });
+}
+
+// --- Alternative: Send email with different template variables ---
+function sendEmailWhenEventEnds(eventName, userEmail) {
+    emailjs.send("service_nereuyw", "template_m05yqxb", {
+        event_name: eventName,
+        user_email: userEmail
+    })
+    .then((response) => {
+        console.log("Email sent!", response.status, response.text);
+    }, (error) => {
+        console.error("Failed to send email:", error);
     });
 }
 
@@ -116,7 +129,9 @@ function updateAllCountdowns(events = []) {
             notifiedEvents.add(date + name);
             console.log("Sending email to:", userEmail);
 
-            sendNoReplyEmail(userEmail, name);
+            // You can use either function below:
+            // sendNoReplyEmail(userEmail, name);
+            sendEmailWhenEventEnds(name, userEmail);
         }
     });
 }

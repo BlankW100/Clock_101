@@ -7,24 +7,11 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
-
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
 const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-const sgMail = require("@sendgrid/mail");
+const { Resend } = require("resend");
 
-admin.initializeApp();
-
-sgMail.setApiKey("YOUR_SENDGRID_API_KEY"); // Replace with your real key
+// Use your real Resend API key here
+const resend = new Resend("re_Qrr2KVTQ_47mVpSpyyoSxgXe5Kg6PLteX");
 
 exports.sendEmailOnEventEnd = functions.firestore
   .document("events/{eventId}")
@@ -35,18 +22,16 @@ exports.sendEmailOnEventEnd = functions.firestore
     if (!before.ended && after.ended) {
       const email = after.userEmail;
 
-      const msg = {
-        to: email,
-        from: "noreply@yourdomain.com", // Must be a verified sender in SendGrid
-        subject: "Your event has ended",
-        text: "Hi there, your 'myevent' has just ended. Thank you!",
-      };
-
       try {
-        await sgMail.send(msg);
-        console.log("Email sent to:", email);
+        await resend.emails.send({
+          from: "noreply.clock101@gmail.com", // must match verified sender in Resend
+          to: email,
+          subject: "Your event has ended",
+          text: `Hi! Your event "${after.eventName || "Clock 101 Event"}" has ended.`,
+        });
+        console.log(`Email sent to ${email}`);
       } catch (error) {
-        console.error("SendGrid error:", error);
+        console.error("Failed to send email:", error);
       }
     }
 
