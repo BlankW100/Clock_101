@@ -24,20 +24,13 @@
     </header>
 
     <div class="wrapper">
-      <img src="assets/Alarm files/clock.svg" alt="clock">
-      <h1 id="live-time">00:00:00 PM</h1>
+      <h1 id="live-time" class="big-live-time">00:00:00 PM</h1>
       <!-- Time row -->
-      <div class="alarm-row">
-        <select id="hour-select">
-          <option value="Hour" selected disabled hidden>Hour</option>
-        </select>
+      <div class="alarm-row alarm-time-row">
+        <select id="hour-select" class="alarm-time-select"></select>
         <span class="alarm-sep">:</span>
-        <select id="minute-select">
-          <option value="Minute" selected disabled hidden>Minute</option>
-        </select>
-        <select id="ampm-select">
-          <option value="AM/PM" selected disabled hidden>AM/PM</option>
-        </select>
+        <select id="minute-select" class="alarm-time-select"></select>
+        <select id="ampm-select" class="alarm-time-select"></select>
       </div>
       <!-- Sound row -->
       <div class="alarm-row">
@@ -55,7 +48,7 @@
       </div>
       <!-- Label row -->
       <div class="alarm-row">
-        <input type="text" id="alarm-label-input" class="alarm-label-input" maxlength="32" placeholder="Alarm label (e.g. Wake up, Meeting)">
+        <input type="text" id="alarm-label-input" class="alarm-label-input long-label" maxlength="64" placeholder="Alarm label (e.g. Wake up, Meeting)">
       </div>
       <!-- Buttons row -->
       <div class="alarm-row alarm-btn-row">
