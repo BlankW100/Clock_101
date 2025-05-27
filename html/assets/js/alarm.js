@@ -116,9 +116,8 @@ async function setAlarm() {
     try {
         const userDocRef = doc(db, "users", userId);
         const alarmCollectionRef = collection(userDocRef, "alarm");
-        const docRef = await addDoc(alarmCollectionRef, alarmDoc);
-        alarms.push({ id: docRef.id, ...alarmDoc });
-        displayAlarms();
+        await addDoc(alarmCollectionRef, alarmDoc);
+        await fetchAlarms(); // <-- fetch after adding
         alert("Alarm set successfully!");
     } catch (error) {
         console.error("Error setting alarm:", error);
