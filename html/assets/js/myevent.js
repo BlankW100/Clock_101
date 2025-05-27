@@ -23,26 +23,18 @@ const db = getFirestore(app);
 // --- 1. Set your email globally so it is always used ---
 window.currentUserEmail = "weier0816@gmail.com";
 
-// --- Email Notification Setup (using compat SDK for Functions) ---
-window.addEventListener("DOMContentLoaded", () => {
-    // Load compat SDK for functions
-    const scriptApp = document.createElement('script');
-    scriptApp.src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
-    scriptApp.onload = () => {
-        const scriptFunc = document.createElement('script');
-        scriptFunc.src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js";
-        scriptFunc.onload = () => {
-            // Initialize compat Firebase app if not already initialized
-            if (!window.firebase.apps.length) {
-                window.firebase.initializeApp(firebaseConfig);
-            }
-            window.functions = window.firebase.functions();
-            window.sendAlarmEmail = window.functions.httpsCallable('sendAlarmEmail');
-        };
-        document.body.appendChild(scriptFunc);
-    };
-    document.body.appendChild(scriptApp);
-});
+// --- EmailJS Notification Function ---
+function sendNoReplyEmail(userEmail, eventName) {
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        to_email: userEmail,
+        message: `Your event "${eventName}" has started!`
+    })
+    .then(function(response) {
+        console.log("SUCCESS", response.status, response.text);
+    }, function(error) {
+        console.log("FAILED", error);
+    });
+}
 
 // --- Save Event ---
 async function saveEvent() {
@@ -115,26 +107,8 @@ function updateAllCountdowns(events = []) {
             notifiedEvents.add(date + name);
             console.log("Sending email to:", userEmail);
 
-            // --- 4. Check if sendAlarmEmail is ready ---
-            if (window.sendAlarmEmail) {
-                window.sendAlarmEmail({
-                    email: userEmail,
-                    subject: "⏰ Time's up!",
-                    message: `Your event "${name}" has started!`
-                }).then(result => {
-                    // --- 5. Log result for debugging ---
-                    if (result.data && result.data.success) {
-                        console.log("Email sent successfully!");
-                    } else {
-                        console.error("Email failed:", result.data ? result.data.error : "No result data");
-                    }
-                }).catch(err => {
-                    // --- 6. Log any errors from the function call ---
-                    console.error("Email send error:", err);
-                });
-            } else {
-                console.warn("Email function not ready yet.");
-            }
+            // --- Use EmailJS for notification ---
+            sendNoReplyEmail(userEmail, name);
         }
     });
 }
