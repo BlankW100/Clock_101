@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, doc, collection, addDoc, getDocs, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, collection, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -11,126 +11,96 @@ const firebaseConfig = {
     appId: "1:654434052980:web:d270879ef90c796a059a21",
     measurementId: "G-VHP3DZEB3G"
 };
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const currentTime = document.querySelector("h1"),
-content = document.querySelector(".content"),
-selectMenu = document.querySelectorAll("select"),
-setAlarmBtn = document.querySelector("button");
+// DOM elements
+const hourSelect = document.getElementById("hour-select");
+const minuteSelect = document.getElementById("minute-select");
+const ampmSelect = document.getElementById("ampm-select");
+const ringtoneSelect = document.getElementById("ringtone-select");
+const setAlarmBtn = document.getElementById("set-alarm-btn");
+const stopAlarmBtn = document.getElementById("stop-alarm-btn");
+const alarmsListDiv = document.getElementById("alarms-list");
+const liveTimeElement = document.getElementById("live-time");
 
-// --- Fix: define alarms and stopAlarmBtn ---
+// State
 let alarms = [];
-let alarmTime, isAlarmSet,
-ringtone = new Audio("assets/Alarm files/ringtone.mp3");
-
-// Create and append stopAlarmBtn
-const stopAlarmBtn = document.createElement("button");
-stopAlarmBtn.textContent = "Stop Alarm";
-stopAlarmBtn.className = "hidden";
-stopAlarmBtn.style.marginTop = "20px";
-content.parentNode.appendChild(stopAlarmBtn);
+let currentRingtone = null;
+let alarmTimeout = null;
 
 // Populate select menus
-for (let i = 12; i > 0; i--) {
-    let val = i < 10 ? `0${i}` : i;
-    let option = `<option value="${val}">${val}</option>`;
-    selectMenu[0].firstElementChild.insertAdjacentHTML("afterend", option);
+for (let i = 1; i <= 12; i++) {
+    let val = i < 10 ? `0${i}` : `${i}`;
+    hourSelect.insertAdjacentHTML("beforeend", `<option value="${val}">${val}</option>`);
 }
-for (let i = 59; i >= 0; i--) {
-    let val = i < 10 ? `0${i}` : i;
-    let option = `<option value="${val}">${val}</option>`;
-    selectMenu[1].firstElementChild.insertAdjacentHTML("afterend", option);
+for (let i = 0; i < 60; i++) {
+    let val = i < 10 ? `0${i}` : `${i}`;
+    minuteSelect.insertAdjacentHTML("beforeend", `<option value="${val}">${val}</option>`);
 }
-for (let i = 2; i > 0; i--) {
-    let ampm = i == 1 ? "AM" : "PM";
-    let option = `<option value="${ampm}">${ampm}</option>`;
-    selectMenu[2].firstElementChild.insertAdjacentHTML("afterend", option);
-}
+["AM", "PM"].forEach(ampm => {
+    ampmSelect.insertAdjacentHTML("beforeend", `<option value="${ampm}">${ampm}</option>`);
+});
 
-// Live clock and alarm check
+// Live clock
 setInterval(() => {
-    let date = new Date(),
-    h = date.getHours(),
-    m = date.getMinutes(),
-    s = date.getSeconds(),
-    ampm = "AM";
-    if(h >= 12) {
-        h = h - 12;
-        ampm = "PM";
-    }
-    h = h == 0 ? h = 12 : h;
-    h = h < 10 ? "0" + h : h;
-    m = m < 10 ? "0" + m : m;
-    s = s < 10 ? "0" + s : s;
-    currentTime.textContent = `${h}:${m}:${s} ${ampm}`;
-
-    // Check if any alarm matches the current time
-    alarms.forEach(async alarm => {
-        if (alarm.time === `${h}:${m} ${ampm}`) {
-            if (ringtone.paused) {
-                ringtone = new Audio(`assets/Alarm files/${alarm.sound || "ringtone.mp3"}`);
-                ringtone.loop = true;
-                ringtone.play();
-                stopAlarmBtn.classList.remove("hidden");
-                stopAlarmBtn.style.display = "block";
-
-                // Fetch user email from Firestore
-                const userId = sessionStorage.getItem("userId");
-                if (userId) {
-                    const userDocRef = doc(db, "users", userId);
-                    const userSnapshot = await getDoc(userDocRef);
-
-                    if (userSnapshot.exists()) {
-                        const userEmail = userSnapshot.data().email;
-                        sendEmailNotification(userEmail, alarm.time);
-                    } else {
-                        console.error("User document does not exist");
-                    }
-                }
-            }
-        }
-    });
+    const now = new Date();
+    const hours = String(now.getHours() % 12 || 12).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+    const ampm = now.getHours() >= 12 ? "PM" : "AM";
+    liveTimeElement.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
 }, 1000);
 
-// Send email notification
-async function sendEmailNotification(email, alarmTime) {
-    try {
-        const response = await fetch("https://<your-cloud-function-url>/sendAlarmNotification", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email, alarmTime })
-        });
+// Check alarms every second
+setInterval(checkAlarms, 1000);
 
-        if (!response.ok) {
-            throw new Error("Failed to send email notification");
+function checkAlarms() {
+    const now = new Date();
+    let h = now.getHours();
+    let m = now.getMinutes();
+    let ampm = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    const timeStr = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")} ${ampm}`;
+    alarms.forEach(alarm => {
+        if (alarm.time === timeStr && !alarm.triggered) {
+            playRingtone(alarm.sound || "ringtone.mp3");
+            alarm.triggered = true;
+            stopAlarmBtn.classList.remove("hidden");
         }
+    });
+}
 
-        console.log("Email notification sent successfully");
-    } catch (error) {
-        console.error("Error sending email notification:", error);
+function playRingtone(filename) {
+    stopRingtone();
+    currentRingtone = new Audio(`assets/Alarm files/${filename}`);
+    currentRingtone.loop = true;
+    currentRingtone.play();
+}
+
+function stopRingtone() {
+    if (currentRingtone) {
+        currentRingtone.pause();
+        currentRingtone.currentTime = 0;
+        currentRingtone = null;
     }
+    stopAlarmBtn.classList.add("hidden");
+    alarms.forEach(alarm => alarm.triggered = false);
 }
 
 // Set a new alarm
 async function setAlarm() {
-    const hourSelect = selectMenu[0];
-    const minuteSelect = selectMenu[1];
-    const ampmSelect = selectMenu[2];
-    const soundSelect = { value: "ringtone.mp3" }; // Default sound, adjust if you have a sound selector
+    const hour = hourSelect.value;
+    const minute = minuteSelect.value;
+    const ampm = ampmSelect.value;
+    const sound = ringtoneSelect.value;
 
-    let time = `${hourSelect.value}:${minuteSelect.value} ${ampmSelect.value}`;
-    let sound = soundSelect.value;
-
-    if (time.includes("Hour") || time.includes("Minute") || time.includes("AM/PM")) {
-        return alert("Please select a valid time to set Alarm!");
+    if (hour === "Hour" || minute === "Minute" || ampm === "AM/PM") {
+        alert("Please select a valid time to set Alarm!");
+        return;
     }
 
-    // Save alarm to Firestore
+    const time = `${hour}:${minute} ${ampm}`;
     const userId = sessionStorage.getItem("userId");
     if (!userId) {
         alert("User not logged in!");
@@ -138,8 +108,8 @@ async function setAlarm() {
     }
 
     const alarmDoc = {
-        time: time,
-        sound: sound,
+        time,
+        sound,
         createdAt: new Date().toISOString()
     };
 
@@ -147,7 +117,6 @@ async function setAlarm() {
         const userDocRef = doc(db, "users", userId);
         const alarmCollectionRef = collection(userDocRef, "alarm");
         const docRef = await addDoc(alarmCollectionRef, alarmDoc);
-
         alarms.push({ id: docRef.id, ...alarmDoc });
         displayAlarms();
         alert("Alarm set successfully!");
@@ -156,22 +125,45 @@ async function setAlarm() {
     }
 }
 
-// Stop the alarm
-function stopAlarm() {
-    if (ringtone) {
-        ringtone.pause();
-        ringtone.currentTime = 0;
-        stopAlarmBtn.classList.add("hidden");
-        stopAlarmBtn.style.display = "none";
-        content.classList.remove("disable");
-        setAlarmBtn.innerText = "Set Alarm";
-        isAlarmSet = false;
+// Display alarms in the UI
+function displayAlarms() {
+    alarmsListDiv.innerHTML = "";
+    if (alarms.length === 0) {
+        alarmsListDiv.innerHTML = "<div>No alarms set.</div>";
+        return;
     }
+    alarms.forEach(alarm => {
+        const div = document.createElement("div");
+        div.className = "alarm-item";
+        div.innerHTML = `
+            <span>${alarm.time}</span>
+            <span style="margin-left:10px;">🔔 ${alarm.sound.replace(".mp3", "")}</span>
+            <button data-id="${alarm.id}" class="delete-alarm-btn" style="margin-left:10px;">Delete</button>
+        `;
+        alarmsListDiv.appendChild(div);
+    });
+    // Add delete listeners
+    document.querySelectorAll(".delete-alarm-btn").forEach(btn => {
+        btn.onclick = async function() {
+            const id = this.getAttribute("data-id");
+            await deleteAlarm(id);
+        };
+    });
 }
 
-// Display alarms (placeholder, implement as needed)
-function displayAlarms() {
-    // You can implement alarm list UI here if needed
+// Delete alarm
+async function deleteAlarm(id) {
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) return;
+    const userDocRef = doc(db, "users", userId);
+    const alarmCollectionRef = collection(userDocRef, "alarm");
+    try {
+        await deleteDoc(doc(alarmCollectionRef, id));
+        alarms = alarms.filter(a => a.id !== id);
+        displayAlarms();
+    } catch (e) {
+        console.error("Failed to delete alarm:", e);
+    }
 }
 
 // Fetch alarms from Firestore
@@ -183,12 +175,12 @@ async function fetchAlarms() {
     const snapshot = await getDocs(alarmCollectionRef);
     alarms = [];
     snapshot.forEach(docSnap => {
-        alarms.push({ id: docSnap.id, ...docSnap.data() });
+        alarms.push({ id: docSnap.id, ...docSnap.data(), triggered: false });
     });
     displayAlarms();
 }
 
 // Event listeners
 setAlarmBtn.addEventListener("click", setAlarm);
-stopAlarmBtn.addEventListener("click", stopAlarm);
+stopAlarmBtn.addEventListener("click", stopRingtone);
 window.addEventListener("load", fetchAlarms);
