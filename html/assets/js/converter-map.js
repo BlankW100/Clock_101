@@ -25,26 +25,26 @@ function initTimezoneMap() {
 
     // Cities with lat/lon
     const cities = [
-        { name: "New York",      tz: "America/New_York",      lon: -74.006,   lat: 40.7128 },
-        { name: "London",        tz: "Europe/London",         lon: -0.1276,   lat: 51.5074 },
-        { name: "Tokyo",         tz: "Asia/Tokyo",            lon: 139.6917,  lat: 35.6895 },
-        { name: "Sydney",        tz: "Australia/Sydney",      lon: 151.2093,  lat: -33.8688 },
+        { name: "New York",      tz: "America/New_York",      lon: -73.9249,  lat: 40.6943 },
+        { name: "Beijing",       tz: "Asia/Shanghai",         lon: 116.3975,  lat: 39.9067 },
+        { name: "London",        tz: "Europe/London",         lon: -0.1275,   lat: 51.5072 },
+        { name: "Tokyo",         tz: "Asia/Tokyo",            lon: 139.7495,  lat: 35.6870 },
+        { name: "Sydney",        tz: "Australia/Sydney",      lon: 151.2000,  lat: -33.8667 },
         { name: "Los Angeles",   tz: "America/Los_Angeles",   lon: -118.2437, lat: 34.0522 },
-        { name: "Paris",         tz: "Europe/Paris",          lon: 2.3522,    lat: 48.8566 },
-        { name: "Dubai",         tz: "Asia/Dubai",            lon: 55.2708,   lat: 25.2048 },
-        { name: "Shanghai",      tz: "Asia/Shanghai",         lon: 121.4737,  lat: 31.2304 },
-        { name: "Moscow",        tz: "Europe/Moscow",         lon: 37.6173,   lat: 55.7558 },
-        { name: "Rio",           tz: "America/Sao_Paulo",     lon: -43.1729,  lat: -22.9068 },
-        { name: "Cape Town",     tz: "Africa/Johannesburg",   lon: 18.4241,   lat: -33.9249 },
-        { name: "Delhi",         tz: "Asia/Kolkata",          lon: 77.2090,   lat: 28.6139 },
-        { name: "Auckland",      tz: "Pacific/Auckland",      lon: 174.7633,  lat: -36.8485 },
-        { name: "Anchorage",     tz: "America/Anchorage",     lon: -149.9003, lat: 61.2181 },
-        { name: "Honolulu",      tz: "Pacific/Honolulu",      lon: -157.8583, lat: 21.3069 },
-        { name: "Cairo",         tz: "Africa/Cairo",          lon: 31.2357,   lat: 30.0444 },
-        { name: "Beijing",       tz: "Asia/Shanghai",         lon: 116.4074,  lat: 39.9042 },
-        { name: "Singapore",     tz: "Asia/Singapore",        lon: 103.8198,  lat: 1.3521 },
+        { name: "Paris",         tz: "Europe/Paris",          lon: 2.3522,    lat: 48.8567 },
+        { name: "Dubai",         tz: "Asia/Dubai",            lon: 55.2972,   lat: 25.2631 },
+        { name: "Shanghai",      tz: "Asia/Shanghai",         lon: 121.4747,  lat: 31.2286 },
+        { name: "Moscow",        tz: "Europe/Moscow",         lon: 37.6175,   lat: 55.7506 },
+        { name: "Cape Town",     tz: "Africa/Johannesburg",   lon: 18.4239,   lat: -33.9253 },
+        { name: "Delhi",         tz: "Asia/Kolkata",          lon: 77.2300,   lat: 28.6100 },
+        { name: "Auckland",      tz: "Pacific/Auckland",      lon: 174.7653,  lat: -36.8492 },
+        { name: "Honolulu",      tz: "Pacific/Honolulu",      lon: -157.8460, lat: 21.3294 },
+        { name: "Mexico City",   tz: "America/Mexico_City",   lon: -99.1333,  lat: 19.4333 },
         { name: "Berlin",        tz: "Europe/Berlin",         lon: 13.4050,   lat: 52.5200 },
-        { name: "Mexico City",   tz: "America/Mexico_City",   lon: -99.1332,  lat: 19.4326 }
+        { name: "Singapore",     tz: "Asia/Singapore",        lon: 103.8000,  lat: 1.3000 },
+        { name: "Kuala Lumpur",  tz: "Asia/Kuala_Lumpur",     lon: 101.6980,  lat: 3.1686 },
+        { name: "Bangkok",       tz: "Asia/Bangkok",          lon: 100.4942,  lat: 13.7525 },
+        { name: "Jakarta",       tz: "Asia/Jakarta",          lon: 106.8275,  lat: -6.1750 }
     ];
 
     // Draw dots and labels for each city using D3 projection
