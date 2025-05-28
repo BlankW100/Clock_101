@@ -7,23 +7,28 @@ function showUserTimezone() {
     document.getElementById('user-tz').textContent = display;
 }
 
-// Update time every minute
-function initTimezoneMap() {
-    showUserTimezone();
-    setInterval(showUserTimezone, 60000);
+function getProjectionParams() {
+    // Read from controls, or use defaults if not present
+    const lon = Number(document.getElementById('center-lon')?.value || 0);
+    const lat = Number(document.getElementById('center-lat')?.value || 20);
+    const scale = Number(document.getElementById('scale')?.value || 230);
+    const tx = Number(document.getElementById('trans-x')?.value || 725);
+    const ty = Number(document.getElementById('trans-y')?.value || 355);
+    return { lon, lat, scale, tx, ty };
+}
 
-    // SVG map setup
+function drawCities() {
     const svg = document.getElementById('timezone-map');
-    const cityTzDiv = document.getElementById('city-tz');
+    // Remove previous dots/labels
+    Array.from(svg.querySelectorAll('circle,text')).forEach(el => el.remove());
 
-    // D3 projection setup for 1450x711 SVG
+    const { lon, lat, scale, tx, ty } = getProjectionParams();
     const width = 1450, height = 711;
     const projection = d3.geoMercator()
-        .center([0, 20])
-        .scale(230)
-        .translate([width / 2, height / 2]);
+        .center([lon, lat])
+        .scale(scale)
+        .translate([tx, ty]);
 
-    // Cities with lat/lon (from your list, fixed Los Angeles)
     const cities = [
         { name: "New York",      tz: "America/New_York",      lon: -73.9249,  lat: 40.6943 },
         { name: "Beijing",       tz: "Asia/Shanghai",         lon: 116.3975,  lat: 39.9067 },
@@ -47,11 +52,10 @@ function initTimezoneMap() {
         { name: "Jakarta",       tz: "Asia/Jakarta",          lon: 106.8275,  lat: -6.175 }
     ];
 
-    // Draw dots and labels for each city using D3 projection
+    const cityTzDiv = document.getElementById('city-tz');
+
     cities.forEach(city => {
         const [x, y] = projection([city.lon, city.lat]);
-
-        // Create city dot
         const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         dot.setAttribute("cx", x);
         dot.setAttribute("cy", y);
@@ -64,14 +68,13 @@ function initTimezoneMap() {
         dot.setAttribute("data-name", city.name);
         svg.appendChild(dot);
 
-        // Dynamic label offset based on position
+        // Label offset logic
         let labelDX = 16, labelDY = -12, anchor = "start";
-        if (x > width * 0.8) { labelDX = -16; anchor = "end"; } // right edge
-        if (x < width * 0.2) { labelDX = 16; anchor = "start"; } // left edge
-        if (y < height * 0.15) { labelDY = 20; } // top edge
-        if (y > height * 0.85) { labelDY = -16; } // bottom edge
+        if (x > width * 0.8) { labelDX = -16; anchor = "end"; }
+        if (x < width * 0.2) { labelDX = 16; anchor = "start"; }
+        if (y < height * 0.15) { labelDY = 20; }
+        if (y > height * 0.85) { labelDY = -16; }
 
-        // Create city label
         const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
         label.setAttribute("x", x + labelDX);
         label.setAttribute("y", y + labelDY);
@@ -83,7 +86,6 @@ function initTimezoneMap() {
         label.style.cursor = "pointer";
         svg.appendChild(label);
 
-        // Show city time on click (dot or label)
         function showCityTime() {
             const now = moment().tz(city.tz);
             const offset = now.format('Z');
@@ -93,6 +95,16 @@ function initTimezoneMap() {
         dot.addEventListener('click', showCityTime);
         label.addEventListener('click', showCityTime);
     });
+}
+
+function initTimezoneMap() {
+    showUserTimezone();
+    setInterval(showUserTimezone, 60000);
+    drawCities();
+
+    // Add event for tuning controls
+    const btn = document.getElementById('apply-tune');
+    if (btn) btn.onclick = drawCities;
 }
 
 document.addEventListener('DOMContentLoaded', initTimezoneMap);
