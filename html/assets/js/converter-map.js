@@ -14,7 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-let favoriteCity = null;
+let favoriteCities = [];
 
 function showUserTimezone() {
     const tz = moment.tz.guess();
@@ -29,32 +29,54 @@ function getProjectionParams() {
     return { lon, lat, scale, tx, ty };
 }
 
-function showFavoriteCityTime(city) {
+function showFavoriteCitiesTime() {
     const favDiv = document.getElementById('favorite-tz');
-    if (!city) {
+    if (!favoriteCities.length) {
         favDiv.textContent = '';
         return;
     }
-    const now = moment().tz(city.tz);
-    const offset = now.format('Z');
-    favDiv.innerHTML = `<span style="color:#ffb300;"><b>★ ${city.name}:</b></span> ${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
+    favDiv.innerHTML = favoriteCities.map(city => {
+        const now = moment().tz(city.tz);
+        const offset = now.format('Z');
+        return `<span style="color:#ffb300;"><b>★ ${city.name}:</b></span> ${city.tz}  ${now.format('hh:mm a')} UTC${offset}`;
+    }).join('<br>');
 }
 
-async function saveFavoriteCity(city) {
+async function saveFavoriteCities() {
     // Save to Firestore under collection "favcity", doc "userfav"
-    await setDoc(doc(db, "favcity", "userfav"), { name: city.name, tz: city.tz, lon: city.lon, lat: city.lat });
+    await setDoc(doc(db, "favcity", "userfav"), { cities: favoriteCities });
 }
 
-async function loadFavoriteCity(cities) {
+async function loadFavoriteCities(allCities) {
     const favSnap = await getDoc(doc(db, "favcity", "userfav"));
     if (favSnap.exists()) {
         const fav = favSnap.data();
-        favoriteCity = cities.find(c => c.name === fav.name);
-        showFavoriteCityTime(favoriteCity);
+        if (Array.isArray(fav.cities)) {
+            // Map to city objects from allCities for up-to-date info
+            favoriteCities = fav.cities.map(favCity =>
+                allCities.find(c => c.name === favCity.name) || favCity
+            );
+        }
+        showFavoriteCitiesTime();
     }
 }
 
-function drawCities() {
+function isFavorite(city) {
+    return favoriteCities.some(c => c.name === city.name);
+}
+
+function toggleFavorite(city, allCities) {
+    if (isFavorite(city)) {
+        favoriteCities = favoriteCities.filter(c => c.name !== city.name);
+    } else {
+        favoriteCities.push(city);
+    }
+    showFavoriteCitiesTime();
+    saveFavoriteCities();
+    drawCities(allCities);
+}
+
+function drawCities(allCitiesParam) {
     const svg = document.getElementById('timezone-map');
     Array.from(svg.querySelectorAll('circle,text')).forEach(el => el.remove());
 
@@ -65,7 +87,7 @@ function drawCities() {
         .scale(scale)
         .translate([tx, ty]);
 
-    const cities = [
+    const cities = allCitiesParam || [
         { name: "New York",      tz: "America/New_York",      lon: -73.9249,  lat: 40.6943 },
         { name: "Beijing",       tz: "Asia/Shanghai",         lon: 116.3975,  lat: 39.9067 },
         { name: "London",        tz: "Europe/London",         lon: -0.1275,   lat: 51.5072 },
@@ -88,10 +110,9 @@ function drawCities() {
         { name: "Jakarta",       tz: "Asia/Jakarta",          lon: 106.8275,  lat: -6.175 }
     ];
 
-    // Draw all cities
     cities.forEach(city => {
         const [x, y] = projection([city.lon, city.lat]);
-        let isFav = favoriteCity && city.name === favoriteCity.name;
+        let isFav = isFavorite(city);
         let r = isFav ? 11 : 10;
         let fill = isFav ? "#ffeb3b" : "#fff";
         let stroke = isFav ? "#ffb300" : "#222";
@@ -141,62 +162,22 @@ function drawCities() {
         dot.addEventListener('click', showCityTime);
         label.addEventListener('click', showCityTime);
 
-        // Favorite on double click
-        async function setFavorite() {
-            favoriteCity = city;
-            showFavoriteCityTime(city);
-            await saveFavoriteCity(city);
-            drawCities();
+        // Toggle favorite on double click
+        async function toggleFav() {
+            toggleFavorite(city, cities);
         }
-        dot.addEventListener('dblclick', setFavorite);
-        label.addEventListener('dblclick', setFavorite);
+        dot.addEventListener('dblclick', toggleFav);
+        label.addEventListener('dblclick', toggleFav);
     });
 
-    // Show favorite city time if set
-    showFavoriteCityTime(favoriteCity);
+    showFavoriteCitiesTime();
 }
 
 function initTimezoneMap() {
     showUserTimezone();
     setInterval(showUserTimezone, 60000);
-    drawCities();
 
-    // Favorite city search
-    document.getElementById('favorite-search-btn').onclick = async function () {
-        const val = document.getElementById('favorite-search').value;
-        const cities = [
-            { name: "New York",      tz: "America/New_York",      lon: -73.9249,  lat: 40.6943 },
-            { name: "Beijing",       tz: "Asia/Shanghai",         lon: 116.3975,  lat: 39.9067 },
-            { name: "London",        tz: "Europe/London",         lon: -0.1275,   lat: 51.5072 },
-            { name: "Tokyo",         tz: "Asia/Tokyo",            lon: 139.7495,  lat: 35.6870 },
-            { name: "Sydney",        tz: "Australia/Sydney",      lon: 151.2,     lat: -33.8667 },
-            { name: "Los Angeles",   tz: "America/Los_Angeles",   lon: -118.2437, lat: 34.0522 },
-            { name: "Paris",         tz: "Europe/Paris",          lon: 2.3522,    lat: 48.8567 },
-            { name: "Dubai",         tz: "Asia/Dubai",            lon: 55.2972,   lat: 25.2631 },
-            { name: "Shanghai",      tz: "Asia/Shanghai",         lon: 121.4747,  lat: 31.2286 },
-            { name: "Moscow",        tz: "Europe/Moscow",         lon: 37.6175,   lat: 55.7506 },
-            { name: "Cape Town",     tz: "Africa/Johannesburg",   lon: 18.4239,   lat: -33.9253 },
-            { name: "Delhi",         tz: "Asia/Kolkata",          lon: 77.23,     lat: 28.61 },
-            { name: "Auckland",      tz: "Pacific/Auckland",      lon: 174.7653,  lat: -36.8492 },
-            { name: "Honolulu",      tz: "Pacific/Honolulu",      lon: -157.846,  lat: 21.3294 },
-            { name: "Mexico City",   tz: "America/Mexico_City",   lon: -99.1333,  lat: 19.4333 },
-            { name: "Berlin",        tz: "Europe/Berlin",         lon: 13.405,    lat: 52.52 },
-            { name: "Singapore",     tz: "Asia/Singapore",        lon: 103.8,     lat: 1.3 },
-            { name: "Kuala Lumpur",  tz: "Asia/Kuala_Lumpur",     lon: 101.698,   lat: 3.1686 },
-            { name: "Bangkok",       tz: "Asia/Bangkok",          lon: 100.4942,  lat: 13.7525 },
-            { name: "Jakarta",       tz: "Asia/Jakarta",          lon: 106.8275,  lat: -6.175 }
-        ];
-        const city = cities.find(c => c.name.toLowerCase() === val.toLowerCase());
-        if (city) {
-            favoriteCity = city;
-            showFavoriteCityTime(city);
-            await saveFavoriteCity(city);
-            drawCities();
-        }
-    };
-
-    // Load favorite city from Firestore on start
-    const cities = [
+    const allCities = [
         { name: "New York",      tz: "America/New_York",      lon: -73.9249,  lat: 40.6943 },
         { name: "Beijing",       tz: "Asia/Shanghai",         lon: 116.3975,  lat: 39.9067 },
         { name: "London",        tz: "Europe/London",         lon: -0.1275,   lat: 51.5072 },
@@ -218,7 +199,8 @@ function initTimezoneMap() {
         { name: "Bangkok",       tz: "Asia/Bangkok",          lon: 100.4942,  lat: 13.7525 },
         { name: "Jakarta",       tz: "Asia/Jakarta",          lon: 106.8275,  lat: -6.175 }
     ];
-    loadFavoriteCity(cities).then(drawCities);
+
+    loadFavoriteCities(allCities).then(() => drawCities(allCities));
 }
 
 document.addEventListener('DOMContentLoaded', initTimezoneMap);
