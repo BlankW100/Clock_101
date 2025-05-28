@@ -25,55 +25,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Fetch username from Firestore
-const fetchUsername = async () => {
-    const userId = sessionStorage.getItem("userId");
-    if (userId) {
-        try {
-            const userDoc = doc(db, "users", userId);
-            const userSnapshot = await getDoc(userDoc);
-            if (userSnapshot.exists()) {
-                const username = userSnapshot.data().username || "Guest";
-                document.getElementById("username").textContent = username;
-            } else {
-                console.error("No such user document!");
-                document.getElementById("username").textContent = "Guest";
-            }
-        } catch (error) {
-            console.error("Error fetching username:", error);
-            document.getElementById("username").textContent = "Guest";
-        }
-    } else {
-        console.error("No userId found in sessionStorage!");
-        document.getElementById("username").textContent = "Guest";
-    }
-};
-
-// Check if user is logged in
-const checkCredentials = () => {
-    const userId = sessionStorage.getItem("userId");
-    if (!userId) {
-        console.error("No userId found in sessionStorage. Redirecting to login.html...");
-        window.location.href = "login.html";
-    }
-};
-
-// Sign out function
-const signout = () => {
-    sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("user");
-    window.location.href = "login.html";
-};
-
-// Add event listeners
-document.getElementById("signout-link").addEventListener("click", signout);
-
-// Call functions on page load
-window.addEventListener("load", () => {
-    checkCredentials();
-    fetchUsername();
-});
-
 let editingEventId = null;
 
 async function saveEvent() {
