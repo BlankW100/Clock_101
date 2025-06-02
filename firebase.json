@@ -12,9 +12,6 @@
         "destination": "html/login.html"
       }
     ]
-<<<<<<< HEAD
-  }
-=======
   },
   "functions": [
     {
@@ -29,5 +26,4 @@
       ]
     }
   ]
->>>>>>> will
 }
