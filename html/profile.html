@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="assets/css/navbar.css">
+  <link rel="stylesheet" href="assets/css/profile.css">
+  <link rel="stylesheet" href="assets/css/style2.css">
+  <script src="assets/js/darkmode.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Profile</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="converter.html">Time Converter</a></li>
+        <li><a href="calculator.html">Date Calculator</a></li>
+        <li><a href="alarm.html">Alarm</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Update Your Preferences</h2>
+      <form id="profile-form">
+        <div class="input-group">
+          <label for="timezone-search">Timezone</label>
+          <input type="search" id="timezone-search" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Search for your timezone..." />
+          <ul id="timezone-list" class="border border-gray-300 rounded mt-2 max-h-40 overflow-y-auto"></ul>
+        </div>
+
+        <div class="input-group">
+          <label for="theme-mode">Theme Mode</label>
+          <select id="theme-mode">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+
+        <button type="submit">Save Changes</button>
+      </form>
+
+      
+      <div class="input-group">
+        <button id="change-password-button" class="change-password-button">Change Password</button>
+      </div>
+
+      <!-- Logout Button -->
+      <div class="input-group">
+        <button id="logout-button" class="logout-button">Logout</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; Clock 101. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Redirect to forgot-password.html when "Change Password" is clicked
+    document.getElementById("change-password-button").addEventListener("click", (event) => {
+      event.preventDefault();
+      window.location.href = "forgot-password.html";
+    });
+
+    // Logout confirmation popup
+    document.getElementById("logout-button").addEventListener("click", (event) => {
+      event.preventDefault();
+      const confirmLogout = confirm("Are you sure you want to log out?");
+      if (confirmLogout) {
+        sessionStorage.removeItem("userId");
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+
+</html>
