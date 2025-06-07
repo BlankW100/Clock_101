@@ -1,9 +1,27 @@
+/* Root Variables for Light/Dark Mode */
+:root {
+  --base-color: #ffffff;
+  --base-variant: #f4f4f9;
+  --text-color: #111528;
+  --secondary-text: #232738;
+  --primary-color: #3a435d;
+  --accent-color: #0071ff;
+}
+.darkmode {
+  --base-color: #181a20;
+  --base-variant: #23263a;
+  --text-color: #f4f4f9;
+  --secondary-text: #a4a5b8;
+  --primary-color: #3a435d;
+  --accent-color: #3399ff;
+}
+
 /* Navigation bar styles */
 .nav-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #1a202c; /* Dark background */
+    background-color: #1a202c;
     color: white;
     padding: 0.75rem 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -14,7 +32,6 @@
     z-index: 1000;
     box-sizing: border-box;
 }
-  
 
 .header-title {
     font-size: 1.5rem;
@@ -22,10 +39,9 @@
     cursor: pointer;
     user-select: none;
     text-align: center;
-    flex: 1; /* Center the title */
-    color: #fff; /* White in light mode */
+    flex: 1;
+    color: #fff;
 }
-
 .darkmode .header-title {
     color: #ffffff !important;
 }
@@ -36,7 +52,7 @@
     display: flex;
     margin: 0;
     padding: 0;
-    flex: 1; /* Align buttons to the left */
+    flex: 1;
 }
 
 .nav-menu li {
@@ -55,7 +71,7 @@
 
 .nav-button:hover,
 .nav-button:focus {
-    color: #63b3ed; /* Light blue */
+    color: #63b3ed;
     outline: none;
 }
 
@@ -65,17 +81,20 @@
     color: white;
     font-weight: 500;
     text-align: right;
-    flex: 1; /* Align to the right */
+    flex: 1;
 }
 
 /* Add top padding to body to prevent content being hidden behind fixed header */
 body {
-    padding-top: 60px; /* Height of header */
+    padding-top: 60px;
     margin: 0;
     font-family: Arial, sans-serif;
+    background-color: var(--base-color);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s;
 }
 
-/* Theme Switch */
+/* Theme Switch Button */
 #theme-switch {
   height: 50px;
   width: 50px;
@@ -86,40 +105,21 @@ body {
   justify-content: center;
   align-items: center;
   position: fixed;
-  top: 80px;
+  top: 120px;
   right: 20px;
+  z-index: 1100;
 }
-
 #theme-switch svg {
-    fill: var(--primary-color);
+  fill: var(--primary-color);
 }
 #theme-switch svg:last-child {
-    display: none;
+  display: none;
 }
 .darkmode #theme-switch svg:first-child {
-    display: none;
+  display: none;
 }
 .darkmode #theme-switch svg:last-child {
-    display: block;
-}
-
-
-/* DARK MODE handled by CSS variables in :root/.darkmode */
-:root {
-  --base-color: #ffffff;
-  --base-variant: #f4f4f9;
-  --text-color: #111528;
-  --secondary-text: #232738;
-  --primary-color: #3a435d;
-  --accent-color: #0071ff;
-}
-.darkmode {
-  --base-color: #181a20;
-  --base-variant: #23263a;
-  --text-color: #f4f4f9;
-  --secondary-text: #a4a5b8;
-  --primary-color: #3a435d;
-  --accent-color: #3399ff;
+  display: block;
 }
 
 /* Make headings and paragraphs readable in dark mode */
