@@ -83,7 +83,7 @@ body{
   transition: background 0.3s, color 0.3s;
 }
 
-/* Navigation bar styles for alarm.html to match index.css */
+/* Navigation bar*/
 .nav-bar {
     display: flex;
     align-items: center;
@@ -152,23 +152,21 @@ body{
     flex: 1;
 }
 
-/* Style for the dark mode button */
+/* Theme Switch */
 #theme-switch {
-    height: 50px;
-    width: 50px;
-    padding: 0;
-    border-radius: 50%;
-    background-color: var(--base-variant);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 12px;
-    margin-left: 1.5rem;
-    /* You can use position: fixed if you want it floating like index.html */
-    /* position: fixed;
-    top: 120px;
-    left: 20px; */
+  height: 50px;
+  width: 50px;
+  padding: 0;
+  border-radius: 50%;
+  background-color: var(--base-variant);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 120px;
+  right: 20px;
 }
+
 #theme-switch svg {
     fill: var(--primary-color);
 }
