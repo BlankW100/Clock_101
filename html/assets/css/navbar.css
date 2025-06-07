@@ -132,3 +132,32 @@ body {
 .darkmode p {
   color: var(--text-color);
 }
+
+/* Form fields and labels for dark mode */
+.darkmode input,
+.darkmode select,
+.darkmode textarea {
+    background-color: var(--base-variant) !important;
+    color: var(--text-color) !important;
+    border-color: #444a5a !important;
+}
+
+.darkmode label,
+.darkmode .font-medium,
+.darkmode .text-gray-700,
+.darkmode .text-gray-800 {
+    color: var(--text-color) !important;
+}
+
+.darkmode .bg-white {
+    background-color: var(--base-variant) !important;
+}
+
+.darkmode .text-gray-700,
+.darkmode .text-gray-800 {
+    color: var(--text-color) !important;
+}
+
+.darkmode .border-gray-300 {
+    border-color: #444a5a !important;
+}
