@@ -153,9 +153,13 @@ function updateAllCountdowns(events = []) {
         const countdownStr = getCountdownString(date);
         div.textContent = countdownStr;
 
+        // --- Use event ID for unique notification key ---
+        const event = events[idx];
+        const notifiedKey = (event && event.id ? event.id : "") + date + name;
+
         // Send to all emails saved with the event
-        if (countdownStr === "Event has started!" && !notifiedEvents.has(date + name)) {
-            notifiedEvents.add(date + name);
+        if (countdownStr === "Event has started!" && !notifiedEvents.has(notifiedKey)) {
+            notifiedEvents.add(notifiedKey);
             if (emails && Array.isArray(emails)) {
                 emails.forEach(email => {
                     sendEmailWhenEventEnds(name, email);
@@ -182,9 +186,11 @@ if (eventId) {
                     const eventData = docSnap.data();
                     eventData.id = eventId;
                     renderEvents([eventData]);
-                    if (!window._countdownInterval) {
-                        window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
+                    // --- Clear previous interval before setting a new one ---
+                    if (window._countdownInterval) {
+                        clearInterval(window._countdownInterval);
                     }
+                    window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
                 } else {
                     document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
                 }
@@ -206,9 +212,11 @@ if (eventId) {
             events.push(data);
         });
         renderEvents(events);
-        if (!window._countdownInterval) {
-            window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
+        // --- Clear previous interval before setting a new one ---
+        if (window._countdownInterval) {
+            clearInterval(window._countdownInterval);
         }
+        window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
     });
 }
 
