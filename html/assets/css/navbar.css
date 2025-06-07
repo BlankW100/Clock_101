@@ -161,3 +161,10 @@ body {
 .darkmode .border-gray-300 {
     border-color: #444a5a !important;
 }
+
+.form-card {
+  background-color: #c9d6df; /* or your preferred grey */
+}
+.darkmode .form-card {
+  background-color: var(--base-variant);
+}
