@@ -35,6 +35,7 @@ body {
   color: var(--text-color);
   padding-top: 60px; /* Prevent content from being hidden behind fixed header */
   margin: 0;
+  transition: background 0.3s, color 0.3s;
 }
 
 /* Header and Section */
@@ -148,20 +149,11 @@ button {
 
 /* Navigation Menu */
 .nav-menu {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   list-style: none;
+  display: flex;
   margin: 0;
   padding: 0;
   flex: 1;
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-left: auto;
 }
 
 .nav-menu li {
@@ -287,17 +279,3 @@ footer {
   margin-top: 2rem;
 }
 
-.logout-btn {
-  margin-left: 10px;
-  background: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.logout-btn:hover {
-  background: #c0392b;
-}
