@@ -84,7 +84,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #1a202c;
+    background-color: #1a202c; /* Dark background */
     color: white;
     padding: 0.75rem 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -102,15 +102,16 @@ body{
     cursor: pointer;
     user-select: none;
     text-align: center;
-    flex: 1;
+    flex: 1; /* Center the title */
 }
 
+/* Navigation menu */
 .nav-menu {
     list-style: none;
     display: flex;
     margin: 0;
     padding: 0;
-    flex: 1;
+    flex: 1; /* Align buttons to the left */
 }
 
 .nav-menu li {
@@ -129,7 +130,7 @@ body{
 
 .nav-button:hover,
 .nav-button:focus {
-    color: #63b3ed;
+    color: #63b3ed; /* Light blue */
     outline: none;
 }
 
@@ -142,53 +143,3 @@ body{
     flex: 1;
 }
 
-/* Add top padding to body to prevent content being hidden behind fixed header */
-body {
-    padding-top: 60px;
-}
-
-/* Style for the dark mode button */
-#theme-switch {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-}
-#theme-switch svg {
-    margin-right: 2px;
-    fill: #fff;
-    transition: fill 0.3s;
-}
-#theme-switch:focus svg,
-#theme-switch:hover svg {
-    fill: #63b3ed;
-}
-
-/* DARK MODE STYLES */
-body.darkmode {
-  background: #1a202c;
-}
-body.darkmode .wrapper {
-  background: #232b3e;
-  color: #f1f1f1;
-}
-body.darkmode .wrapper h1 {
-  color: #f1f1f1;
-}
-body.darkmode .wrapper .content {
-  background: none;
-}
-body.darkmode .column select {
-  background: none;
-  color: #f1f1f1;
-}
-body.darkmode .wrapper button {
-  background: #2b6cb0;
-  color: #fff;
-}
-body.darkmode .content .column {
-  border: 1px solid #444a5a;
-}
