@@ -22,6 +22,11 @@
     user-select: none;
     text-align: center;
     flex: 1; /* Center the title */
+    color: #fff; /* White in light mode */
+}
+
+.darkmode .header-title {
+    color: #ffffff !important;
 }
 
 /* Navigation menu */
@@ -67,4 +72,33 @@ body {
     padding-top: 60px; /* Height of header */
     margin: 0;
     font-family: Arial, sans-serif;
+}
+
+/* DARK MODE handled by CSS variables in :root/.darkmode */
+:root {
+  --base-color: #ffffff;
+  --base-variant: #f4f4f9;
+  --text-color: #111528;
+  --secondary-text: #232738;
+  --primary-color: #3a435d;
+  --accent-color: #0071ff;
+}
+.darkmode {
+  --base-color: #181a20;
+  --base-variant: #23263a;
+  --text-color: #f4f4f9;
+  --secondary-text: #a4a5b8;
+  --primary-color: #3a435d;
+  --accent-color: #3399ff;
+}
+
+/* Make headings and paragraphs readable in dark mode */
+.darkmode h1,
+.darkmode h2,
+.darkmode h3,
+.darkmode h4,
+.darkmode h5,
+.darkmode h6,
+.darkmode p {
+  color: var(--text-color);
 }
