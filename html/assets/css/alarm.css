@@ -14,17 +14,20 @@ body, .wrapper, .content{
 body{
   padding: 0 10px;
   min-height: 100vh;
-  background: #4A98F7;
-  transition: background 0.3s;
+  background-color: var(--base-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+  padding-top: 60px;
 }
 .wrapper{
   width: 440px;
   padding: 30px 30px 38px;
-  background: #fff;
+  background: var(--base-variant);
   border-radius: 10px;
   flex-direction: column;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   transition: background 0.3s, color 0.3s;
+  color: var(--secondary-text);
 }
 .wrapper img{
   max-width: 103px;
@@ -33,7 +36,7 @@ body{
   font-size: 38px;
   font-weight: 500;
   margin: 30px 0;
-  color: #222;
+  color: var(--secondary-text);
   transition: color 0.3s;
 }
 .wrapper .content{
@@ -50,6 +53,7 @@ body{
   border: 1px solid #bfbfbf;
   width: calc(100% / 3 - 5px);
   transition: border-color 0.3s;
+  background: none;
 }
 .content.disable .column{
   opacity: 0.6;
@@ -62,7 +66,7 @@ body{
   outline: none;
   background: none;
   font-size: 19px;
-  color: #222;
+  color: var(--secondary-text);
   transition: color 0.3s;
 }
 .wrapper button{
@@ -75,7 +79,7 @@ body{
   padding: 17px 0;
   margin-top: 20px;
   border-radius: 5px;
-  background: #4A98F7;
+  background: var(--primary-color);
   transition: background 0.3s, color 0.3s;
 }
 
@@ -102,7 +106,12 @@ body{
     cursor: pointer;
     user-select: none;
     text-align: center;
-    flex: 1; /* Center the title */
+    flex: 1;
+    color: #fff;
+}
+
+.darkmode .header-title {
+    color: #ffffff !important;
 }
 
 /* Navigation menu */
@@ -111,7 +120,7 @@ body{
     display: flex;
     margin: 0;
     padding: 0;
-    flex: 1; /* Align buttons to the left */
+    flex: 1;
 }
 
 .nav-menu li {
@@ -130,7 +139,7 @@ body{
 
 .nav-button:hover,
 .nav-button:focus {
-    color: #63b3ed; /* Light blue */
+    color: #63b3ed;
     outline: none;
 }
 
@@ -143,53 +152,61 @@ body{
     flex: 1;
 }
 
-/* Add top padding to body to prevent content being hidden behind fixed header */
-body {
-    padding-top: 60px;
-}
-
 /* Style for the dark mode button */
 #theme-switch {
-    background: transparent;
-    border: none;
-    cursor: pointer;
+    height: 50px;
+    width: 50px;
     padding: 0;
+    border-radius: 50%;
+    background-color: var(--base-variant);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 12px;
     margin-left: 1.5rem;
-    display: flex;
-    align-items: center;
+    /* You can use position: fixed if you want it floating like index.html */
+    /* position: fixed;
+    top: 120px;
+    left: 20px; */
 }
 #theme-switch svg {
-    fill: #fff;
-    transition: fill 0.3s;
+    fill: var(--primary-color);
 }
-#theme-switch:focus svg,
-#theme-switch:hover svg {
-    fill: #63b3ed;
+#theme-switch svg:last-child {
+    display: none;
+}
+.darkmode #theme-switch svg:first-child {
+    display: none;
+}
+.darkmode #theme-switch svg:last-child {
+    display: block;
 }
 
-/* DARK MODE STYLES */
-body.darkmode {
-  background: #1a202c;
+/* DARK MODE handled by CSS variables in :root/.darkmode */
+:root {
+  --base-color: #ffffff;
+  --base-variant: #f4f4f9;
+  --text-color: #111528;
+  --secondary-text: #232738;
+  --primary-color: #3a435d;
+  --accent-color: #0071ff;
 }
-body.darkmode .wrapper {
-  background: #232b3e;
-  color: #f1f1f1;
+.darkmode {
+  --base-color: #181a20;
+  --base-variant: #23263a;
+  --text-color: #f4f4f9;
+  --secondary-text: #a4a5b8;
+  --primary-color: #3a435d;
+  --accent-color: #3399ff;
 }
-body.darkmode .wrapper h1 {
-  color: #f1f1f1;
-}
-body.darkmode .wrapper .content {
-  background: none;
-}
-body.darkmode .column select {
-  background: none;
-  color: #f1f1f1;
-}
-body.darkmode .wrapper button {
-  background: #2b6cb0;
-  color: #fff;
-}
-body.darkmode .content .column {
-  border: 1px solid #444a5a;
+
+/* Make headings and paragraphs readable in dark mode */
+.darkmode h1,
+.darkmode h2,
+.darkmode h3,
+.darkmode h4,
+.darkmode h5,
+.darkmode h6,
+.darkmode p {
+  color: var(--text-color);
 }
