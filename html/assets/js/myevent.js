@@ -177,20 +177,22 @@ if (eventId) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             addCurrentUserToEvent(eventId);
-        }
-    });
-
-    // Show only the shared event
-    getDoc(doc(db, "events", eventId)).then(docSnap => {
-        if (docSnap.exists()) {
-            const eventData = docSnap.data();
-            eventData.id = eventId;
-            renderEvents([eventData]);
-            if (!window._countdownInterval) {
-                window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
-            }
+            getDoc(doc(db, "events", eventId)).then(docSnap => {
+                if (docSnap.exists()) {
+                    const eventData = docSnap.data();
+                    eventData.id = eventId;
+                    renderEvents([eventData]);
+                    if (!window._countdownInterval) {
+                        window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
+                    }
+                } else {
+                    document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
+                }
+            });
         } else {
-            document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
+            // Not logged in: redirect to login page or show a message
+            alert("Please log in to join this event and receive notifications.");
+            window.location.href = "login.html"; // Change to your login page path
         }
     });
 } else {
