@@ -12,6 +12,7 @@ import {
     orderBy
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
 // Initialize Firebase (for Firestore)
 const firebaseConfig = {
@@ -221,4 +222,15 @@ if (eventId) {
 // --- DOM Events --- NEW
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("saveEventBtn").addEventListener("click", saveEvent);
+
+    // --- Logout button handler ---
+    const signoutBtn = document.getElementById("signout-link");
+    if (signoutBtn) {
+        signoutBtn.addEventListener("click", () => {
+            const auth = getAuth();
+            signOut(auth).then(() => {
+                window.location.href = "login.html"; // Redirect to your login page
+            });
+        });
+    }
 });
