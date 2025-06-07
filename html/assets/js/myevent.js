@@ -137,8 +137,6 @@ function renderEvents(events) {
         `;
         eventsList.appendChild(eventDiv);
     });
-
-    updateAllCountdowns(events);
 }
 
 // --- Email Notification Logic --- NEW
