@@ -88,7 +88,7 @@ async function saveEvent() {
     if (!eventName || !eventDate) return alert("Please enter both fields!");
 
     // Convert the local date/time to a UTC string for timezone consistency
-    const eventDateUTC = new Date(eventDateLocal).toISOString();
+    const eventDateUTC = new Date(eventDate).toISOString();
 
     // Add a new document to the "events" collection in Firestore
     // The document contains the event name, UTC date, and an array with the creator's email
