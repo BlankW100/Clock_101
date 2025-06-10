@@ -6,6 +6,8 @@
     <title>My Event</title>
     <link rel="stylesheet" href="assets/css/navbar.css">
     <link rel="stylesheet" href="assets/css/myevent.css">
+    <script type="module" src="assets/js/fetch-username.js" defer></script>
+    <script type="module" src="assets/js/fetch-user-settings.js"></script>
 </head>
 <body>
     <header>
@@ -17,6 +19,8 @@
                 <li><button class="nav-button" onclick="window.location.href='myevent.html'">My Event</button></li>
                 <li><button id="signout-link" class="nav-button">Logout</button></li>
             </ul>
+            <h2 class="header-title" onclick="window.location.href='index.html'">Clock 101</h2>
+            <div class="welcome-message" id="welcome-message">Welcome, <span id="username">Loading...</span></div>
         </nav>
     </header>
 
