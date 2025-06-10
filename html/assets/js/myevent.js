@@ -93,7 +93,7 @@ async function saveEvent() {
         emails: [userEmail]
     });
 
-    // Show the shareable link on the page --- NEW
+    // Generate the link on the page --- NEW
     const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${docRef.id}`;
     document.getElementById("share-link").innerHTML = `
         <p>Share this link with your friend:</p>
@@ -174,10 +174,12 @@ function updateAllCountdowns(events = []) {
 // --- Firestore Listener (show only shared event if eventId in URL) --- NEW
 const eventId = getEventIdFromUrl();
 
-if (eventId) {
-    // Add current user to event's email list
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        window.currentUserEmail = user.email;
+        console.log("Logged in as:", user.email);
+
+        if (eventId) {
             addCurrentUserToEvent(eventId);
             getDoc(doc(db, "events", eventId)).then(docSnap => {
                 if (docSnap.exists()) {
@@ -194,29 +196,32 @@ if (eventId) {
                 }
             });
         } else {
-            // Not logged in: redirect to login page or show a message
+            // Show all events as before
+            const q = query(collection(db, "events"), orderBy("date"));
+            onSnapshot(q, (snapshot) => {
+                const events = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    events.push(data);
+                });
+                renderEvents(events);
+                // --- Clear previous interval before setting a new one ---
+                if (window._countdownInterval) {
+                    clearInterval(window._countdownInterval);
+                }
+                window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
+            });
+        }
+    } else {
+        window.currentUserEmail = null;
+        console.log("No user logged in");
+        if (eventId) {
             alert("Please log in to join this event and receive notifications.");
             window.location.href = "login.html"; // Change to your login page path
         }
-    });
-} else {
-    // Show all events as before
-    const q = query(collection(db, "events"), orderBy("date"));
-    onSnapshot(q, (snapshot) => {
-        const events = [];
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            data.id = doc.id;
-            events.push(data);
-        });
-        renderEvents(events);
-        // --- Clear previous interval before setting a new one ---
-        if (window._countdownInterval) {
-            clearInterval(window._countdownInterval);
-        }
-        window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
-    });
-}
+    }
+});
 
 // --- DOM Events --- NEW
 document.addEventListener("DOMContentLoaded", () => {
