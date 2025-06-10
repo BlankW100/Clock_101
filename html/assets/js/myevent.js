@@ -31,9 +31,29 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         window.currentUserEmail = user.email;
         console.log("Logged in as:", user.email);
+        if (eventId) {
+            addCurrentUserToEvent(eventId);
+            getDoc(doc(db, "events", eventId)).then(docSnap => {
+                if (docSnap.exists()) {
+                    const eventData = docSnap.data();
+                    eventData.id = eventId;
+                    renderEvents([eventData]);
+                    if (window._countdownInterval) {
+                        clearInterval(window._countdownInterval);
+                    }
+                    window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
+                } else {
+                    document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
+                }
+            });
+        }
     } else {
         window.currentUserEmail = null;
         console.log("No user logged in");
+        if (eventId) {
+            alert("Please log in to join this event and receive notifications.");
+            window.location.href = "login.html";
+        }
     }
 });
 
@@ -192,7 +212,6 @@ if (eventId) {
                     const eventData = docSnap.data();
                     eventData.id = eventId;
                     renderEvents([eventData]);
-                    // --- Clear previous interval before setting a new one ---
                     if (window._countdownInterval) {
                         clearInterval(window._countdownInterval);
                     }
