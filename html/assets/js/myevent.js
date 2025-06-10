@@ -151,9 +151,9 @@ function updateAllCountdowns(events = []) {
         const countdownStr = getCountdownString(date);
         div.textContent = countdownStr;
 
-        // --- Use event ID for unique notification key ---
+        // --- Use only event ID for unique notification key ---
         const event = events[idx];
-        const notifiedKey = (event && event.id ? event.id : "") + date + name;
+        const notifiedKey = event && event.id ? event.id : date + name;
 
         // Send to all emails saved with the event
         if (countdownStr === "Event has started!" && !notifiedEvents.has(notifiedKey)) {
