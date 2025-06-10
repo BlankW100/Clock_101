@@ -35,6 +35,7 @@ body {
   color: var(--text-color);
   padding-top: 60px; /* Prevent content from being hidden behind fixed header */
   margin: 0;
+  transition: background 0.3s, color 0.3s;
 }
 
 /* Header and Section */
