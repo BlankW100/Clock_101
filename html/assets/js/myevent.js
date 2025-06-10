@@ -31,29 +31,9 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         window.currentUserEmail = user.email;
         console.log("Logged in as:", user.email);
-        if (eventId) {
-            addCurrentUserToEvent(eventId);
-            getDoc(doc(db, "events", eventId)).then(docSnap => {
-                if (docSnap.exists()) {
-                    const eventData = docSnap.data();
-                    eventData.id = eventId;
-                    renderEvents([eventData]);
-                    if (window._countdownInterval) {
-                        clearInterval(window._countdownInterval);
-                    }
-                    window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
-                } else {
-                    document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
-                }
-            });
-        }
     } else {
         window.currentUserEmail = null;
         console.log("No user logged in");
-        if (eventId) {
-            alert("Please log in to join this event and receive notifications.");
-            window.location.href = "login.html";
-        }
     }
 });
 
@@ -101,33 +81,26 @@ function getEventIdFromUrl() {
 
 // --- Save Event --- NEW
 async function saveEvent() {
-    const eventName = document.getElementById("eventName").value; // Get event name from input field
-    const eventDate = document.getElementById("eventDate").value; // Get event date (local time) from input field
-    const userEmail = window.currentUserEmail; // Get current user's email (set globally after login)
+    const eventName = document.getElementById("eventName").value;
+    const eventDate = document.getElementById("eventDate").value;
+    const userEmail = window.currentUserEmail;
 
     if (!eventName || !eventDate) return alert("Please enter both fields!");
 
-    // Convert the local date/time to a UTC string for timezone consistency
-    const eventDateUTC = new Date(eventDate).toISOString();
-
-    // Add a new document to the "events" collection in Firestore
-    // The document contains the event name, UTC date, and an array with the creator's email
     const docRef = await addDoc(collection(db, "events"), {
         name: eventName,
-        date: eventDateUTC, // Save as UTC
+        date: eventDate,
         emails: [userEmail]
     });
 
-    // Generate a link using the new event's document ID--- NEW
+    // Show the shareable link on the page --- NEW
     const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${docRef.id}`;
-    // Display the link on the page so the user can copy and share it
-    document.getElementById("share-link").innerHTML = ` 
+    document.getElementById("share-link").innerHTML = `
         <p>Share this link with your friend:</p>
         <input type="text" value="${shareLink}" readonly style="width:90%">
         <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
     `;
 
-    // Clear the input fields after saving
     document.getElementById("eventName").value = "";
     document.getElementById("eventDate").value = "";
 }
@@ -162,13 +135,12 @@ function renderEvents(events) {
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
         `;
-        // Add the event div to the events list container in the DOM
         eventsList.appendChild(eventDiv);
     });
 }
 
 // --- Email Notification Logic --- NEW
-const notifiedEvents = new Set(); // Create a Set to keep track of which events have already sent notifications
+const notifiedEvents = new Set();
 
 function updateAllCountdowns(events = []) {
     const countdownDivs = document.querySelectorAll(".event-countdown");
@@ -212,6 +184,7 @@ if (eventId) {
                     const eventData = docSnap.data();
                     eventData.id = eventId;
                     renderEvents([eventData]);
+                    // --- Clear previous interval before setting a new one ---
                     if (window._countdownInterval) {
                         clearInterval(window._countdownInterval);
                     }
