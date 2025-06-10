@@ -17,10 +17,6 @@
                 <li><button class="nav-button" onclick="window.location.href='myevent.html'">My Event</button></li>
                 <li><button id="signout-link" class="nav-button">Logout</button></li>
             </ul>
-            <!-- Centered title -->
-            <h1 class="header-title" onclick="window.location.href='index.html'">Clock 101</h1>
-            <!-- Right-aligned welcome message -->
-            <div class="welcome-message" id="welcome-message">Welcome, <span id="username">Loading...</span></div>
         </nav>
     </header>
 
@@ -29,9 +25,16 @@
         <input type="text" id="eventName" placeholder="Event Name">
         <input type="datetime-local" id="eventDate">
         <button id="saveEventBtn">Save Event</button>
+        <div id="share-link"></div>
         <div id="events-list"></div>
     </div>
 
-    <script type="module" src="assets/js/myevent.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function(){
+    emailjs.init("0jNHXMeYrchzA9OfI"); // Your EmailJS public key
+  })();
+</script>
+<script type="module" src="assets/js/myevent.js"></script>
 </body>
 </html>

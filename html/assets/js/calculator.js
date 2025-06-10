@@ -1,7 +1,7 @@
 // Time Converter Script using Moment.js and Moment Timezone
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -13,160 +13,127 @@ const firebaseConfig = {
     appId: "1:654434052980:web:d270879ef90c796a059a21",
     measurementId: "G-VHP3DZEB3G"
 };
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const timezones = moment.tz.names();
+let favTimezones = [];
 
-// Add a timezone to the user's favorites on right-click
-async function handleRightClickToAddFavorite(event) {
-    event.preventDefault(); // Prevent the default context menu
-    const timezone = event.target.textContent;
-    if (timezone && timezones.includes(timezone)) {
-        await addFavoriteTimezone(timezone);
-    } else {
-        console.error("Invalid timezone selected.");
-    }
-}
-
-// Populate timezone list dynamically for output timezone with right-click functionality
-function populateTimezoneList(searchTerm = "") {
-    const timezoneList = document.getElementById("timezone-list");
-    timezoneList.innerHTML = ""; // Clear the list
-
-    const filteredTimezones = timezones.filter((tz) =>
-        tz.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    if (filteredTimezones.length === 0) {
-        const noResultItem = document.createElement("li");
-        noResultItem.textContent = "No results found";
-        noResultItem.className = "p-2 text-gray-500";
-        timezoneList.appendChild(noResultItem);
-        return;
-    }
-
-    filteredTimezones.forEach((tz) => {
-        const listItem = document.createElement("li");
-        listItem.textContent = tz;
-        listItem.className = "p-2 cursor-pointer hover:bg-gray-200";
-        listItem.addEventListener("click", () => {
-            document.getElementById("timezone-search").value = tz;
-            timezoneList.innerHTML = ""; // Clear the list after selection
-        });
-        listItem.addEventListener("contextmenu", handleRightClickToAddFavorite); // Add right-click functionality
-        timezoneList.appendChild(listItem);
-    });
-}
-
-// Populate timezone list dynamically for input timezone with right-click functionality
-function populateInputTimezoneList(searchTerm = "") {
-    const inputTimezoneList = document.getElementById("input-timezone-list");
-    inputTimezoneList.innerHTML = ""; // Clear the list
-
-    const filteredTimezones = timezones.filter((tz) =>
-        tz.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    if (filteredTimezones.length === 0) {
-        const noResultItem = document.createElement("li");
-        noResultItem.textContent = "No results found";
-        noResultItem.className = "p-2 text-gray-500";
-        inputTimezoneList.appendChild(noResultItem);
-        return;
-    }
-
-    filteredTimezones.forEach((tz) => {
-        const listItem = document.createElement("li");
-        listItem.textContent = tz;
-        listItem.className = "p-2 cursor-pointer hover:bg-gray-200";
-        listItem.addEventListener("click", () => {
-            document.getElementById("input-timezone-search").value = tz;
-            inputTimezoneList.innerHTML = ""; // Clear the list after selection
-        });
-        listItem.addEventListener("contextmenu", handleRightClickToAddFavorite); // Add right-click functionality
-        inputTimezoneList.appendChild(listItem);
-    });
-}
-
-// Fetch and display favorite timezones
+// Fetch and display favorite timezones from Firestore (favtime collection)
 async function fetchFavoriteTimezones() {
     const userId = sessionStorage.getItem("userId");
-    if (!userId) {
-        console.error("No userId found in sessionStorage!");
-        return;
-    }
-
-    const userDoc = doc(db, "users", JSON.parse(userId));
+    if (!userId) return;
+    const userDoc = doc(db, "favtime", userId);
     const userSnapshot = await getDoc(userDoc);
-
     if (userSnapshot.exists()) {
-        const favTimezones = userSnapshot.data().fav_tz || [];
-        displayFavoriteTimezones(favTimezones);
+        favTimezones = userSnapshot.data().timezones || [];
     } else {
-        console.error("No such user document!");
+        favTimezones = [];
     }
+    displayFavoriteTimezones();
 }
 
-// Display favorite timezones in the "Favorite Timezones" section
-function displayFavoriteTimezones(favTimezones) {
-    const favTimezonesList = document.getElementById("fav-timezones");
-    favTimezonesList.innerHTML = ""; // Clear the list
+// Save favorite timezones to Firestore (favtime collection)
+async function saveFavoriteTimezones() {
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) return;
+    const userDoc = doc(db, "favtime", userId);
+    await setDoc(userDoc, { timezones: favTimezones }, { merge: true });
+}
 
+// Display favorite timezones as star buttons
+function displayFavoriteTimezones() {
+    const favList = document.getElementById("fav-timezones");
+    favList.innerHTML = "";
     if (favTimezones.length === 0) {
-        const noFavItem = document.createElement("li");
-        noFavItem.textContent = "No favorite timezones yet.";
-        noFavItem.className = "p-2 text-gray-500";
-        favTimezonesList.appendChild(noFavItem);
+        favList.innerHTML = `<li class="text-gray-500">No favorites yet. Click ★ to add.</li>`;
         return;
     }
-
-    favTimezones.forEach((tz) => {
-        const listItem = document.createElement("li");
-        listItem.textContent = tz;
-        listItem.className = "p-2 cursor-pointer hover:bg-gray-200";
-        listItem.addEventListener("click", () => {
+    favTimezones.forEach(tz => {
+        const li = document.createElement("li");
+        li.className = "flex items-center gap-1 bg-yellow-100 px-2 py-1 rounded";
+        li.innerHTML = `<span class="text-yellow-500">★</span> <span class="cursor-pointer">${tz}</span>`;
+        li.querySelector("span.cursor-pointer").onclick = () => {
             document.getElementById("input-timezone-search").value = tz;
-        });
-        favTimezonesList.appendChild(listItem);
+            document.getElementById("timezone-search").value = tz;
+        };
+        favList.appendChild(li);
     });
 }
 
-// Add a timezone to the user's favorites
-async function addFavoriteTimezone(timezone) {
-    const userId = sessionStorage.getItem("userId");
-    if (!userId) {
-        console.error("No userId found in sessionStorage!");
-        return;
-    }
-
-    const userDoc = doc(db, "users", JSON.parse(userId));
-    const userSnapshot = await getDoc(userDoc);
-
-    if (userSnapshot.exists()) {
-        const favTimezones = userSnapshot.data().fav_tz || [];
-        if (!favTimezones.includes(timezone)) {
-            favTimezones.push(timezone);
-            await updateDoc(userDoc, { fav_tz: favTimezones });
-            displayFavoriteTimezones(favTimezones);
-        } else {
-            console.log("Timezone is already in favorites.");
-        }
+// Add or remove favorite
+async function toggleFavorite(tz) {
+    const idx = favTimezones.indexOf(tz);
+    if (idx === -1) {
+        favTimezones.unshift(tz); // Add to top
     } else {
-        console.error("No such user document!");
+        favTimezones.splice(idx, 1); // Remove
     }
+    await saveFavoriteTimezones();
+    displayFavoriteTimezones();
+    populateTimezoneList(document.getElementById("timezone-search").value);
+    populateInputTimezoneList(document.getElementById("input-timezone-search").value);
 }
 
-//  adding a timezone to favorites
-function handleAddToFavorites(event) {
-    const timezone = event.target.value;
-    if (timezone && timezones.includes(timezone)) {
-        addFavoriteTimezone(timezone);
-    } else {
-        console.error("Invalid timezone selected.");
-    }
+// Populate timezone list with stars
+function populateTimezoneList(searchTerm = "") {
+    const timezoneList = document.getElementById("timezone-list");
+    timezoneList.innerHTML = "";
+
+    // Prioritize favorites
+    let filtered = timezones.filter(tz => tz.toLowerCase().includes(searchTerm.toLowerCase()));
+    filtered = [
+        ...favTimezones.filter(tz => filtered.includes(tz)),
+        ...filtered.filter(tz => !favTimezones.includes(tz))
+    ];
+
+    filtered.forEach(tz => {
+        const li = document.createElement("li");
+        li.className = "flex items-center p-2 cursor-pointer hover:bg-gray-200";
+        li.innerHTML = `
+            <span class="star text-xl mr-2 ${favTimezones.includes(tz) ? "text-yellow-500" : "text-gray-400"}" style="user-select:none;cursor:pointer;">★</span>
+            <span class="flex-1">${tz}</span>
+        `;
+        li.querySelector(".star").onclick = (e) => {
+            e.stopPropagation();
+            toggleFavorite(tz);
+        };
+        li.querySelector("span.flex-1").onclick = () => {
+            document.getElementById("timezone-search").value = tz;
+            timezoneList.innerHTML = "";
+        };
+        timezoneList.appendChild(li);
+    });
+}
+
+// Same for input timezone
+function populateInputTimezoneList(searchTerm = "") {
+    const inputTimezoneList = document.getElementById("input-timezone-list");
+    inputTimezoneList.innerHTML = "";
+
+    let filtered = timezones.filter(tz => tz.toLowerCase().includes(searchTerm.toLowerCase()));
+    filtered = [
+        ...favTimezones.filter(tz => filtered.includes(tz)),
+        ...filtered.filter(tz => !favTimezones.includes(tz))
+    ];
+
+    filtered.forEach(tz => {
+        const li = document.createElement("li");
+        li.className = "flex items-center p-2 cursor-pointer hover:bg-gray-200";
+        li.innerHTML = `
+            <span class="star text-xl mr-2 ${favTimezones.includes(tz) ? "text-yellow-500" : "text-gray-400"}" style="user-select:none;cursor:pointer;">★</span>
+            <span class="flex-1">${tz}</span>
+        `;
+        li.querySelector(".star").onclick = (e) => {
+            e.stopPropagation();
+            toggleFavorite(tz);
+        };
+        li.querySelector("span.flex-1").onclick = () => {
+            document.getElementById("input-timezone-search").value = tz;
+            inputTimezoneList.innerHTML = "";
+        };
+        inputTimezoneList.appendChild(li);
+    });
 }
 
 // Handle search input for timezones
@@ -174,8 +141,6 @@ function handleTimezoneSearch(event) {
     const searchTerm = event.target.value;
     populateTimezoneList(searchTerm);
 }
-
-// Handle search input for input timezones
 function handleInputTimezoneSearch(event) {
     const searchTerm = event.target.value;
     populateInputTimezoneList(searchTerm);
@@ -202,7 +167,6 @@ function handleConversion(event) {
         return;
     }
 
-    // Parse input as the selected input timezone and convert to the output timezone
     const inputMoment = moment.tz(inputDateTime, inputTimezone);
     const converted = inputMoment.tz(outputTimezone);
     resultDiv.textContent = `Converted time in ${outputTimezone}: ${converted.format('YYYY-MM-DD HH:mm:ss z')}`;
@@ -210,42 +174,14 @@ function handleConversion(event) {
 
 // Initialize the converter with favorite timezone functionality
 function init() {
-    console.log("Initializing Timezone Converter...");
-    fetchFavoriteTimezones(); // Fetch and display favorite timezones
-    populateTimezoneList(); // Populate the full list for output timezone
-    populateInputTimezoneList(); // Populate the full list for input timezone
+    fetchFavoriteTimezones().then(() => {
+        populateTimezoneList();
+        populateInputTimezoneList();
+    });
 
-    const inputSearchInput = document.getElementById("input-timezone-search");
-    if (inputSearchInput) {
-        inputSearchInput.addEventListener("input", handleInputTimezoneSearch);
-        console.log("Input timezone search input event listener added");
-    } else {
-        console.error("Input timezone search input not found");
-    }
-
-    const outputSearchInput = document.getElementById("timezone-search");
-    if (outputSearchInput) {
-        outputSearchInput.addEventListener("input", handleTimezoneSearch);
-        console.log("Output timezone search input event listener added");
-    } else {
-        console.error("Output timezone search input not found");
-    }
-
-    const form = document.getElementById("converter-form");
-    if (form) {
-        form.addEventListener("submit", handleConversion);
-        console.log("Form submit event listener added");
-    } else {
-        console.error("Converter form not found");
-    }
-
-    const addToFavoritesButton = document.getElementById("add-to-favorites");
-    if (addToFavoritesButton) {
-        addToFavoritesButton.addEventListener("click", handleAddToFavorites);
-        console.log("Add to favorites button event listener added");
-    } else {
-        console.error("Add to favorites button not found");
-    }
+    document.getElementById("input-timezone-search").addEventListener("input", handleInputTimezoneSearch);
+    document.getElementById("timezone-search").addEventListener("input", handleTimezoneSearch);
+    document.getElementById("converter-form").addEventListener("submit", handleConversion);
 }
 
 document.addEventListener("DOMContentLoaded", init);
