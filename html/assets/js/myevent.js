@@ -81,26 +81,33 @@ function getEventIdFromUrl() {
 
 // --- Save Event --- NEW
 async function saveEvent() {
-    const eventName = document.getElementById("eventName").value;
-    const eventDate = document.getElementById("eventDate").value;
-    const userEmail = window.currentUserEmail;
+    const eventName = document.getElementById("eventName").value; // Get event name from input field
+    const eventDate = document.getElementById("eventDate").value; // Get event date (local time) from input field
+    const userEmail = window.currentUserEmail; // Get current user's email (set globally after login)
 
     if (!eventName || !eventDate) return alert("Please enter both fields!");
 
+    // Convert the local date/time to a UTC string for timezone consistency
+    const eventDateUTC = new Date(eventDateLocal).toISOString();
+
+    // Add a new document to the "events" collection in Firestore
+    // The document contains the event name, UTC date, and an array with the creator's email
     const docRef = await addDoc(collection(db, "events"), {
         name: eventName,
-        date: eventDate,
+        date: eventDateUTC, // Save as UTC
         emails: [userEmail]
     });
 
-    // Show the shareable link on the page --- NEW
+    // Generate a link using the new event's document ID--- NEW
     const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${docRef.id}`;
-    document.getElementById("share-link").innerHTML = `
+    // Display the link on the page so the user can copy and share it
+    document.getElementById("share-link").innerHTML = ` 
         <p>Share this link with your friend:</p>
         <input type="text" value="${shareLink}" readonly style="width:90%">
         <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
     `;
 
+    // Clear the input fields after saving
     document.getElementById("eventName").value = "";
     document.getElementById("eventDate").value = "";
 }
@@ -135,12 +142,13 @@ function renderEvents(events) {
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
         `;
+        // Add the event div to the events list container in the DOM
         eventsList.appendChild(eventDiv);
     });
 }
 
 // --- Email Notification Logic --- NEW
-const notifiedEvents = new Set();
+const notifiedEvents = new Set(); // Create a Set to keep track of which events have already sent notifications
 
 function updateAllCountdowns(events = []) {
     const countdownDivs = document.querySelectorAll(".event-countdown");
