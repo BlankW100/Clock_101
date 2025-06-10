@@ -105,6 +105,7 @@ async function sendEmailNotification(email, alarmTime) {
 async function setAlarm() {
     let time = `${hourSelect.value}:${minuteSelect.value} ${ampmSelect.value}`;
     let sound = soundSelect.value;
+    let description = document.getElementById("alarm-description-input").value.trim();
 
     if (time.includes("Hour") || time.includes("Minute") || time.includes("AM/PM")) {
         return alert("Please select a valid time to set Alarm!");
@@ -120,6 +121,7 @@ async function setAlarm() {
     const alarmDoc = {
         time: time,
         sound: sound,
+        description: description,
         createdAt: new Date().toISOString()
     };
 
@@ -131,9 +133,39 @@ async function setAlarm() {
         alarms.push({ id: docRef.id, ...alarmDoc }); // Add to local array with ID
         displayAlarms(); // Update UI
         alert("Alarm set successfully!");
+        document.getElementById("alarm-description-input").value = "";
     } catch (error) {
         console.error("Error setting alarm:", error);
     }
+}
+
+// Display alarms with description
+function displayAlarms() {
+    const alarmsList = document.getElementById("alarms-list");
+    alarmsList.innerHTML = "";
+    alarms.forEach(alarm => {
+        const alarmDiv = document.createElement("div");
+        alarmDiv.className = "alarm-list-item";
+        alarmDiv.innerHTML = `
+            <div class="alarm-list-time">${alarm.time}</div>
+            <div class="alarm-list-desc">${alarm.description ? alarm.description : "<em>No description</em>"}</div>
+            <div class="alarm-list-sound">🔔 ${alarm.sound.replace('.mp3','')}</div>
+            <button class="delete-alarm-btn" data-id="${alarm.id}">Delete</button>
+        `;
+        alarmsList.appendChild(alarmDiv);
+    });
+    document.querySelectorAll('.delete-alarm-btn').forEach(btn => {
+        btn.onclick = async (e) => {
+            const id = btn.getAttribute('data-id');
+            const userId = sessionStorage.getItem("userId");
+            if (!userId) return;
+            const userDocRef = doc(db, "users", userId);
+            const alarmDocRef = doc(userDocRef, "alarm", id);
+            await deleteDoc(alarmDocRef);
+            alarms = alarms.filter(a => a.id !== id);
+            displayAlarms();
+        };
+    });
 }
 
 // Stop the alarm
