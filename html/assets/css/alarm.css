@@ -20,10 +20,12 @@ body{
   padding-top: 60px;
 }
 .wrapper{
+
   width: 440px;
   padding: 30px 30px 38px;
   background: var(--base-variant);
   border-radius: 10px;
+
   flex-direction: column;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   transition: background 0.3s, color 0.3s;
@@ -79,6 +81,7 @@ body{
   padding: 17px 0;
   margin-top: 20px;
   border-radius: 5px;
+
   background: var(--primary-color);
   transition: background 0.3s, color 0.3s;
 }
@@ -207,4 +210,5 @@ body{
 .darkmode h6,
 .darkmode p {
   color: var(--text-color);
+
 }
