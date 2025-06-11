@@ -113,8 +113,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Fetch alarms on page load (dummy for now)
-    // You should implement fetchAlarms() to load from Firestore
-    // For demo, just call displayAlarms()
-    displayAlarms();
+    // Fetch alarms from Firestore for the logged-in user
+    async function fetchAlarms() {
+        const userId = sessionStorage.getItem("userId");
+        if (!userId) return;
+        const userDocRef = doc(db, "users", userId);
+        const alarmCollectionRef = collection(userDocRef, "alarm");
+        try {
+            const snapshot = await getDocs(alarmCollectionRef);
+            alarms = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+            displayAlarms();
+        } catch (error) {
+            console.error("Error fetching alarms:", error);
+        }
+    }
+
+    // Fetch alarms on page load
+    fetchAlarms();
 });
