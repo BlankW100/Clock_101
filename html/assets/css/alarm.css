@@ -278,26 +278,25 @@ body{
   position: relative;
   min-height: 80px;
 }
-.alarm-list-actions {
-  display: flex;
-  gap: 8px;
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  z-index: 2;
-}
 .alarm-list-content {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  margin-bottom: 10px;
+}
+.alarm-list-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
   margin-top: 8px;
+  position: static;
 }
 .delete-alarm-btn, .edit-alarm-btn {
   position: static;
   min-width: 48px;
   height: 28px;
-  padding: 2px 8px;
-  font-size: 0.85rem;
+  padding: 2px 12px;
+  font-size: 0.95rem;
   border-radius: 4px;
   border: none;
   cursor: pointer;
