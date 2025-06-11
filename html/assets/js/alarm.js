@@ -37,13 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Alarm logic
     const setAlarmBtn = document.getElementById("set-alarm-btn");
-    const stopAlarmBtn = document.getElementById("stop-alarm-btn");
     const alarmsList = document.getElementById("alarms-list");
     let ringtone = new Audio("assets/Alarm files/ringtone.mp3");
     let isAlarmSet = false;
 
     setAlarmBtn.addEventListener("click", setAlarm);
-    stopAlarmBtn.addEventListener("click", stopAlarm);
 
     function displayAlarms() {
         alarmsList.innerHTML = "";
@@ -173,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setAlarmBtn.onclick = setAlarm;
-    stopAlarmBtn.addEventListener("click", stopAlarm);
 
     // Fetch alarms from Firestore for the logged-in user
     async function fetchAlarms() {
