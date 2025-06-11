@@ -54,9 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
                   <button class="edit-alarm-btn" data-id="${alarm.id}">Edit</button>
                   <button class="delete-alarm-btn" data-id="${alarm.id}">Delete</button>
                 </div>
-                <div class="alarm-list-time">${alarm.time}</div>
-                <div class="alarm-list-desc">${alarm.description ? alarm.description : "<em>No description</em>"}</div>
-                <div class="alarm-list-sound">🔔 ${alarm.sound.replace('.mp3','')}</div>
+                <div class="alarm-list-content">
+                  <div class="alarm-list-time">${alarm.time}</div>
+                  <div class="alarm-list-desc">${alarm.description ? alarm.description : "<em>No description</em>"}</div>
+                  <div class="alarm-list-sound">🔔 ${alarm.sound.replace('.mp3','')}</div>
+                </div>
             `;
             alarmsList.appendChild(alarmDiv);
         });
