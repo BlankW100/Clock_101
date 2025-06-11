@@ -7,16 +7,39 @@ body {
 .container {
     margin: 50px auto;
     width: 300px;
+    max-width: 95vw; /* Prevents overflow on small screens */
     padding: 20px;
     background: white;
     border-radius: 10px;
     box-shadow: 0px 0px 10px gray;
+    box-sizing: border-box;
 }
 
 input, button {
     margin: 10px;
     padding: 10px;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: block;
+}
+
+input[type="text"], input[type="datetime-local"] {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    max-width: 100%; /* Prevents input from exceeding container */
+    box-sizing: border-box;
+    display: block;
+}
+
+button {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: block;
 }
 
 #countdown {
