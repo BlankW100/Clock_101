@@ -223,22 +223,22 @@ onAuthStateChanged(auth, (user) => {
             alert("Please log in to join this event and receive notifications.");
             window.location.href = "login.html";
         }
-    });
-} else {
-    // Show all events
-    const q = query(collection(db, "events"), orderBy("date"));
-    onSnapshot(q, (snapshot) => {
-        const events = [];
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            data.id = doc.id;
-            events.push(data);
+    } else {
+        // Show all events
+        const q = query(collection(db, "events"), orderBy("date"));
+        onSnapshot(q, (snapshot) => {
+            const events = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                events.push(data);
+            });
+            renderEvents(events);
+            if (window._countdownInterval) clearInterval(window._countdownInterval);
+            window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
         });
-        renderEvents(events);
-        if (window._countdownInterval) clearInterval(window._countdownInterval);
-        window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
-    });
-}
+    }
+});
 
 // DOM events
 document.addEventListener("DOMContentLoaded", () => {
