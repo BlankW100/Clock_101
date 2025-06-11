@@ -31,9 +31,23 @@ input, button {
     margin: 10px 0;
     padding: 10px;
     background: #fafafa;
+    word-break: break-word; /* Ensures long words/wrapped text break inside the box */
+    overflow-wrap: break-word; /* For extra safety */
+    max-width: 100%; /* Prevents overflow */
+    box-sizing: border-box;
+}
+
+.event-item h3 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    margin-bottom: 8px;
 }
 
 .event-countdown {
     font-size: 1.1em;
     color: #007bff;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
