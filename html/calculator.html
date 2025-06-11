@@ -19,18 +19,14 @@
 <body>
     <header>
         <nav class="nav-bar">
-            <!-- Left-aligned buttons -->
             <ul class="nav-menu">
                 <li><button class="nav-button" onclick="window.location.href='converter.html'">Time Converter</button></li>
                 <li><button class="nav-button" onclick="window.location.href='calculator.html'">Date Calculator</button></li>
                 <li><button class="nav-button" onclick="window.location.href='alarm.html'">Alarm</button></li>
+                <li><button class="nav-button" onclick="window.location.href='myevent.html'">My Event</button></li>
                 <li><button id="signout-link" class="nav-button">Logout</button></li>
             </ul>
-
-            <!-- Centered title -->
             <h1 class="header-title" onclick="window.location.href='index.html'">Clock 101</h1>
-
-            <!-- Right-aligned welcome message -->
             <div class="welcome-message" id="welcome-message">Welcome, <span id="username">Loading...</span></div>
         </nav>
         <button id="theme-switch" style="margin-top: 12px; margin-left: 1.5rem;">
@@ -66,6 +62,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
     <script src="assets/js/calculator.js" type="module"></script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -113,5 +110,6 @@
         window.addEventListener('load', fetchUsername);
     </script>
     <script src="assets/js/darkmode.js"></script>
+
 </body>
 </html>

@@ -124,3 +124,34 @@ button:hover {
 .logout-button:hover {
   background-color: #cc0000; /* Darker red on hover */
 }
+
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-direction: column;
+}
+
+.save-btn {
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.save-btn:hover {
+  background-color: #0056b3;
+}
+
+input[type="search"]:focus, select:focus {
+  outline: 2px solid #007bff;
+}
+
+h1 i {
+  margin-right: 8px;
+  color: #007bff;
+}

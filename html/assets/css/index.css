@@ -3,7 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #1a202c; /* Dark background */
+    background-color: #1a202c;
     color: white;
     padding: 0.75rem 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -21,7 +21,8 @@
     cursor: pointer;
     user-select: none;
     text-align: center;
-    flex: 1; /* Center the title */
+    flex: 1;
+    color: #fff;
 }
 
 /* Navigation menu */
@@ -30,7 +31,7 @@
     display: flex;
     margin: 0;
     padding: 0;
-    flex: 1; /* Align buttons to the left */
+    flex: 1;
 }
 
 .nav-menu li {
@@ -49,7 +50,7 @@
 
 .nav-button:hover,
 .nav-button:focus {
-    color: #63b3ed; /* Light blue */
+    color: #63b3ed;
     outline: none;
 }
 
@@ -59,19 +60,24 @@
     color: white;
     font-weight: 500;
     text-align: right;
-    flex: 1; /* Align to the right */
+    flex: 1;
 }
 
 /* Add top padding to body to prevent content being hidden behind fixed header */
 body {
-    padding-top: 60px; /* Height of header */
+    padding-top: 60px;
     margin: 0;
     font-family: Arial, sans-serif;
+    background: var(--base-color, #fff);
+    color: var(--text-color, #222);
+    transition: background 0.3s, color 0.3s;
 }
 
 /* Optional: style for main content */
 main {
-    padding: 1rem 1.5rem;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
 /* Hero section */
@@ -81,13 +87,22 @@ main {
 }
 
 .hero h2 {
-    font-size: 2rem;
+    font-size: 2.2rem;
     margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
 .hero p {
     font-size: 1.2rem;
     color: #555;
+    margin-bottom: 1rem;
+}
+
+.live-clock {
+    font-size: 1.5rem;
+    color: #007bff;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
 }
 
 /* Features section */
@@ -96,44 +111,106 @@ main {
     justify-content: space-around;
     flex-wrap: wrap;
     gap: 1.5rem;
+    margin-bottom: 2.5rem;
 }
 
 .feature-card {
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 1.2rem 1rem;
     text-align: center;
-    width: 300px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 270px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
 }
-
+.feature-card:focus,
+.feature-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.13);
+    background: #e6f0ff;
+    outline: 2px solid #007bff;
+}
 .feature-card i {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: #007bff;
     margin-bottom: 0.5rem;
 }
-
 .feature-card h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin-bottom: 0.5rem;
 }
-
 .feature-card p {
     font-size: 1rem;
     color: #555;
 }
-
 .feature-link {
     display: inline-block;
     margin-top: 1rem;
     color: #007bff;
-    text-decoration: none;
+    text-decoration: underline;
     font-weight: 500;
+    cursor: pointer;
 }
 
-.feature-link:hover {
-    text-decoration: underline;
+/* Interactive section */
+.interactive {
+    margin: 2.5rem 0 2rem 0;
+    text-align: center;
+}
+.interactive h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+.quick-clock-list {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+}
+.quick-clock {
+    background: #f4f4f9;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    min-width: 120px;
+    margin-bottom: 1rem;
+}
+.quick-clock .city {
+    display: block;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+.quick-clock .time {
+    font-size: 1.3rem;
+    color: #007bff;
+    letter-spacing: 1px;
+}
+
+/* Tips section */
+.tips {
+    margin: 2rem auto 1.5rem auto;
+    max-width: 600px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.tips h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+}
+.tips ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: #444;
+}
+.tips li {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
 }
 
 /* Footer */
@@ -143,4 +220,53 @@ footer {
     background: #1a202c;
     color: white;
     margin-top: 2rem;
+    font-size: 1rem;
+}
+
+/* Dark mode support */
+body.darkmode {
+    background: #181a20;
+    color: #f4f4f9;
+}
+body.darkmode .feature-card,
+body.darkmode .quick-clock,
+body.darkmode .tips {
+    background: #23263a;
+    color: #f4f4f9;
+    border-color: #33384d;
+}
+body.darkmode .feature-card:focus,
+body.darkmode .feature-card:hover {
+    background: #2a2e44;
+}
+body.darkmode .feature-link,
+body.darkmode .quick-clock .time {
+    color: #3399ff;
+}
+body.darkmode .live-clock {
+    color: #3399ff;
+}
+body.darkmode .hero p,
+body.darkmode .feature-card p,
+body.darkmode .tips ul {
+    color: #bfc6d1;
+}
+body.darkmode footer {
+    background: #23263a;
+    color: #f4f4f9;
+}
+
+/* Time format toggle */
+.time-format-toggle {
+    margin: 0.5rem auto 1.5rem auto;
+    text-align: center;
+    font-size: 1rem;
+    color: #444;
+}
+.time-format-toggle label {
+    cursor: pointer;
+    font-weight: 500;
+}
+.time-format-toggle input[type="radio"] {
+    margin-right: 0.3em;
 }
