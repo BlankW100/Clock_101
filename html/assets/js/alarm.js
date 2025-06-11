@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll('.delete-alarm-btn').forEach(btn => {
             btn.onclick = async (e) => {
                 const id = btn.getAttribute('data-id');
-                const userId = sessionStorage.getItem("userId");
+                const userId = localStorage.getItem("userId"); // CHANGED
                 if (!userId) return;
                 const userDocRef = doc(db, "users", userId);
                 const alarmDocRef = doc(userDocRef, "alarm", id);
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return alert("Please select a valid time to set Alarm!");
         }
         const time = `${hour}:${minute} ${ampm}`;
-        const userId = sessionStorage.getItem("userId");
+        const userId = localStorage.getItem("userId"); // CHANGED
         if (!userId) {
             alert("User not logged in!");
             return;
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fetch alarms from Firestore for the logged-in user
     async function fetchAlarms() {
-        const userId = sessionStorage.getItem("userId");
+        const userId = localStorage.getItem("userId"); // CHANGED
         if (!userId) return;
         const userDocRef = doc(db, "users", userId);
         const alarmCollectionRef = collection(userDocRef, "alarm");
