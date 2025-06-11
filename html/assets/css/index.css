@@ -255,3 +255,18 @@ body.darkmode footer {
     background: #23263a;
     color: #f4f4f9;
 }
+
+/* Time format toggle */
+.time-format-toggle {
+    margin: 0.5rem auto 1.5rem auto;
+    text-align: center;
+    font-size: 1rem;
+    color: #444;
+}
+.time-format-toggle label {
+    cursor: pointer;
+    font-weight: 500;
+}
+.time-format-toggle input[type="radio"] {
+    margin-right: 0.3em;
+}

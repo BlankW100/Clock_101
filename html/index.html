@@ -33,6 +33,16 @@
             <h2>Your Complete Time Management Solution</h2>
             <p>Convert timezones, calculate dates, set alarms, and more.</p>
             <div id="live-clock" class="live-clock"></div>
+            <div class="time-format-toggle">
+                <label>
+                    <input type="radio" name="time-format" value="24" id="format-24" checked>
+                    24-hour
+                </label>
+                <label style="margin-left:1.5em;">
+                    <input type="radio" name="time-format" value="ampm" id="format-ampm">
+                    AM/PM
+                </label>
+            </div>
         </section>
 
         <section class="features">
@@ -94,6 +104,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
+    <script src="assets/js/index.js"></script>
+    <script src="assets/js/darkmode.js"></script>
     <script>
         // Live clock for hero section
         function updateLiveClock() {
@@ -115,8 +127,30 @@
         }
         setInterval(updateQuickClocks, 1000);
         updateQuickClocks();
+
+        // Time format toggle
+        const format24 = document.getElementById('format-24');
+        const formatAmpm = document.getElementById('format-ampm');
+
+        function updateTimeFormats() {
+            const now = moment();
+            if (format24.checked) {
+                document.getElementById('live-clock').textContent = now.format('dddd, MMMM D, YYYY - HH:mm:ss');
+                document.getElementById('ny-time').textContent = moment().tz("America/New_York").format('HH:mm:ss');
+                document.getElementById('ldn-time').textContent = moment().tz("Europe/London").format('HH:mm:ss');
+                document.getElementById('tokyo-time').textContent = moment().tz("Asia/Tokyo").format('HH:mm:ss');
+                document.getElementById('syd-time').textContent = moment().tz("Australia/Sydney").format('HH:mm:ss');
+            } else {
+                document.getElementById('live-clock').textContent = now.format('dddd, MMMM D, YYYY - hh:mm:ss A');
+                document.getElementById('ny-time').textContent = moment().tz("America/New_York").format('hh:mm:ss A');
+                document.getElementById('ldn-time').textContent = moment().tz("Europe/London").format('hh:mm:ss A');
+                document.getElementById('tokyo-time').textContent = moment().tz("Asia/Tokyo").format('hh:mm:ss A');
+                document.getElementById('syd-time').textContent = moment().tz("Australia/Sydney").format('hh:mm:ss A');
+            }
+        }
+
+        format24.addEventListener('change', updateTimeFormats);
+        formatAmpm.addEventListener('change', updateTimeFormats);
     </script>
-    <script src="assets/js/index.js"></script>
-    <script src="assets/js/darkmode.js"></script>
 </body>
 </html>
