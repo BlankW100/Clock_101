@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, doc, collection, addDoc, getDocs, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, collection, addDoc, getDocs, deleteDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -50,14 +50,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const alarmDiv = document.createElement("div");
             alarmDiv.className = "alarm-list-item";
             alarmDiv.innerHTML = `
-                <div class="alarm-list-actions">
-                  <button class="edit-alarm-btn" data-id="${alarm.id}">Edit</button>
-                  <button class="delete-alarm-btn" data-id="${alarm.id}">Delete</button>
-                </div>
                 <div class="alarm-list-content">
                   <div class="alarm-list-time">${alarm.time}</div>
                   <div class="alarm-list-desc">${alarm.description ? alarm.description : "<em>No description</em>"}</div>
                   <div class="alarm-list-sound">🔔 ${alarm.sound.replace('.mp3','')}</div>
+                </div>
+                <div class="alarm-list-actions">
+                  <button class="edit-alarm-btn" data-id="${alarm.id}">Edit</button>
+                  <button class="delete-alarm-btn" data-id="${alarm.id}">Delete</button>
                 </div>
             `;
             alarmsList.appendChild(alarmDiv);
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const userDocRef = doc(db, "users", userId);
                     const alarmDocRef = doc(userDocRef, "alarm", id);
                     try {
-                        await alarmDocRef.update({ time, sound, description });
+                        await updateDoc(alarmDocRef, { time, sound, description });
                         // Update local alarms array
                         const idx = alarms.findIndex(a => a.id === id);
                         if (idx !== -1) {
