@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clock 101 - Your Time Management Tool</title>
     <link rel="stylesheet" href="assets/css/style2.css">
+    <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script type="module" src="assets/js/fetch-username.js" defer></script>
     <script type="module" src="assets/js/fetch-user-settings.js"></script>
@@ -12,53 +13,78 @@
 <body>
     <header>
         <nav class="nav-bar">
-            <!-- Left-aligned buttons -->
             <ul class="nav-menu">
                 <li><button class="nav-button" onclick="window.location.href='converter.html'">Time Converter</button></li>
                 <li><button class="nav-button" onclick="window.location.href='calculator.html'">Date Calculator</button></li>
                 <li><button class="nav-button" onclick="window.location.href='alarm.html'">Alarm</button></li>
                 <li><button id="signout-link" class="nav-button">Logout</button></li>
             </ul>
-
-            <!-- Centered title -->
             <h1 class="header-title" onclick="window.location.href='index.html'">Clock 101</h1>
-
-            <!-- Right-aligned welcome message -->
             <div class="welcome-message" id="welcome-message">Welcome, <span id="username">Loading...</span></div>
         </nav>
-        <button id="theme-switch" style="margin-top: 12px; margin-left: 1.5rem;">
+        <button id="theme-switch" aria-label="Toggle dark mode" style="margin-top: 12px; margin-left: 1.5rem;">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Z"/></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="http://www.w3.org/2000/svg" width="24px"><path d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"/></svg>
         </button>
     </header>
 
     <main>
         <section class="hero">
             <h2>Your Complete Time Management Solution</h2>
-            <p>Convert timezones, calculate dates, set alarms, and more</p>
+            <p>Convert timezones, calculate dates, set alarms, and more.</p>
+            <div id="live-clock" class="live-clock"></div>
         </section>
 
         <section class="features">
-            <div class="feature-card">
+            <div class="feature-card" tabindex="0" onclick="window.location.href='converter.html'">
                 <i class="fas fa-globe"></i>
                 <h3>World Time Converter</h3>
-                <p>Convert between multiple timezones in real-time</p>
-                <a href="converter.html" class="feature-link">Learn More</a>
+                <p>Convert between multiple timezones in real-time.</p>
+                <span class="feature-link">Try the Converter</span>
             </div>
-            
-            <div class="feature-card">
-                <i class="fas fa-calculator"></i>
+            <div class="feature-card" tabindex="0" onclick="window.location.href='calculator.html'">
+                <i class="fas fa-calendar-plus"></i>
                 <h3>Date Calculator</h3>
-                <p>Add or subtract time intervals across timezones</p>
-                <a href="calculator.html" class="feature-link">Learn More</a>
+                <p>Add or subtract time intervals across timezones.</p>
+                <span class="feature-link">Use the Calculator</span>
             </div>
-            
-            <div class="feature-card">
-                <i class="fas fa-alarm-clock"></i>
+            <div class="feature-card" tabindex="0" onclick="window.location.href='alarm.html'">
+                <i class="fas fa-bell"></i>
                 <h3>Alarm System</h3>
-                <p>Set and manage multiple alarms with different sounds</p>
-                <a href="alarm.html" class="feature-link">Learn More</a>
+                <p>Set and manage multiple alarms with different sounds.</p>
+                <span class="feature-link">Go to Alarms</span>
             </div>
+        </section>
+
+        <section class="interactive">
+            <h3>Quick World Clock</h3>
+            <div class="quick-clock-list">
+                <div class="quick-clock" data-tz="America/New_York">
+                    <span class="city">New York</span>
+                    <span class="time" id="ny-time"></span>
+                </div>
+                <div class="quick-clock" data-tz="Europe/London">
+                    <span class="city">London</span>
+                    <span class="time" id="ldn-time"></span>
+                </div>
+                <div class="quick-clock" data-tz="Asia/Tokyo">
+                    <span class="city">Tokyo</span>
+                    <span class="time" id="tokyo-time"></span>
+                </div>
+                <div class="quick-clock" data-tz="Australia/Sydney">
+                    <span class="city">Sydney</span>
+                    <span class="time" id="syd-time"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="tips">
+            <h3>Did you know?</h3>
+            <ul>
+                <li>You can double-click a city on the map to add it to your favorites.</li>
+                <li>Switch between light and dark mode using the top-right button.</li>
+                <li>Your settings are saved automatically for your next visit.</li>
+            </ul>
         </section>
     </main>
 
@@ -66,6 +92,30 @@
         <p>&copy; Clock 101. All rights reserved.</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
+    <script>
+        // Live clock for hero section
+        function updateLiveClock() {
+            const el = document.getElementById('live-clock');
+            if (el) {
+                const now = moment();
+                el.textContent = now.format('dddd, MMMM D, YYYY - HH:mm:ss');
+            }
+        }
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+
+        // Quick world clocks
+        function updateQuickClocks() {
+            document.getElementById('ny-time').textContent = moment().tz("America/New_York").format('HH:mm:ss');
+            document.getElementById('ldn-time').textContent = moment().tz("Europe/London").format('HH:mm:ss');
+            document.getElementById('tokyo-time').textContent = moment().tz("Asia/Tokyo").format('HH:mm:ss');
+            document.getElementById('syd-time').textContent = moment().tz("Australia/Sydney").format('HH:mm:ss');
+        }
+        setInterval(updateQuickClocks, 1000);
+        updateQuickClocks();
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
