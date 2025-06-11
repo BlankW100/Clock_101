@@ -19,6 +19,11 @@ let alarms = [];
 let editingAlarmId = null; // Track if editing an alarm
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Check user login (consistent with index.js)
+    if (!sessionStorage.getItem('userId')) {
+        window.location.href = "login.html";
+    }
+
     // Populate hour, minute, am/pm selects
     const hourSelect = document.getElementById("hour-select");
     const minuteSelect = document.getElementById("minute-select");
@@ -189,4 +194,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fetch alarms on page load
     fetchAlarms();
+
+    // Example: Live clock for alarm page
+    function updateLiveTime() {
+        const el = document.getElementById('live-time');
+        if (el) {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            let displayHours = hours % 12 || 12;
+            el.textContent =
+                (displayHours < 10 ? '0' : '') + displayHours + ':' +
+                (minutes < 10 ? '0' : '') + minutes + ':' +
+                (seconds < 10 ? '0' : '') + seconds + ' ' + ampm;
+        }
+    }
+    setInterval(updateLiveTime, 1000);
+    updateLiveTime();
+
+    // Example: Logout button logic
+    document.addEventListener('DOMContentLoaded', function () {
+        const signoutBtn = document.getElementById('signout-link');
+        if (signoutBtn) {
+            signoutBtn.addEventListener('click', function () {
+                sessionStorage.removeItem('userId');
+                window.location.href = "login.html";
+            });
+        }
+    });
 });
