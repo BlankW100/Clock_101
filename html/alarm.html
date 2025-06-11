@@ -16,6 +16,7 @@
                 <li><button class="nav-button" onclick="window.location.href='converter.html'">Time Converter</button></li>
                 <li><button class="nav-button" onclick="window.location.href='calculator.html'">Date Calculator</button></li>
                 <li><button class="nav-button" onclick="window.location.href='alarm.html'">Alarm</button></li>
+                <li><button class="nav-button" onclick="window.location.href='myevent.html'">My Event</button></li>
                 <li><button id="signout-link" class="nav-button">Logout</button></li>
             </ul>
             <h2 class="header-title" onclick="window.location.href='index.html'">Clock 101</h2>
@@ -32,10 +33,16 @@
       <h1 id="live-time" class="big-live-time">00:00:00 PM</h1>
       <!-- Time row -->
       <div class="alarm-row alarm-time-row">
-        <select id="hour-select" class="alarm-time-select"></select>
+        <select id="hour-select" class="alarm-time-select">
+          <option disabled>Hour</option>
+        </select>
         <span class="alarm-sep">:</span>
-        <select id="minute-select" class="alarm-time-select"></select>
-        <select id="ampm-select" class="alarm-time-select"></select>
+        <select id="minute-select" class="alarm-time-select">
+          <option disabled>Minute</option>
+        </select>
+        <select id="ampm-select" class="alarm-time-select">
+          <option disabled>AM/PM</option>
+        </select>
       </div>
       <!-- Sound row -->
       <div class="alarm-row">
@@ -51,9 +58,9 @@
           <option value="windchimes.mp3">Windchimes</option>
         </select>
       </div>
-      <!-- Label row -->
+      <!-- Description row -->
       <div class="alarm-row">
-        <input type="text" id="alarm-label-input" class="alarm-label-input long-label" maxlength="64" placeholder="Alarm label (e.g. Wake up, Meeting)">
+        <input type="text" id="alarm-description-input" class="alarm-label-input long-label" maxlength="128" placeholder="Alarm description (e.g. Wake up, Meeting, Take medicine)">
       </div>
       <!-- Buttons row -->
       <div class="alarm-row alarm-btn-row">
@@ -97,7 +104,7 @@
 
         // Fetch username from Firestore
         const fetchUsername = async () => {
-            const userId = sessionStorage.getItem('userId');
+            const userId = localStorage.getItem('userId'); // CHANGED
             if (userId) {
                 const userDoc = doc(db, "users", userId);
                 const userSnapshot = await getDoc(userDoc);
@@ -109,7 +116,7 @@
                     document.getElementById('username').textContent = "Guest";
                 }
             } else {
-                console.error("No userId found in sessionStorage!");
+                console.error("No userId found in localStorage!"); // CHANGED
                 document.getElementById('username').textContent = "Guest";
             }
         };
@@ -121,17 +128,17 @@
 
         // Check if user is logged in
         let checkcredentials = () => {
-            const userId = sessionStorage.getItem('userId');
+            const userId = localStorage.getItem('userId'); // CHANGED
             if (!userId) {
-                console.error("No userId found in sessionStorage. Redirecting to login.html...");
+                console.error("No userId found in localStorage. Redirecting to login.html..."); // CHANGED
                 window.location.href = "login.html";
             }
         };
 
         // Sign out function
         let signout = () => {
-            sessionStorage.removeItem('userId');
-            sessionStorage.removeItem('user');
+            localStorage.removeItem('userId'); // CHANGED
+            localStorage.removeItem('user'); // CHANGED
             window.location.href = "login.html";
         };
 

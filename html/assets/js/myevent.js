@@ -1,19 +1,20 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import {
     getFirestore,
     collection,
     addDoc,
-    doc,
-    getDoc,
-    updateDoc,
-    arrayUnion,
     onSnapshot,
     query,
-    orderBy
+    orderBy,
+    deleteDoc,
+    doc,
+    updateDoc,
+    getDoc,
+    arrayUnion
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-// Initialize Firebase (for Firestore)
+// Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyBiOkxZFBwCP3NOXqZqpit5tF9MnwKaavQ",
     authDomain: "clock-101-10e68.firebaseapp.com",
@@ -22,11 +23,15 @@ const firebaseConfig = {
     messagingSenderId: "654434052980",
     appId: "1:654434052980:web:d270879ef90c796a059a21"
 };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-// --- Get current user's email automatically --- NEW
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth(app);
+
+let editingEventId = null;
+const notifiedEvents = new Set();
+
+// Get current user's email
 onAuthStateChanged(auth, (user) => {
     if (user) {
         window.currentUserEmail = user.email;
@@ -37,33 +42,42 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// --- EmailJS Notification Function ---
-function sendNoReplyEmail(userEmail, eventName) {
-    emailjs.send("service_nereuyw", "template_m05yqxb", {
-        to_email: userEmail,
-        message: `Your event "${eventName}" has started!`
-    })
-    .then(function(response) {
-        console.log("SUCCESS", response.status, response.text);
-    }, function(error) {
-        console.log("FAILED", error);
-    });
+// Helper: get eventId from URL
+function getEventIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("eventId");
 }
 
-// --- Alternative: Send email with different template variables ---
+// Helper: format countdown
+function getCountdownString(eventDate) {
+    const now = new Date().getTime();
+    const eventTime = new Date(eventDate).getTime();
+    const timeLeft = eventTime - now;
+
+    if (timeLeft <= 0) return "Event has started!";
+
+    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+    return `Arrives in: ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+}
+
+// EmailJS notification
 function sendEmailWhenEventEnds(eventName, userEmail) {
     emailjs.send("service_nereuyw", "template_m05yqxb", {
         event_name: eventName,
-        user_email: userEmail // This must match the "To" field in your EmailJS template
+        user_email: userEmail
     })
     .then((response) => {
         console.log("Email sent!", response.status, response.text);
-        }, (error) => {
-            console.error("Failed to send email:", error);
-        });
-    }
+    }, (error) => {
+        console.error("Failed to send email:", error);
+    });
+}
 
-// --- Add current user to event's email list ---NEW
+// Add current user to event's email list
 async function addCurrentUserToEvent(eventId) {
     const userEmail = window.currentUserEmail;
     if (!userEmail) return;
@@ -73,13 +87,7 @@ async function addCurrentUserToEvent(eventId) {
     });
 }
 
-// --- Helper to get eventId from URL --- NEW
-function getEventIdFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("eventId");
-}
-
-// --- Save Event --- NEW
+// Save or update event
 async function saveEvent() {
     const eventName = document.getElementById("eventName").value;
     const eventDate = document.getElementById("eventDate").value;
@@ -87,43 +95,38 @@ async function saveEvent() {
 
     if (!eventName || !eventDate) return alert("Please enter both fields!");
 
-    const docRef = await addDoc(collection(db, "events"), {
-        name: eventName,
-        date: eventDate,
-        emails: [userEmail]
-    });
+    if (editingEventId) {
+        // Update existing event
+        const eventRef = doc(db, "events", editingEventId);
+        await updateDoc(eventRef, {
+            name: eventName,
+            date: eventDate
+        });
+        editingEventId = null;
+        document.getElementById("saveEventBtn").textContent = "Save Event";
+        alert("Event updated!");
+    } else {
+        // Add new event
+        const docRef = await addDoc(collection(db, "events"), {
+            name: eventName,
+            date: eventDate,
+            emails: [userEmail]
+        });
 
-    // Show the shareable link on the page --- NEW
-    const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${docRef.id}`;
-    document.getElementById("share-link").innerHTML = `
-        <p>Share this link with your friend:</p>
-        <input type="text" value="${shareLink}" readonly style="width:90%">
-        <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
-    `;
-
+        // Show shareable link
+        const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${docRef.id}`;
+        document.getElementById("share-link").innerHTML = `
+            <p>Share this link with your friend:</p>
+            <input type="text" value="${shareLink}" readonly style="width:90%">
+            <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
+        `;
+        alert("Event Saved!");
+    }
     document.getElementById("eventName").value = "";
     document.getElementById("eventDate").value = "";
 }
 
-// --- Countdown Helper ---
-function getCountdownString(eventDate) {
-    const now = new Date().getTime();
-    const eventTime = new Date(eventDate).getTime();
-    const timeLeft = eventTime - now;
-
-    if (timeLeft <= 0) {
-        return "Event has started!";
-    }
-
-    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((timeLeft % (1000 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeLeft % 60000) / 1000);
-
-    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-}
-
-// --- Render Events --- NEW
+// Render events
 function renderEvents(events) {
     const eventsList = document.getElementById("events-list");
     eventsList.innerHTML = "";
@@ -134,14 +137,38 @@ function renderEvents(events) {
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
+            ${event.emails && event.emails.includes(window.currentUserEmail) ? `
+                <button class="edit-btn" data-id="${event.id}">Edit</button>
+                <button class="delete-btn" data-id="${event.id}">Delete</button>
+            ` : ""}
         `;
         eventsList.appendChild(eventDiv);
     });
+
+    // Add event listeners for edit and delete
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+            const id = btn.getAttribute("data-id");
+            const event = events.find(ev => ev.id === id);
+            if (event) {
+                document.getElementById("eventName").value = event.name;
+                document.getElementById("eventDate").value = event.date;
+                editingEventId = id;
+                document.getElementById("saveEventBtn").textContent = "Update Event";
+            }
+        });
+    });
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+            const id = btn.getAttribute("data-id");
+            if (confirm("Are you sure you want to delete this event?")) {
+                await deleteDoc(doc(db, "events", id));
+            }
+        });
+    });
 }
 
-// --- Email Notification Logic --- NEW
-const notifiedEvents = new Set();
-
+// Update countdowns and send notifications
 function updateAllCountdowns(events = []) {
     const countdownDivs = document.querySelectorAll(".event-countdown");
     countdownDivs.forEach((div, idx) => {
@@ -151,7 +178,7 @@ function updateAllCountdowns(events = []) {
         const countdownStr = getCountdownString(date);
         div.textContent = countdownStr;
 
-        // --- Use event ID for unique notification key ---
+        // Use event ID for unique notification key
         const event = events[idx];
         const notifiedKey = (event && event.id ? event.id : "") + date + name;
 
@@ -171,7 +198,7 @@ function updateAllCountdowns(events = []) {
     });
 }
 
-// --- Firestore Listener (show only shared event if eventId in URL) --- NEW
+// Firestore listener
 const eventId = getEventIdFromUrl();
 
 if (eventId) {
@@ -184,23 +211,19 @@ if (eventId) {
                     const eventData = docSnap.data();
                     eventData.id = eventId;
                     renderEvents([eventData]);
-                    // --- Clear previous interval before setting a new one ---
-                    if (window._countdownInterval) {
-                        clearInterval(window._countdownInterval);
-                    }
+                    if (window._countdownInterval) clearInterval(window._countdownInterval);
                     window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
                 } else {
                     document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
                 }
             });
         } else {
-            // Not logged in: redirect to login page or show a message
             alert("Please log in to join this event and receive notifications.");
-            window.location.href = "login.html"; // Change to your login page path
+            window.location.href = "login.html";
         }
     });
 } else {
-    // Show all events as before
+    // Show all events
     const q = query(collection(db, "events"), orderBy("date"));
     onSnapshot(q, (snapshot) => {
         const events = [];
@@ -210,25 +233,21 @@ if (eventId) {
             events.push(data);
         });
         renderEvents(events);
-        // --- Clear previous interval before setting a new one ---
-        if (window._countdownInterval) {
-            clearInterval(window._countdownInterval);
-        }
+        if (window._countdownInterval) clearInterval(window._countdownInterval);
         window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
     });
 }
 
-// --- DOM Events --- NEW
+// DOM events
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("saveEventBtn").addEventListener("click", saveEvent);
 
-    // --- Logout button handler ---
+    // Logout button handler
     const signoutBtn = document.getElementById("signout-link");
     if (signoutBtn) {
         signoutBtn.addEventListener("click", () => {
-            const auth = getAuth();
             signOut(auth).then(() => {
-                window.location.href = "login.html"; // Redirect to your login page
+                window.location.href = "login.html";
             });
         });
     }
