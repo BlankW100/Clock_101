@@ -16,6 +16,7 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let alarms = [];
+let editingAlarmId = null; // Track if editing an alarm
 
 document.addEventListener("DOMContentLoaded", () => {
     // Populate hour, minute, am/pm selects
@@ -55,11 +56,23 @@ document.addEventListener("DOMContentLoaded", () => {
                   <div class="alarm-list-desc">${alarm.description ? alarm.description : "<em>No description</em>"}</div>
                   <div class="alarm-list-sound">🔔 ${alarm.sound.replace('.mp3','')}</div>
                 </div>
-                <div class="alarm-list-actions">
-                  <button class="edit-alarm-btn" data-id="${alarm.id}">Edit</button>
-                  <button class="delete-alarm-btn" data-id="${alarm.id}">Delete</button>
-                </div>
             `;
+            // Create actions container
+            const actionsDiv = document.createElement("div");
+            actionsDiv.className = "alarm-list-actions";
+            // Edit button
+            const editBtn = document.createElement("button");
+            editBtn.className = "edit-alarm-btn";
+            editBtn.setAttribute("data-id", alarm.id);
+            editBtn.textContent = "Edit";
+            // Delete button
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-alarm-btn";
+            deleteBtn.setAttribute("data-id", alarm.id);
+            deleteBtn.textContent = "Delete";
+            actionsDiv.appendChild(editBtn);
+            actionsDiv.appendChild(deleteBtn);
+            alarmDiv.appendChild(actionsDiv);
             alarmsList.appendChild(alarmDiv);
         });
         document.querySelectorAll('.delete-alarm-btn').forEach(btn => {
@@ -72,6 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 await deleteDoc(alarmDocRef);
                 alarms = alarms.filter(a => a.id !== id);
                 displayAlarms();
+                // If deleting the alarm being edited, reset form
+                if (editingAlarmId === id) {
+                    resetAlarmForm();
+                }
             };
         });
         document.querySelectorAll('.edit-alarm-btn').forEach(btn => {
@@ -86,38 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("ringtone-select").value = alarm.sound;
                 document.getElementById("alarm-description-input").value = alarm.description || "";
                 setAlarmBtn.innerText = "Update Alarm";
-                setAlarmBtn.onclick = async function updateAlarm() {
-                    const hour = hourSelect.value;
-                    const minute = minuteSelect.value;
-                    const ampm = ampmSelect.value;
-                    const sound = document.getElementById("ringtone-select").value;
-                    const description = document.getElementById("alarm-description-input").value.trim();
-                    if ([hour, minute, ampm].includes("Hour") || [hour, minute, ampm].includes("Minute") || [hour, minute, ampm].includes("AM/PM")) {
-                        return alert("Please select a valid time to update Alarm!");
-                    }
-                    const time = `${hour}:${minute} ${ampm}`;
-                    const userId = sessionStorage.getItem("userId");
-                    if (!userId) {
-                        alert("User not logged in!");
-                        return;
-                    }
-                    const userDocRef = doc(db, "users", userId);
-                    const alarmDocRef = doc(userDocRef, "alarm", id);
-                    try {
-                        await updateDoc(alarmDocRef, { time, sound, description });
-                        // Update local alarms array
-                        const idx = alarms.findIndex(a => a.id === id);
-                        if (idx !== -1) {
-                            alarms[idx] = { ...alarms[idx], time, sound, description };
-                        }
-                        displayAlarms();
-                        setAlarmBtn.innerText = "Set Alarm";
-                        setAlarmBtn.onclick = setAlarm;
-                        document.getElementById("alarm-description-input").value = "";
-                    } catch (error) {
-                        alert("Failed to update alarm.");
-                    }
-                };
+                editingAlarmId = id;
             };
         });
     }
@@ -137,32 +123,57 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("User not logged in!");
             return;
         }
-        const alarmDoc = {
-            time,
-            sound,
-            description,
-            createdAt: new Date().toISOString()
-        };
-        try {
+        if (editingAlarmId) {
+            // Update existing alarm
             const userDocRef = doc(db, "users", userId);
-            const alarmCollectionRef = collection(userDocRef, "alarm");
-            const docRef = await addDoc(alarmCollectionRef, alarmDoc);
-            alarms.push({ id: docRef.id, ...alarmDoc });
-            displayAlarms();
-            alert("Alarm set successfully!");
-            document.getElementById("alarm-description-input").value = "";
-        } catch (error) {
-            console.error("Error setting alarm:", error);
+            const alarmDocRef = doc(userDocRef, "alarm", editingAlarmId);
+            try {
+                await updateDoc(alarmDocRef, { time, sound, description });
+                // Update local alarms array
+                const idx = alarms.findIndex(a => a.id === editingAlarmId);
+                if (idx !== -1) {
+                    alarms[idx] = { ...alarms[idx], time, sound, description };
+                }
+                displayAlarms();
+                alert("Alarm updated successfully!");
+                resetAlarmForm();
+            } catch (error) {
+                alert("Failed to update alarm.");
+            }
+        } else {
+            // Create new alarm
+            const alarmDoc = {
+                time,
+                sound,
+                description,
+                createdAt: new Date().toISOString()
+            };
+            try {
+                const userDocRef = doc(db, "users", userId);
+                const alarmCollectionRef = collection(userDocRef, "alarm");
+                const docRef = await addDoc(alarmCollectionRef, alarmDoc);
+                alarms.push({ id: docRef.id, ...alarmDoc });
+                displayAlarms();
+                alert("Alarm set successfully!");
+                resetAlarmForm();
+            } catch (error) {
+                console.error("Error setting alarm:", error);
+            }
         }
     }
 
-    function stopAlarm() {
-        if (ringtone) {
-            ringtone.pause();
-            setAlarmBtn.innerText = "Set Alarm";
-            isAlarmSet = false;
-        }
+    function resetAlarmForm() {
+        setAlarmBtn.innerText = "Set Alarm";
+        editingAlarmId = null;
+        document.getElementById("alarm-description-input").value = "";
+        // Optionally reset selects to default
+        // hourSelect.selectedIndex = 0;
+        // minuteSelect.selectedIndex = 0;
+        // ampmSelect.selectedIndex = 0;
     }
+
+    setAlarmBtn.onclick = setAlarm;
+    stopAlarmBtn.addEventListener("click", stopAlarm);
 
     // Fetch alarms from Firestore for the logged-in user
     async function fetchAlarms() {
