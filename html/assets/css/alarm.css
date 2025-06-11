@@ -220,6 +220,16 @@ body{
 .alarm-time-row {
   gap: 8px;
 }
+.alarm-time-select {
+  width: 80px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #bfbfbf;
+  font-size: 16px;
+  background: var(--base-color);
+  color: var(--text-color);
+  margin: 0 4px;
+}
 .alarm-sound-select, .alarm-label-input {
   width: 100%;
   padding: 10px;
