@@ -104,7 +104,7 @@
 
         // Fetch username from Firestore
         const fetchUsername = async () => {
-            const userId = sessionStorage.getItem('userId');
+            const userId = localStorage.getItem('userId'); // CHANGED
             if (userId) {
                 const userDoc = doc(db, "users", userId);
                 const userSnapshot = await getDoc(userDoc);
@@ -116,7 +116,7 @@
                     document.getElementById('username').textContent = "Guest";
                 }
             } else {
-                console.error("No userId found in sessionStorage!");
+                console.error("No userId found in localStorage!"); // CHANGED
                 document.getElementById('username').textContent = "Guest";
             }
         };
@@ -128,17 +128,17 @@
 
         // Check if user is logged in
         let checkcredentials = () => {
-            const userId = sessionStorage.getItem('userId');
+            const userId = localStorage.getItem('userId'); // CHANGED
             if (!userId) {
-                console.error("No userId found in sessionStorage. Redirecting to login.html...");
+                console.error("No userId found in localStorage. Redirecting to login.html..."); // CHANGED
                 window.location.href = "login.html";
             }
         };
 
         // Sign out function
         let signout = () => {
-            sessionStorage.removeItem('userId');
-            sessionStorage.removeItem('user');
+            localStorage.removeItem('userId'); // CHANGED
+            localStorage.removeItem('user'); // CHANGED
             window.location.href = "login.html";
         };
 
