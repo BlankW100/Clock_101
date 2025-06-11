@@ -299,11 +299,31 @@ body{
   color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 0.95rem;
+  padding: 2px 8px;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: background 0.2s;
+  min-width: 48px;
+  height: 28px;
 }
 .delete-alarm-btn:hover {
   background: #c53030;
+}
+.edit-alarm-btn {
+  position: absolute;
+  top: 12px;
+  right: 70px;
+  background: #3182ce;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-width: 48px;
+  height: 28px;
+}
+.edit-alarm-btn:hover {
+  background: #225ea8;
 }

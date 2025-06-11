@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="alarm-list-time">${alarm.time}</div>
                 <div class="alarm-list-desc">${alarm.description ? alarm.description : "<em>No description</em>"}</div>
                 <div class="alarm-list-sound">🔔 ${alarm.sound.replace('.mp3','')}</div>
+                <button class="edit-alarm-btn" data-id="${alarm.id}">Edit</button>
                 <button class="delete-alarm-btn" data-id="${alarm.id}">Delete</button>
             `;
             alarmsList.appendChild(alarmDiv);
@@ -67,6 +68,52 @@ document.addEventListener("DOMContentLoaded", () => {
                 await deleteDoc(alarmDocRef);
                 alarms = alarms.filter(a => a.id !== id);
                 displayAlarms();
+            };
+        });
+        document.querySelectorAll('.edit-alarm-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                const id = btn.getAttribute('data-id');
+                const alarm = alarms.find(a => a.id === id);
+                if (!alarm) return;
+                // Populate the form with alarm data for editing
+                hourSelect.value = alarm.time.split(':')[0];
+                minuteSelect.value = alarm.time.split(':')[1].split(' ')[0];
+                ampmSelect.value = alarm.time.split(' ')[1];
+                document.getElementById("ringtone-select").value = alarm.sound;
+                document.getElementById("alarm-description-input").value = alarm.description || "";
+                setAlarmBtn.innerText = "Update Alarm";
+                setAlarmBtn.onclick = async function updateAlarm() {
+                    const hour = hourSelect.value;
+                    const minute = minuteSelect.value;
+                    const ampm = ampmSelect.value;
+                    const sound = document.getElementById("ringtone-select").value;
+                    const description = document.getElementById("alarm-description-input").value.trim();
+                    if ([hour, minute, ampm].includes("Hour") || [hour, minute, ampm].includes("Minute") || [hour, minute, ampm].includes("AM/PM")) {
+                        return alert("Please select a valid time to update Alarm!");
+                    }
+                    const time = `${hour}:${minute} ${ampm}`;
+                    const userId = sessionStorage.getItem("userId");
+                    if (!userId) {
+                        alert("User not logged in!");
+                        return;
+                    }
+                    const userDocRef = doc(db, "users", userId);
+                    const alarmDocRef = doc(userDocRef, "alarm", id);
+                    try {
+                        await alarmDocRef.update({ time, sound, description });
+                        // Update local alarms array
+                        const idx = alarms.findIndex(a => a.id === id);
+                        if (idx !== -1) {
+                            alarms[idx] = { ...alarms[idx], time, sound, description };
+                        }
+                        displayAlarms();
+                        setAlarmBtn.innerText = "Set Alarm";
+                        setAlarmBtn.onclick = setAlarm;
+                        document.getElementById("alarm-description-input").value = "";
+                    } catch (error) {
+                        alert("Failed to update alarm.");
+                    }
+                };
             };
         });
     }
