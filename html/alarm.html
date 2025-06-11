@@ -127,13 +127,7 @@
         });
 
         // Check if user is logged in
-        let checkcredentials = () => {
-            const userId = localStorage.getItem('userId'); // CHANGED
-            if (!userId) {
-                console.error("No userId found in localStorage. Redirecting to login.html..."); // CHANGED
-                window.location.href = "login.html";
-            }
-        };
+
 
         // Sign out function
         let signout = () => {
