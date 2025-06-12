@@ -163,11 +163,6 @@ function renderEvents(events) {
         eventDiv.className = "event-item";
         // Generate the share link for this event
         const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${event.id}`;
-        // Format event date/time in user's local timezone
-        const localDateTime = new Date(event.date).toLocaleString(undefined, {
-            year: 'numeric', month: 'long', day: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: '2-digit',
-            hour12: false, timeZoneName: 'short'
         });
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
