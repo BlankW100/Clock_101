@@ -112,14 +112,6 @@ async function saveEvent() {
             date: eventDate,
             emails: [userEmail]
         });
-
-        // Show shareable link
-        const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${docRef.id}`;
-        document.getElementById("share-link").innerHTML = `
-            <p>Share this link with your friend:</p>
-            <input type="text" value="${shareLink}" readonly style="width:90%">
-            <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
-        `;
         alert("Event Saved!");
     }
     document.getElementById("eventName").value = "";
@@ -134,9 +126,15 @@ function renderEvents(events) {
     events.forEach(event => {
         const eventDiv = document.createElement("div");
         eventDiv.className = "event-item";
+        // Generate the share link for this event
+        const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${event.id}`;
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
+            <div class="share-link" style="margin: 10px 0;">
+                <input type="text" value="${shareLink}" readonly style="width:90%">
+                <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
+            </div>
             ${event.emails && event.emails.includes(window.currentUserEmail) ? `
                 <button class="edit-btn" data-id="${event.id}">Edit</button>
                 <button class="delete-btn" data-id="${event.id}">Delete</button>
