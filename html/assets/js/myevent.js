@@ -163,7 +163,6 @@ function renderEvents(events) {
         eventDiv.className = "event-item";
         // Generate the share link for this event
         const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${event.id}`;
-        });
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
