@@ -72,7 +72,7 @@ function checkAlarms() {
         }
     });
 }
-//adaowdiaod
+
 function playRingtone(filename) {
     stopRingtone();
     currentRingtone = new Audio(`assets/Alarm files/${filename}`);
@@ -216,21 +216,8 @@ async function fetchAlarms() {
 
 // Get logged in userId from Firestore session (or sessionStorage/localStorage as needed)
 async function getLoggedInUserId() {
-    // You can adjust this to your actual login/session logic
-    // Here, we use sessionStorage for userId as in your HTML
-    const userId = sessionStorage.getItem("userId");
-    if (!userId) {
-        window.location.href = "login.html";
-        return null;
-    }
-    // Optionally, check if user exists in Firestore
-    // const userDocRef = doc(db, "users", userId);
-    // const userSnap = await getDoc(userDocRef);
-    // if (!userSnap.exists()) {
-    //     window.location.href = "login.html";
-    //     return null;
-    // }
-    return userId;
+    // Always return a dummy userId so alarm CRUD works, but do not redirect or require login
+    return "guest";
 }
 
 // Event listeners
