@@ -10,7 +10,8 @@ import {
     doc,
     updateDoc,
     getDoc,
-    arrayUnion
+    arrayUnion,
+    where // <-- Add this line
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
@@ -31,14 +32,48 @@ const auth = getAuth(app);
 let editingEventId = null;
 const notifiedEvents = new Set();
 
-// Get current user's email
+// USER C cannot see USER A's events -- NEW2
 onAuthStateChanged(auth, (user) => {
     if (user) {
         window.currentUserEmail = user.email;
         console.log("Logged in as:", user.email);
+
+        if (eventId) {
+            addCurrentUserToEvent(eventId);
+            getDoc(doc(db, "events", eventId)).then(docSnap => {
+                if (docSnap.exists()) {
+                    const eventData = docSnap.data();
+                    eventData.id = eventId;
+                    renderEvents([eventData]);
+                    if (window._countdownInterval) clearInterval(window._countdownInterval);
+                    window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
+                } else {
+                    document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
+                }
+            });
+        } else {
+            // Show only events where the logged-in user is a participant
+            const q = query(
+                collection(db, "events"),
+                where("emails", "array-contains", window.currentUserEmail),
+                orderBy("date")
+            );
+            onSnapshot(q, (snapshot) => {
+                const events = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    events.push(data);
+                });
+                renderEvents(events);
+                if (window._countdownInterval) clearInterval(window._countdownInterval);
+                window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
+            });
+        }
     } else {
-        window.currentUserEmail = null;
-        console.log("No user logged in");
+        // Not logged in, redirect to login page
+        alert("Please log in to join this event and receive notifications.");
+        window.location.href = "login.html";
     }
 });
 
@@ -61,7 +96,7 @@ function getCountdownString(eventDate) {
     const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-    return `Arrives in: ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    return Arrives in: ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds;
 }
 
 // EmailJS notification
@@ -112,14 +147,6 @@ async function saveEvent() {
             date: eventDate,
             emails: [userEmail]
         });
-
-        // Show shareable link
-        const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${docRef.id}`;
-        document.getElementById("share-link").innerHTML = `
-            <p>Share this link with your friend:</p>
-            <input type="text" value="${shareLink}" readonly style="width:90%">
-            <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
-        `;
         alert("Event Saved!");
     }
     document.getElementById("eventName").value = "";
@@ -134,9 +161,15 @@ function renderEvents(events) {
     events.forEach(event => {
         const eventDiv = document.createElement("div");
         eventDiv.className = "event-item";
+        // Generate the share link for this event
+        const shareLink = ${window.location.origin}${window.location.pathname}?eventId=${event.id};
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
+            <div class="share-link" style="margin: 10px 0;">
+                <input type="text" value="${shareLink}" readonly style="width:260px"> 
+                <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
+            </div>
             ${event.emails && event.emails.includes(window.currentUserEmail) ? `
                 <button class="edit-btn" data-id="${event.id}">Edit</button>
                 <button class="delete-btn" data-id="${event.id}">Delete</button>
@@ -145,7 +178,7 @@ function renderEvents(events) {
         eventsList.appendChild(eventDiv);
     });
 
-    // Add event listeners for edit and delete
+    // Add event listeners for edit and deleted
     document.querySelectorAll(".edit-btn").forEach(btn => {
         btn.addEventListener("click", async (e) => {
             const id = btn.getAttribute("data-id");
@@ -220,19 +253,23 @@ onAuthStateChanged(auth, (user) => {
                 }
             });
         } else {
-        // Show all events for logged-in user
-        const q = query(collection(db, "events"), orderBy("date"));
-        onSnapshot(q, (snapshot) => {
-            const events = [];
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                data.id = doc.id;
-                events.push(data);
+            // Show only events where the logged-in user is a participant
+            const q = query(
+                collection(db, "events"),
+                where("emails", "array-contains", window.currentUserEmail),
+                orderBy("date")
+            );
+            onSnapshot(q, (snapshot) => {
+                const events = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    events.push(data);
+                });
+                renderEvents(events);
+                if (window._countdownInterval) clearInterval(window._countdownInterval);
+                window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
             });
-            renderEvents(events);
-            if (window._countdownInterval) clearInterval(window._countdownInterval);
-            window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
-        });
         }
     } else {
         // Not logged in, redirect to login page
