@@ -72,7 +72,7 @@ function checkAlarms() {
         }
     });
 }
-
+//adaowdiaod
 function playRingtone(filename) {
     stopRingtone();
     currentRingtone = new Audio(`assets/Alarm files/${filename}`);
