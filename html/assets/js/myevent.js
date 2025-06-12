@@ -132,7 +132,7 @@ function renderEvents(events) {
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
             <div class="share-link" style="margin: 10px 0;">
-                <input type="text" value="${shareLink}" readonly style="width:90%">
+                <input type="text" value="${shareLink}" readonly style="width:98%"> 
                 <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
             </div>
             ${event.emails && event.emails.includes(window.currentUserEmail) ? `
