@@ -143,7 +143,7 @@ function renderEvents(events) {
         eventsList.appendChild(eventDiv);
     });
 
-    // Add event listeners for edit and delete
+    // Add event listeners for edit and deleted
     document.querySelectorAll(".edit-btn").forEach(btn => {
         btn.addEventListener("click", async (e) => {
             const id = btn.getAttribute("data-id");
