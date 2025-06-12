@@ -10,7 +10,8 @@ import {
     doc,
     updateDoc,
     getDoc,
-    arrayUnion
+    arrayUnion,
+    where // <-- Add this line
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
@@ -31,14 +32,48 @@ const auth = getAuth(app);
 let editingEventId = null;
 const notifiedEvents = new Set();
 
-// Get current user's email
+// USER C cannot see USER A's events -- NEW2
 onAuthStateChanged(auth, (user) => {
     if (user) {
         window.currentUserEmail = user.email;
         console.log("Logged in as:", user.email);
+
+        if (eventId) {
+            addCurrentUserToEvent(eventId);
+            getDoc(doc(db, "events", eventId)).then(docSnap => {
+                if (docSnap.exists()) {
+                    const eventData = docSnap.data();
+                    eventData.id = eventId;
+                    renderEvents([eventData]);
+                    if (window._countdownInterval) clearInterval(window._countdownInterval);
+                    window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
+                } else {
+                    document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
+                }
+            });
+        } else {
+            // Show only events where the logged-in user is a participant
+            const q = query(
+                collection(db, "events"),
+                where("emails", "array-contains", window.currentUserEmail),
+                orderBy("date")
+            );
+            onSnapshot(q, (snapshot) => {
+                const events = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    events.push(data);
+                });
+                renderEvents(events);
+                if (window._countdownInterval) clearInterval(window._countdownInterval);
+                window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
+            });
+        }
     } else {
-        window.currentUserEmail = null;
-        console.log("No user logged in");
+        // Not logged in, redirect to login page
+        alert("Please log in to join this event and receive notifications.");
+        window.location.href = "login.html";
     }
 });
 
@@ -218,8 +253,12 @@ onAuthStateChanged(auth, (user) => {
                 }
             });
         } else {
-            // Show all events for logged-in user
-            const q = query(collection(db, "events"), orderBy("date"));
+            // Show only events where the logged-in user is a participant
+            const q = query(
+                collection(db, "events"),
+                where("emails", "array-contains", window.currentUserEmail),
+                orderBy("date")
+            );
             onSnapshot(q, (snapshot) => {
                 const events = [];
                 snapshot.forEach(doc => {
