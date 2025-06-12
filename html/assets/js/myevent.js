@@ -220,11 +220,7 @@ onAuthStateChanged(auth, (user) => {
                 }
             });
         } else {
-            alert("Please log in to join this event and receive notifications.");
-            window.location.href = "login.html";
-        }
-    } else {
-        // Show all events
+        // Show all events for logged-in user
         const q = query(collection(db, "events"), orderBy("date"));
         onSnapshot(q, (snapshot) => {
             const events = [];
@@ -237,6 +233,11 @@ onAuthStateChanged(auth, (user) => {
             if (window._countdownInterval) clearInterval(window._countdownInterval);
             window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
         });
+        }
+    } else {
+        // Not logged in, redirect to login page
+        alert("Please log in to join this event and receive notifications.");
+        window.location.href = "login.html";
     }
 });
 
