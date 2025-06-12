@@ -218,23 +218,24 @@ onAuthStateChanged(auth, (user) => {
                 }
             });
         } else {
-            alert("Please log in to join this event and receive notifications.");
-            window.location.href = "login.html";
+            // Show all events for logged-in user
+            const q = query(collection(db, "events"), orderBy("date"));
+            onSnapshot(q, (snapshot) => {
+                const events = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    events.push(data);
+                });
+                renderEvents(events);
+                if (window._countdownInterval) clearInterval(window._countdownInterval);
+                window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
+            });
         }
     } else {
-        // Show all events
-        const q = query(collection(db, "events"), orderBy("date"));
-        onSnapshot(q, (snapshot) => {
-            const events = [];
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                data.id = doc.id;
-                events.push(data);
-            });
-            renderEvents(events);
-            if (window._countdownInterval) clearInterval(window._countdownInterval);
-            window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
-        });
+        // Not logged in, redirect to login page
+        alert("Please log in to join this event and receive notifications.");
+        window.location.href = "login.html";
     }
 });
 
