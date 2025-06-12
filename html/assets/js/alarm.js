@@ -91,18 +91,18 @@ function stopRingtone() {
 
 // Set or update an alarm
 async function setAlarm() {
-    const hour = hourSelect.value;
+    const selectedHour = hourSelect.value;
     const minute = minuteSelect.value;
     const ampm = ampmSelect.value;
     const sound = ringtoneSelect.value;
     const label = alarmLabelInput.value.trim();
 
-    if (hour === "Hour" || minute === "Minute" || ampm === "AM/PM") {
+    if (selectedHour === "Hour" || minute === "Minute" || ampm === "AM/PM") {
         alert("Please select a valid time to set Alarm!");
         return;
     }
 
-    const time = `${hour}:${minute} ${ampm}`;
+    const time = `${selectedHour}:${minute} ${ampm}`;
     const userId = await getLoggedInUserId();
     if (!userId) {
         alert("User not logged in!");
@@ -216,8 +216,21 @@ async function fetchAlarms() {
 
 // Get logged in userId from Firestore session (or sessionStorage/localStorage as needed)
 async function getLoggedInUserId() {
-    // Always return a dummy userId so alarm CRUD works, but do not redirect or require login
-    return "guest";
+    // You can adjust this to your actual login/session logic
+    // Here, we use sessionStorage for userId as in your HTML
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) {
+        window.location.href = "login.html";
+        return null;
+    }
+    // Optionally, check if user exists in Firestore
+    // const userDocRef = doc(db, "users", userId);
+    // const userSnap = await getDoc(userDocRef);
+    // if (!userSnap.exists()) {
+    //     window.location.href = "login.html";
+    //     return null;
+    // }
+    return userId;
 }
 
 // Event listeners
