@@ -86,19 +86,7 @@ button {
 }
 
 /* Theme Switch */
-#theme-switch {
-  height: 50px;
-  width: 50px;
-  padding: 0;
-  border-radius: 50%;
-  background-color: var(--base-variant);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 120px;
-  right: 20px;
-}
+
 
 #theme-switch svg {
   fill: var(--primary-color);
