@@ -96,7 +96,7 @@ function getCountdownString(eventDate) {
     const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-    return Arrives in: ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds;
+    return `Arrives in: ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 }
 
 // EmailJS notification
@@ -162,7 +162,7 @@ function renderEvents(events) {
         const eventDiv = document.createElement("div");
         eventDiv.className = "event-item";
         // Generate the share link for this event
-        const shareLink = ${window.location.origin}${window.location.pathname}?eventId=${event.id};
+        const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${event.id}`;
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
