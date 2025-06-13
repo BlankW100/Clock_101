@@ -105,8 +105,8 @@ async function setAlarm() {
         return;
     }
 
-    const time = `${selectedHour}:${minute} ${ampm}`;
-    const userId = sessionStorage.getItem("userId");
+    const time = `${hour}:${minute} ${ampm}`;
+    const userId = await getLoggedInUserId();
     if (!userId) {
         alert("User not logged in!");
         return;
