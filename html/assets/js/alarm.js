@@ -20,6 +20,7 @@ const minuteSelect = document.getElementById("minute-select");
 const ampmSelect = document.getElementById("ampm-select");
 const ringtoneSelect = document.getElementById("ringtone-select");
 const setAlarmBtn = document.getElementById("set-alarm-btn");
+const stopAlarmBtn = document.getElementById("stop-alarm-btn");
 const alarmsListDiv = document.getElementById("alarms-list");
 const liveTimeElement = document.getElementById("live-time");
 const alarmLabelInput = document.getElementById("alarm-label-input");
@@ -32,14 +33,14 @@ let editingAlarmId = null;
 // Populate select menus
 for (let i = 1; i <= 12; i++) {
     let val = i < 10 ? `0${i}` : `${i}`;
-    hourSelect.insertAdjacentHTML("beforeend", `<option value="${val}">${val}</option>`);
+    hourSelect.insertAdjacentHTML("beforeend", <option value="${val}">${val}</option>);
 }
 for (let i = 0; i < 60; i++) {
     let val = i < 10 ? `0${i}` : `${i}`;
     minuteSelect.insertAdjacentHTML("beforeend", `<option value="${val}">${val}</option>`);
 }
 ["AM", "PM"].forEach(ampm => {
-    ampmSelect.insertAdjacentHTML("beforeend", `<option value="${ampm}">${ampm}</option>`);
+    ampmSelect.insertAdjacentHTML("beforeend", <option value="${ampm}">${ampm}</option>);
 });
 
 // Live clock
@@ -66,6 +67,7 @@ function checkAlarms() {
         if (alarm.time === timeStr && !alarm.triggered) {
             playRingtone(alarm.sound || "ringtone.mp3");
             alarm.triggered = true;
+            stopAlarmBtn.classList.remove("hidden");
             if (alarm.label) {
                 alert(`Alarm: ${alarm.label}`);
             }
@@ -86,33 +88,40 @@ function stopRingtone() {
         currentRingtone.currentTime = 0;
         currentRingtone = null;
     }
+    stopAlarmBtn.classList.add("hidden");
     alarms.forEach(alarm => alarm.triggered = false);
 }
 
 // Set or update an alarm
 async function setAlarm() {
-    const hour = hourSelect.value;
+    const selectedHour = hourSelect.value;
     const minute = minuteSelect.value;
     const ampm = ampmSelect.value;
     const sound = ringtoneSelect.value;
     const label = alarmLabelInput.value.trim();
 
-    if (hour === "Hour" || minute === "Minute" || ampm === "AM/PM") {
+    if (selectedHour === "Hour" || minute === "Minute" || ampm === "AM/PM") {
         alert("Please select a valid time to set Alarm!");
         return;
     }
 
-    const time = `${hour}:${minute} ${ampm}`;
-    const userId = await getLoggedInUserId();
+    const time = `${selectedHour}:${minute} ${ampm}`;
+    const userId = sessionStorage.getItem("userId");
     if (!userId) {
         alert("User not logged in!");
         return;
     }
 
-    const userDocRef = doc(db, "users", userId);
-    const alarmCollectionRef = collection(userDocRef, "alarm");
+    const alarmDoc = {
+        time,
+        sound,
+        label,
+        createdAt: new Date().toISOString()
+    };
 
     try {
+        const userDocRef = doc(db, "users", userId);
+        const alarmCollectionRef = collection(userDocRef, "alarm");
         if (editingAlarmId) {
             // Update existing alarm
             const alarmDocRef = doc(alarmCollectionRef, editingAlarmId);
@@ -121,19 +130,15 @@ async function setAlarm() {
             setAlarmBtn.textContent = "Set Alarm";
         } else {
             // Add new alarm
-            await addDoc(alarmCollectionRef, {
-                time,
-                sound,
-                label,
-                createdAt: new Date().toISOString()
-            });
+            await addDoc(alarmCollectionRef, alarmDoc);
         }
         await fetchAlarms();
-        alarmLabelInput.value = "";
+        alarmLabelInput.value = ""; // Clear label input
         hourSelect.value = "Hour";
         minuteSelect.value = "Minute";
         ampmSelect.value = "AM/PM";
         ringtoneSelect.value = "ringtone.mp3";
+        alert("Alarm set successfully!");
     } catch (error) {
         console.error("Error setting alarm:", error);
     }
@@ -187,7 +192,7 @@ function displayAlarms() {
 
 // Delete alarm
 async function deleteAlarm(id) {
-    const userId = await getLoggedInUserId();
+    const userId = sessionStorage.getItem("userId");
     if (!userId) return;
     const userDocRef = doc(db, "users", userId);
     const alarmCollectionRef = collection(userDocRef, "alarm");
@@ -202,7 +207,7 @@ async function deleteAlarm(id) {
 
 // Fetch alarms from Firestore
 async function fetchAlarms() {
-    const userId = await getLoggedInUserId();
+    const userId = sessionStorage.getItem("userId");
     if (!userId) return;
     const userDocRef = doc(db, "users", userId);
     const alarmCollectionRef = collection(userDocRef, "alarm");
@@ -214,25 +219,7 @@ async function fetchAlarms() {
     displayAlarms();
 }
 
-// Get logged in userId from Firestore session (or sessionStorage/localStorage as needed)
-async function getLoggedInUserId() {
-    // You can adjust this to your actual login/session logic
-    // Here, we use sessionStorage for userId as in your HTML
-    const userId = sessionStorage.getItem("userId");
-    if (!userId) {
-        window.location.href = "login.html";
-        return null;
-    }
-    // Optionally, check if user exists in Firestore
-    // const userDocRef = doc(db, "users", userId);
-    // const userSnap = await getDoc(userDocRef);
-    // if (!userSnap.exists()) {
-    //     window.location.href = "login.html";
-    //     return null;
-    // }
-    return userId;
-}
-
 // Event listeners
 setAlarmBtn.addEventListener("click", setAlarm);
+stopAlarmBtn.addEventListener("click", stopRingtone);
 window.addEventListener("load", fetchAlarms);
