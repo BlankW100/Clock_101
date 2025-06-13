@@ -74,3 +74,45 @@ button {
     overflow-wrap: break-word;
     max-width: 100%;
 }
+
+/* Dark mode overrides for myevent page */
+.darkmode body,
+.darkmode .container {
+    background-color: #23263a !important;
+    color: #f4f4f9 !important;
+}
+
+.darkmode input,
+.darkmode input[type="text"],
+.darkmode input[type="datetime-local"],
+.darkmode button {
+    background-color: #181a20 !important;
+    color: #f4f4f9 !important;
+    border: 1px solid #444a5a !important;
+}
+
+.darkmode button {
+    background-color: #23263a !important;
+    color: #f4f4f9 !important;
+    border: 1px solid #444a5a !important;
+}
+
+.darkmode h1,
+.darkmode h2,
+.darkmode h3 {
+    color: #f4f4f9 !important;
+}
+
+.darkmode .event-item {
+    background: #181a20 !important;
+    border-color: #444a5a !important;
+    color: #f4f4f9 !important;
+}
+
+.darkmode .event-countdown {
+    color: #63b3ed !important;
+}
+
+.darkmode .event-localtime {
+    color: #a4a5b8 !important;
+}
