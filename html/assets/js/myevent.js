@@ -163,9 +163,26 @@ function renderEvents(events) {
         eventDiv.className = "event-item";
         // Generate the share link for this event
         const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${event.id}`;
+        // Format event date/time in user's local timezone
+        const eventDateObj = new Date(event.date);
+        const localDateTime = eventDateObj.toLocaleString(undefined, {
+            weekday: 'short',
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+        // Get user's timezone name
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
+            <div class="event-localtime" style="margin: 6px 0 12px 0; color: #555;">
+                Ends at: <b>${localDateTime}</b> <span style="font-size:0.95em;">(${userTimeZone})</span>
+            </div>
             <div class="share-link" style="margin: 10px 0;">
                 <input type="text" value="${shareLink}" readonly style="width:260px"> 
                 <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
