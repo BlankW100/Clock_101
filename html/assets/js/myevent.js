@@ -10,7 +10,8 @@ import {
     doc,
     updateDoc,
     getDoc,
-    arrayUnion
+    arrayUnion,
+    where // <-- Add this line
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
@@ -31,14 +32,48 @@ const auth = getAuth(app);
 let editingEventId = null;
 const notifiedEvents = new Set();
 
-// Get current user's email
+// USER C cannot see USER A's events -- NEW2
 onAuthStateChanged(auth, (user) => {
     if (user) {
         window.currentUserEmail = user.email;
         console.log("Logged in as:", user.email);
+
+        if (eventId) {
+            addCurrentUserToEvent(eventId);
+            getDoc(doc(db, "events", eventId)).then(docSnap => {
+                if (docSnap.exists()) {
+                    const eventData = docSnap.data();
+                    eventData.id = eventId;
+                    renderEvents([eventData]);
+                    if (window._countdownInterval) clearInterval(window._countdownInterval);
+                    window._countdownInterval = setInterval(() => updateAllCountdowns([eventData]), 1000);
+                } else {
+                    document.getElementById("events-list").innerHTML = "<p>Event not found.</p>";
+                }
+            });
+        } else {
+            // Show only events where the logged-in user is a participant
+            const q = query(
+                collection(db, "events"),
+                where("emails", "array-contains", window.currentUserEmail),
+                orderBy("date")
+            );
+            onSnapshot(q, (snapshot) => {
+                const events = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    events.push(data);
+                });
+                renderEvents(events);
+                if (window._countdownInterval) clearInterval(window._countdownInterval);
+                window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
+            });
+        }
     } else {
-        window.currentUserEmail = null;
-        console.log("No user logged in");
+        // Not logged in, redirect to login page
+        alert("Please log in to join this event and receive notifications.");
+        window.location.href = "login.html";
     }
 });
 
@@ -112,14 +147,6 @@ async function saveEvent() {
             date: eventDate,
             emails: [userEmail]
         });
-
-        // Show shareable link
-        const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${docRef.id}`;
-        document.getElementById("share-link").innerHTML = `
-            <p>Share this link with your friend:</p>
-            <input type="text" value="${shareLink}" readonly style="width:90%">
-            <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
-        `;
         alert("Event Saved!");
     }
     document.getElementById("eventName").value = "";
@@ -134,18 +161,41 @@ function renderEvents(events) {
     events.forEach(event => {
         const eventDiv = document.createElement("div");
         eventDiv.className = "event-item";
+        // Generate the share link for this event
+        const shareLink = `${window.location.origin}${window.location.pathname}?eventId=${event.id}`;
+        // Format event date/time in user's local timezone
+        const eventDateObj = new Date(event.date);
+        const localDateTime = eventDateObj.toLocaleString(undefined, {
+            weekday: 'short',
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+        // Get user's timezone name
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
         eventDiv.innerHTML = `
             <h3>${event.name}</h3>
             <div class="event-countdown" data-date="${event.date}" data-name="${event.name}" data-emails='${JSON.stringify(event.emails || [])}'></div>
+            <div class="event-localtime" style="margin: 6px 0 12px 0; color: #555;">
+                Ends at: <b>${localDateTime}</b> <span style="font-size:0.95em;">(${userTimeZone})</span>
+            </div>
+            <div class="share-link" style="margin: 10px 0;">
+                <input type="text" value="${shareLink}" readonly style="width:260px"> 
+                <button class="copy-link-btn event-action-btn" onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
+            </div>
             ${event.emails && event.emails.includes(window.currentUserEmail) ? `
-                <button class="edit-btn" data-id="${event.id}">Edit</button>
-                <button class="delete-btn" data-id="${event.id}">Delete</button>
+                <button class="edit-btn event-action-btn" data-id="${event.id}">Edit</button>
+                <button class="delete-btn event-action-btn" data-id="${event.id}">Delete</button>
             ` : ""}
         `;
         eventsList.appendChild(eventDiv);
     });
 
-    // Add event listeners for edit and delete
+    // Add event listeners for edit and deleted
     document.querySelectorAll(".edit-btn").forEach(btn => {
         btn.addEventListener("click", async (e) => {
             const id = btn.getAttribute("data-id");
@@ -220,23 +270,28 @@ onAuthStateChanged(auth, (user) => {
                 }
             });
         } else {
-            alert("Please log in to join this event and receive notifications.");
-            window.location.href = "login.html";
+            // Show only events where the logged-in user is a participant
+            const q = query(
+                collection(db, "events"),
+                where("emails", "array-contains", window.currentUserEmail),
+                orderBy("date")
+            );
+            onSnapshot(q, (snapshot) => {
+                const events = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    events.push(data);
+                });
+                renderEvents(events);
+                if (window._countdownInterval) clearInterval(window._countdownInterval);
+                window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
+            });
         }
     } else {
-        // Show all events
-        const q = query(collection(db, "events"), orderBy("date"));
-        onSnapshot(q, (snapshot) => {
-            const events = [];
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                data.id = doc.id;
-                events.push(data);
-            });
-            renderEvents(events);
-            if (window._countdownInterval) clearInterval(window._countdownInterval);
-            window._countdownInterval = setInterval(() => updateAllCountdowns(events), 1000);
-        });
+        // Not logged in, redirect to login page
+        alert("Please log in to join this event and receive notifications.");
+        window.location.href = "login.html";
     }
 });
 
