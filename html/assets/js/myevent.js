@@ -185,11 +185,11 @@ function renderEvents(events) {
             </div>
             <div class="share-link" style="margin: 10px 0;">
                 <input type="text" value="${shareLink}" readonly style="width:260px"> 
-                <button onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
+                <button class="copy-link-btn event-action-btn" onclick="navigator.clipboard.writeText('${shareLink}')">Copy Link</button>
             </div>
             ${event.emails && event.emails.includes(window.currentUserEmail) ? `
-                <button class="edit-btn" data-id="${event.id}">Edit</button>
-                <button class="delete-btn" data-id="${event.id}">Delete</button>
+                <button class="edit-btn event-action-btn" data-id="${event.id}">Edit</button>
+                <button class="delete-btn event-action-btn" data-id="${event.id}">Delete</button>
             ` : ""}
         `;
         eventsList.appendChild(eventDiv);

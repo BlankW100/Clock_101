@@ -85,9 +85,8 @@ button {
 .darkmode input,
 .darkmode input[type="text"],
 .darkmode input[type="datetime-local"],
-
-.darkmode button {
-    background-color: #23263a !important;
+.darkmode .event-action-btn {
+    background-color: #181a20 !important;
     color: #f4f4f9 !important;
     border: 1px solid #444a5a !important;
 }
